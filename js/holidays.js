@@ -19,15 +19,7 @@ var holidays =
 		holidays.drawMap();
 		holidays.autocomplete();
 		holidays.priceRange();
-
-		// bind events to handle infowindow
-		$('.submenu').click(function(e)
-		{
-			e.preventDefault();
-			holidays.infowindowOpen($(this).attr('href'));
-		});
-		$(document, '#infowindowClose').click(holidays.infowindowClose);
-		$(document).keyup(holidays.infowindowClose);
+		holidays.bindInfoWindow();
 
 		// input field class
 		$('#search input.inputText').focus(function()
@@ -66,7 +58,12 @@ var holidays =
 
 		// don't fire new request while previous one is still running
 		if(loadingMessage.is(':visible')) return;
-		loadingMessage.show();
+
+		// don't display right away; if everything's done under 250ms, user won't even have noticed the new request
+		var messageTimer = setTimeout("$('#loadingMarkers').show()", 250);
+
+		// close any open windows (sometimes, on touch devices, they're touched accidentally during pich-zoom)
+		holidays.infowindowClose();
 
 		// get viewport
 		var bounds = holidays.map.getBounds();
@@ -109,11 +106,14 @@ var holidays =
 
 					var count = json.clusters[i]['total'];
 					var bounds = new google.maps.LatLngBounds(sw, ne);
-					var coordinate = bounds.getCenter();
+
+					var coordinate = new google.maps.LatLng(json.clusters[i].center.lat, json.clusters[i].center.lng); // weighed center
+//					var coordinate = bounds.getCenter(); // exact center of bounds
 
 					holidays.drawCluster(coordinate, count, bounds);
 				}
 
+				clearTimeout(messageTimer);
 				loadingMessage.hide();
 			}
 		});
@@ -148,8 +148,11 @@ var holidays =
 		{
 			map: holidays.map,
 			position: coordinate,
-			icon: image,
-			anchorPoint: new google.maps.Point(28, 54),
+			icon:
+			{
+				url: image,
+				anchor: new google.maps.Point(28, 54)
+			},
 			title: '€' + price,
 			id: id
 		});
@@ -190,8 +193,11 @@ var holidays =
 		{
 			map: holidays.map,
 			position: coordinate,
-			icon: image,
-			anchorPoint: new google.maps.Point(100, 100),
+			icon:
+			{
+				url: image,
+				anchor: new google.maps.Point(100, 100)
+			},
 			bounds: bounds
 		});
 
@@ -281,6 +287,51 @@ var holidays =
 		updatePrices();
 	},
 
+	bindInfoWindow: function()
+	{
+		// bind events to handle infowindow
+		$('.submenu').click(function(e)
+		{
+			e.preventDefault();
+			holidays.infowindowOpen($(this).attr('href'));
+		});
+
+		// mouseclick close
+		$(document, '#infowindowClose').click(function(e)
+		{
+			$infowindow = $('#infowindow');
+			$closeButton = $('#infowindowClose');
+
+			// check clicked position: click outside window or on close button = close
+			var offsetWindow = $infowindow.offset();
+			var offsetButton = $closeButton.offset();
+			if(
+				// left or right from infowindow
+				e.pageX < offsetWindow.left || e.pageX > offsetWindow.left + $infowindow.outerWidth() ||
+				// above or beneath infowindow
+				e.pageY < offsetWindow.top || e.pageY > offsetWindow.top + $infowindow.outerHeight() ||
+
+				// clicked close button
+				(e.pageX > offsetButton.left && e.pageX < offsetButton.left + $closeButton.outerWidth() &&
+				e.pageY > offsetButton.top && e.pageY < offsetButton.top + $closeButton.outerHeight())
+			)
+			{
+				e.preventDefault();
+				holidays.infowindowClose();
+			}
+		});
+
+		// escape key close
+		$(document).keyup(function(e)
+		{
+			if(e.keyCode == 27)
+			{
+				e.preventDefault();
+				holidays.infowindowClose();
+			}
+		});
+	},
+
 	infowindowOpen: function(url)
 	{
 		$.ajax(
@@ -289,34 +340,16 @@ var holidays =
 			dataType: 'html',
 			success: function(html)
 			{
-				$('#infowindow').show().find('#infowindowContainer').html(html);
+				$('#infowindow')
+					.show()
+					.find('#infowindowContainer').html(html);
 			}
 		});
 	},
 
-	infowindowClose: function(e)
+	infowindowClose: function()
 	{
-		$infowindow = $('#infowindow');
-		$closeButton = $('#infowindowClose');
-
-		// check clicked position: click outside window or on close button = close
-		var offsetWindow = $infowindow.offset();
-		var offsetButton = $closeButton.offset();
-		if(
-			// escape key
-			e.keyCode == 27 ||
-			// left or right from infowindow
-			e.pageX < offsetWindow.left || e.pageX > offsetWindow.left + $infowindow.outerWidth() ||
-			// above or beneath infowindow
-			e.pageY < offsetWindow.top || e.pageY > offsetWindow.top + $infowindow.outerHeight() ||
-			// inside close button
-			(e.pageX > offsetButton.left && e.pageX < offsetButton.left + $closeButton.outerWidth() &&
-			 e.pageY > offsetButton.top && e.pageY < offsetButton.top + $closeButton.outerHeight())
-		)
-		{
-			e.preventDefault();
-			$infowindow.hide();
-		}
+		$('#infowindow').hide();
 	}
 }
 

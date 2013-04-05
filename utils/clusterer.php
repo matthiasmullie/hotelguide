@@ -77,6 +77,11 @@ class Clusterer {
 					'swLat' => min( $bucket['bounds']['swLat'], $lat ),
 					'swLng' => min( $bucket['bounds']['swLng'], $lng ),
 				),
+				// weighed center
+				'center' => array(
+					'lat' => ( ( $bucket['center']['lat'] * $bucket['total'] ) + $lat ) / ( $bucket['total'] + 1 ),
+					'lng' => ( ( $bucket['center']['lng'] * $bucket['total'] ) + $lng ) / ( $bucket['total'] + 1 ),
+				),
 				'total' => $bucket['total'] + 1,
 			);
 
@@ -88,6 +93,10 @@ class Clusterer {
 					'neLng' => $lng,
 					'swLat' => $lat,
 					'swLng' => $lng,
+				),
+				'center' => array(
+					'lat' => $lat,
+					'lng' => $lng,
 				),
 				'total' => count( $bucket ) + 1,
 			);
