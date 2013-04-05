@@ -1,11 +1,13 @@
 <?php
 
-require_once '../db.php';
+require_once '../config.php';
 
-if(!isset($_GET['id'])) exit;
+if ( !isset( $_GET['id'] ) ) {
+	exit;
+}
 $id = (int) $_GET['id'];
 
-// @todo: some day, may need to incorporate check for date/price
+$db = new PDO('mysql:host=' . $host . ';dbname=' . $db, $user, $pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
 $prepareData = $db->prepare('
 	SELECT *
 	FROM locations AS l

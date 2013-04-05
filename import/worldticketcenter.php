@@ -49,6 +49,7 @@ foreach($xml->xpath('/products/product') as $node)
 }
 
 // purge caches
+// @todo: this assumes filecaching; find a better way to update caches
 $files = glob('../cache/*.pdf');
 foreach($files as $file) {
 	unlink("../cache/$file");

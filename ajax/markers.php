@@ -8,19 +8,20 @@ require_once '../utils/cache/cache.php';
 
 ini_set('memory_limit', '1G');
 
-$min = isset($_GET['min']) ? (int) $_GET['min'] : 50;
-$max = isset($_GET['max']) ? (int) $_GET['max'] : 300;
-$neLat = isset($_GET['neLat']) ? $_GET['neLat'] : 0;
-$neLng = isset($_GET['neLng']) ? $_GET['neLng'] : 0;
-$swLat = isset($_GET['swLat']) ? $_GET['swLat'] : 0;
-$swLng = isset($_GET['swLng']) ? $_GET['swLng'] : 0;
-$minPts = isset($_GET['minPts']) ? $_GET['minPts'] : 1;
-$nbrClusters = isset($_GET['nbrClusters']) ? $_GET['nbrClusters'] : 50;
+$min = isset( $_GET['min'] ) ? (int) $_GET['min'] : 50;
+$max = isset( $_GET['max'] ) ? (int) $_GET['max'] : 300;
+$neLat = isset( $_GET['neLat'] ) ? $_GET['neLat'] : 0;
+$neLng = isset( $_GET['neLng'] ) ? $_GET['neLng'] : 0;
+$swLat = isset( $_GET['swLat'] ) ? $_GET['swLat'] : 0;
+$swLng = isset( $_GET['swLng'] ) ? $_GET['swLng'] : 0;
+$minPts = isset( $_GET['minPts'] ) ? $_GET['minPts'] : 1;
+$nbrClusters = isset( $_GET['nbrClusters'] ) ? $_GET['nbrClusters'] : 50;
 
 // only cache/round for large map views; specific zooms don't matter ;)
 $cacheCluster = $neLat - $swLat > 25 || $neLng - $swLng > 25;
 
-// init cache object
+// init db & cache object
+$db = new PDO('mysql:host=' . $host . ';dbname=' . $db, $user, $pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
 $cache = Cache::load( $cache );
 
 /*
@@ -29,7 +30,7 @@ $cache = Cache::load( $cache );
  * caching (that way, there are less different caches and odds that
  * that region is cached already are larger)
  */
-$round = function($value, $func) {
+$round = function( $value, $func ) {
 	return $func( $value / 10 ) * 10;
 };
 $neLatRound = $round($neLat, 'ceil');
@@ -73,11 +74,11 @@ if ( $clustered === false ) {
 	}
 
 	// build clusterer
-	$clusterer = new Clusterer($neLat, $neLng, $swLat, $swLng);
-	$clusterer->setMinClusterLocations($minPts);
-	$clusterer->setNumberOfClusters($nbrClusters);
+	$clusterer = new Clusterer( $neLat, $neLng, $swLat, $swLng );
+	$clusterer->setMinClusterLocations( $minPts );
+	$clusterer->setNumberOfClusters( $nbrClusters );
 	foreach ( $markers as $marker ) {
-		$clusterer->addLocation($marker['lat'], $marker['lng'], $marker);
+		$clusterer->addLocation( $marker['lat'], $marker['lng'], $marker );
 	}
 
 	$clustered = array(
