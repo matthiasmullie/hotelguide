@@ -153,6 +153,8 @@ var holidays =
 				url: image,
 				anchor: new google.maps.Point(28, 54)
 			},
+			zIndex: 3,
+			flat: true,
 			title: '€' + price,
 			id: id
 		});
@@ -198,6 +200,8 @@ var holidays =
 				url: image,
 				anchor: new google.maps.Point(100, 100)
 			},
+			zIndex: 2,
+			flat: true,
 			bounds: bounds
 		});
 
@@ -208,7 +212,7 @@ var holidays =
 			holidays.map.setCenter(e.latLng);
 
 			// alternative: zoom to boundaries of clicked marker
-//			holidays.map.fitBounds(marker.bounds);
+//			holidays.map.fitBounds(this.bounds);
 		});
 
 		holidays.markers.push(marker);
@@ -247,8 +251,13 @@ var holidays =
 			{
 				map: holidays.map,
 				position: place.geometry.location,
-				icon: image,
-				anchorPoint: new google.maps.Point(28, 54),
+				icon:
+				{
+					url: image,
+					anchor: new google.maps.Point(28, 54)
+				},
+				zIndex: 1,
+				flat: true,
 				text: '<strong>' + place.name + '</strong>'
 			});
 
