@@ -80,7 +80,7 @@ var holidays =
 				swLat: bounds.getSouthWest().lat(),
 				swLng: bounds.getSouthWest().lng(),
 				minPts: holidays.map.getZoom() > 13 ? 99999999 : 10, // zoomed in much = don't cluster
-				nbrClusters: Math.round(Math.sqrt($('#map').width() * $('#map').height()) / 15) // smaller screen = less clusters
+				nbrClusters: Math.round(($('#map').width() + $('#map').height()) / 50) // smaller screen = less clusters
 			},
 			type: 'GET',
 			dataType: 'json',
