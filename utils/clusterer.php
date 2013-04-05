@@ -161,7 +161,7 @@ class Clusterer {
 
 		// this will be used later to calculate exactly which bucket a coordinate falls into (see findBucket)
 		$this->coefficientLat = 1 / ( $this->neLat - $this->swLat ) * $this->numLat;
-		$this->coefficientLng = 1 / ( $this->neLat - $this->swLat ) * $this->numLat;
+		$this->coefficientLng = 1 / ( $this->neLng - $this->swLng ) * $this->numLng;
 	}
 
 	/**
