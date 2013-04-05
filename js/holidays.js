@@ -12,6 +12,7 @@ var holidays =
 	}],
 	minPrice: 50,
 	maxPrice: 300,
+	zoomTimer: null,
 
 	init: function()
 	{
@@ -51,7 +52,10 @@ var holidays =
 			styles: holidays.mapStyle
 		};
 		holidays.map = new google.maps.Map($('#map').get(0), myOptions);
-		google.maps.event.addListener(holidays.map, 'bounds_changed', holidays.drawMarkers);
+		google.maps.event.addListener(holidays.map, 'bounds_changed', function() {
+			if(holidays.zoomTimer) clearTimeout(holidays.zoomTimer);
+			holidays.zoomTimer = setTimeout(holidays.drawMarkers, 250);
+		});
 
 		$('#loadingMap').hide();
 	},
