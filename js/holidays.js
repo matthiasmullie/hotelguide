@@ -253,7 +253,7 @@ var holidays =
 	{
 		// bind autocomplete
 		var searchField = $('#searchField');
-		var searchbox = new google.maps.places.Autocomplete(searchField.get(0));
+		var searchbox = new google.maps.places.SearchBox(searchField.get(0));
 
 		var setMarker = function(places)
 		{
