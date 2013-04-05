@@ -1,0 +1,9 @@
+.idea
+.project
+.cache
+.buildpath
+.settings
+.*.swp
+.DS_Store
+cache/
+config.php

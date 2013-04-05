@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+	<meta name="description" content="Last Minute Vakantie" />
+	<meta name="keywords" content="last minute, vakantie, hotel, reis" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+
+	<title>Last Minute Vakanties</title>
+
+	<link rel="shortcut icon" href="/favicon.ico" />
+	<link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png">
+
+	<link rel="stylesheet" type="text/css" media="all" href="css/nouislider.fox.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="css/screen.css" />
+
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body id="home">
+	<div id="topWrapper">
+		<header role="banner" id="header">
+			<div class="container">
+				<div id="logo">
+					<h1>
+						<a href="#">Last Minute Vakantie</a>
+					</h1>
+				</div>
+				<div id="search">
+					<form action="#" method="get">
+						<fieldset>
+							<div class="inputHolder">
+								<input type="search" id="searchField" class="inputText" placeholder="Wat is je favoriete reisbestemming?" />
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</header>
+		<section id="subHeader">
+			<div class="container">
+				<div id="filter">
+					<input id="price" type="text" />
+					<div id="price-range" class="noUiSlider"></div>
+				</div>
+				<nav id="navigation">
+					<ul>
+						<li><a class="submenu" href="apps.html">Mobile Apps</a></li>
+						<li><a class="submenu" href="about.html">About us</a></li>
+					</ul>
+				</nav>
+			</div>
+		</section>
+	</div>
+	<div id="bottomWrapper">
+		<section id="map">
+			<!-- Map -->
+		</section>
+	</div>
+
+	<p id="loadingMap" class="spinner" style="display: none;">Kaart wordt geladen&hellip;</p>
+	<p id="loadingMarkers" class="spinner" style="display: none;">Locaties worden geladen&hellip;</p>
+	<div id="infowindow">
+		<a id="infowindowClose" href="#">&times;</a>
+		<div id="infowindowContainer">
+			<!-- this will contain both menu-items' content & markers content -->
+		</div>
+	</div>
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="js/jquery.nouislider.min.js"></script>
+	<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyAwJr7NdvPMpLy5OPNUIJQyk0luN4_Xohs&libraries=places,geometry&sensor=false"></script>
+	<script src="js/webtoolkit.base64.js"></script>
+	<script src="js/holidays.js"></script>
+	<script src="js/modernizr.js"></script>
+</body>
+</html>
