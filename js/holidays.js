@@ -92,11 +92,12 @@ var holidays =
 
 				for(var i = 0; i < json.locations.length; i++)
 				{
-					holidays.drawMarker(
+					var marker = holidays.drawMarker(
 						new google.maps.LatLng(json.locations[i].extra.lat, json.locations[i].extra.lng),
 						json.locations[i].extra.id,
 						json.locations[i].extra.price
 					);
+					holidays.markers.push(marker);
 				}
 
 				for(var i = 0; i < json.clusters.length; i++)
@@ -110,7 +111,8 @@ var holidays =
 					var coordinate = new google.maps.LatLng(json.clusters[i].center.lat, json.clusters[i].center.lng); // weighed center
 //					var coordinate = bounds.getCenter(); // exact center of bounds
 
-					holidays.drawCluster(coordinate, count, bounds);
+					var marker = holidays.drawCluster(coordinate, count, bounds);
+					holidays.markers.push(marker);
 				}
 
 				clearTimeout(messageTimer);
@@ -165,7 +167,7 @@ var holidays =
 			holidays.infowindowOpen('ajax/location.php?id=' + this.id);
 		});
 
-		holidays.markers.push(marker);
+		return marker;
 	},
 
 	drawCluster: function(coordinate, count, bounds)
@@ -215,58 +217,79 @@ var holidays =
 //			holidays.map.fitBounds(this.bounds);
 		});
 
-		holidays.markers.push(marker);
+		return marker;
+	},
+
+	drawReferencePoint: function(coordinate, text) {
+		var svg =
+			'<svg width="46" height="54" xmlns="http://www.w3.org/2000/svg">' +
+				// balloon shape
+				'<path fill="#0097f5" d=" M 7.81 8.31 C 11.74 4.27 17.35 1.87 23 2 C 28.65 1.88 34.27 4.27 38.19 8.31 C 42.01 12.15 44.21 17.59 44 23.02 C 44.04 28.86 41.15 34.49 36.78 38.28 C 32.15 42.35 27.72 46.65 23 50.62 C 18.28 46.66 13.86 42.34 9.23 38.28 C 4.85 34.49 1.96 28.85 2 23.01 C 1.8 17.59 3.99 12.15 7.81 8.31 Z" />' +
+				// circle inside balloon
+				'<circle cx="23" cy="23" r="13" fill="#0078c2" />' +
+				// bottom balloon shadow
+				'<path fill="#7f7f7f" d=" M 18.18 52.59 C 19 52.19 19.83 51.81 20.64 51.41 C 21.36 51.99 22.05 52.79 23.01 52.91 C 23.96 52.79 24.64 51.99 25.36 51.42 C 26.2 51.82 27.05 52.21 27.9 52.6 C 27.79 53.07 27.67 53.53 27.55 54 L 18.33 54 C 18.28 53.53 18.24 53.06 18.18 52.59 Z" />' +
+			'</svg>'
+		var image = 'data:image/svg+xml;base64,' + Base64.encode(svg);
+
+		var marker = new google.maps.Marker(
+		{
+			map: holidays.map,
+			position: coordinate,
+			icon:
+			{
+				url: image,
+				anchor: new google.maps.Point(28, 54)
+			},
+			zIndex: 1,
+			flat: true,
+			text: '<strong>' + text + '</strong>'
+		});
+		return marker;
 	},
 
 	autocomplete: function()
 	{
 		// bind autocomplete
-		var input = $('#searchField').get(0);
-		var autocomplete = new google.maps.places.Autocomplete(input);
+		var searchField = $('#searchField');
+		var searchbox = new google.maps.places.Autocomplete(searchField.get(0));
 
-		locate = function()
+		var setMarker = function(places)
 		{
-			var place = autocomplete.getPlace();
-
-			// none found (probably clicked enter with incomplete search query) - ignore!
-			if(typeof place.geometry == 'undefined') {}
+			if(places.length == 0 || typeof places[0].geometry == 'undefined') return;
+			var place = places[0];
 
 			// remove existing marker
 			if(holidays.locationMarker) holidays.locationMarker.setMap(null);
 			holidays.locationMarker = null;
 
-			// add marker to requested location
-			var svg =
-				'<svg width="46" height="54" xmlns="http://www.w3.org/2000/svg">' +
-					// balloon shape
-					'<path fill="#0097f5" d=" M 7.81 8.31 C 11.74 4.27 17.35 1.87 23 2 C 28.65 1.88 34.27 4.27 38.19 8.31 C 42.01 12.15 44.21 17.59 44 23.02 C 44.04 28.86 41.15 34.49 36.78 38.28 C 32.15 42.35 27.72 46.65 23 50.62 C 18.28 46.66 13.86 42.34 9.23 38.28 C 4.85 34.49 1.96 28.85 2 23.01 C 1.8 17.59 3.99 12.15 7.81 8.31 Z" />' +
-					// circle inside balloon
-					'<circle cx="23" cy="23" r="13" fill="#0078c2" />' +
-					// bottom balloon shadow
-					'<path fill="#7f7f7f" d=" M 18.18 52.59 C 19 52.19 19.83 51.81 20.64 51.41 C 21.36 51.99 22.05 52.79 23.01 52.91 C 23.96 52.79 24.64 51.99 25.36 51.42 C 26.2 51.82 27.05 52.21 27.9 52.6 C 27.79 53.07 27.67 53.53 27.55 54 L 18.33 54 C 18.28 53.53 18.24 53.06 18.18 52.59 Z" />' +
-				'</svg>'
-			var image = 'data:image/svg+xml;base64,' + Base64.encode(svg);
-
-			holidays.locationMarker = new google.maps.Marker(
-			{
-				map: holidays.map,
-				position: place.geometry.location,
-				icon:
-				{
-					url: image,
-					anchor: new google.maps.Point(28, 54)
-				},
-				zIndex: 1,
-				flat: true,
-				text: '<strong>' + place.name + '</strong>'
-			});
+			// really draw marker
+			holidays.locationMarker = holidays.drawReferencePoint(place.geometry.location, place.name);
 
 			// zoom to specified location
 			holidays.map.setZoom(14);
 			holidays.map.setCenter(place.geometry.location);
 		}
 
-		google.maps.event.addListener(autocomplete, 'place_changed', locate);
+		// selecting a specific place from the autocomplete drowndown
+		google.maps.event.addListener(searchbox, 'places_changed', function() { setMarker(searchbox.getPlaces()); });
+
+		// form submission (either automated in code or pressing enter) = launch search and assume first result
+		searchField.parents('form').submit(function(e)
+		{
+			e.preventDefault();
+
+			var service = new google.maps.places.PlacesService(holidays.map);
+			service.textSearch({ query: searchField.val() }, setMarker);
+		});
+
+		// non-existing uri = launch search for that location!
+		var location = decodeURIComponent(document.location.pathname.replace(/(^\/|\/$)/, '').replace(/-/, ' '));
+		if(location)
+		{
+			searchField.val(location);
+			searchField.parents('form').submit();
+		}
 	},
 
 	priceRange: function()
