@@ -44,7 +44,8 @@ var holidays =
 			styles: holidays.mapStyle
 		};
 		holidays.map = new google.maps.Map($('#map').get(0), myOptions);
-		google.maps.event.addListener(holidays.map, 'bounds_changed', function() {
+		google.maps.event.addListener(holidays.map, 'bounds_changed', function()
+		{
 			if(holidays.zoomTimer) clearTimeout(holidays.zoomTimer);
 			holidays.zoomTimer = setTimeout(holidays.drawMarkers, 250);
 		});
@@ -220,7 +221,8 @@ var holidays =
 		return marker;
 	},
 
-	drawReferencePoint: function(coordinate, text) {
+	drawReferencePoint: function(coordinate, text)
+	{
 		var svg =
 			'<svg width="46" height="54" xmlns="http://www.w3.org/2000/svg">' +
 				// balloon shape
@@ -295,7 +297,8 @@ var holidays =
 
 	priceRange: function()
 	{
-		var updatePrices = function() {
+		var updatePrices = function()
+		{
 			var values = $('.noUiSlider').val();
 			holidays.minPrice = values[0];
 			holidays.maxPrice = values[1];
