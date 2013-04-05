@@ -155,7 +155,7 @@ var holidays =
 				url: image,
 				anchor: new google.maps.Point(28, 54)
 			},
-			zIndex: 3,
+			zIndex: 2,
 			flat: true,
 			title: '€' + price,
 			id: id
@@ -202,7 +202,7 @@ var holidays =
 				url: image,
 				anchor: new google.maps.Point(100, 100)
 			},
-			zIndex: 2,
+			zIndex: 1,
 			flat: true,
 			bounds: bounds
 		});
@@ -241,7 +241,8 @@ var holidays =
 				url: image,
 				anchor: new google.maps.Point(28, 54)
 			},
-			zIndex: 1,
+			zIndex: 3,
+			clickable: false,
 			flat: true,
 			text: '<strong>' + text + '</strong>'
 		});
