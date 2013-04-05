@@ -284,7 +284,7 @@ var holidays =
 		});
 
 		// non-existing uri = launch search for that location!
-		var location = decodeURIComponent(document.location.pathname.replace(/(^\/|\/$)/, '').replace(/-/, ' '));
+		var location = decodeURIComponent(document.location.pathname.replace(/(^\/|\/$)/, '').replace(/-/g, ' '));
 		if(location)
 		{
 			searchField.val(location);
