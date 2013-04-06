@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/../db.php';
+require_once '../utils/cache/cache.php';
 
 set_time_limit(0);
 
@@ -49,8 +50,12 @@ foreach($xml->xpath('/products/product') as $node)
 }
 
 // purge caches
-// @todo: this assumes filecaching; find a better way to update caches
-$files = glob('../cache/*.pdf');
-foreach($files as $file) {
-	unlink("../cache/$file");
+$cache = Cache::load( $cache );
+$keysKey = $cache->getKey( 'keys' );
+$keys = $cache->get( $keysKey );
+if ( $keys !== false ) {
+	foreach ( $keys as $key ) {
+		$cache->delete( $key );
+	}
 }
+$cache->delete( $keysKey );
