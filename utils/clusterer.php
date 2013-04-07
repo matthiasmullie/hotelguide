@@ -56,7 +56,12 @@ class Clusterer {
 	 */
 	public function addLocation( $lat, $lng, $extra ) {
 		// out of bounds = fail
-		if ( $lat > $this->neLat || $lat < $this->swLat || $lng > $this->neLng || $lng < $this->swLng ) {
+		if (
+			( $this->neLat > $this->swLat && ( $lat > $this->neLat || $lat < $this->swLat ) ) ||
+			( $this->neLat < $this->swLat && ( $lat > $this->neLat && $lat < $this->swLat ) ) ||
+			( $this->neLng > $this->swLng && ( $lng > $this->neLng || $lng < $this->swLng ) ) ||
+			( $this->neLng < $this->swLng && ( $lng > $this->neLng && $lng < $this->swLng ) )
+		) {
 			return false;
 		}
 
@@ -151,8 +156,8 @@ class Clusterer {
 	 * Based on the given lat & lng coordinates, determine matrix size/structure
 	 */
 	protected function createBuckets() {
-		$totalLat = $this->neLat - $this->swLat;
-		$totalLng = $this->neLng - $this->swLng;
+		$totalLat = $this->neLat > $this->swLat ? $this->neLat - $this->swLat : 180 - ( $this->swLat - $this->neLat );
+		$totalLng = $this->neLng > $this->swLng ? $this->neLng - $this->swLng : 360 - ( $this->swLng - $this->neLng );
 
 		$approxMiddle = round( sqrt( $this->numberOfClusters ) );
 		$func = $this->numLat > $this->numLng ? 'floor' : 'ceil'; // the smaller one gets the advantage ;)
@@ -160,8 +165,8 @@ class Clusterer {
 		$this->numLng = $approxMiddle * 2 - $this->numLat;
 
 		// this will be used later to calculate exactly which bucket a coordinate falls into (see findBucket)
-		$this->coefficientLat = 1 / ( $this->neLat - $this->swLat ) * $this->numLat;
-		$this->coefficientLng = 1 / ( $this->neLng - $this->swLng ) * $this->numLng;
+		$this->coefficientLat = 1 / ( $totalLat ) * $this->numLat;
+		$this->coefficientLng = 1 / ( $totalLng ) * $this->numLng;
 	}
 
 	/**

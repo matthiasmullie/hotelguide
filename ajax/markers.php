@@ -26,22 +26,6 @@ $clustered = cluster(
 );
 echo json_encode( $clustered );
 
-function getCacheKey( $arguments ) {
-	global $cache;
-	$key = call_user_func_array( array( $cache, 'getKey' ), func_get_args() );
-
-	// save cache key to another cache, so we know about all existing keys (so we can purge them)
-	$keysKey = $cache->getKey( 'keys' );
-	$keys = $cache->get( $keysKey );
-	if ( $keys === false ) {
-		$keys = array();
-	}
-	$keys[] = $key;
-	$cache->set( $keysKey, array_unique( $keys ) );
-
-	return $key;
-}
-
 /**
  * Build clusters/markers according to given params
  *
@@ -55,26 +39,16 @@ function getCacheKey( $arguments ) {
 function cluster( $bounds, $minPrice, $maxPrice, $minPts, $nbrClusters ) {
 	global $cache;
 
-	// only cache/round for large map views; specific zooms don't matter ;)
+	/*
+	 * Only cache/round for large map views; specific zooms don't matter;
+	 * data will be processed much faster since the resultset is small
+	 */
 	$cacheCluster = $bounds['neLat'] - $bounds['swLat'] > 25 || $bounds['neLng'] - $bounds['swLng'] > 25;
+
+	$bounds = roundBounds( $bounds );
 
 	$clustered = false;
 	if ( $cacheCluster ) {
-		/*
-		 * Extend bounds a little bit to a rounder number, that way similar
-		 * requests can use the same cache. Round to a multiple of 1 only when
-		 * caching (that way, there are less different caches and odds that
-		 * that region is cached already are larger).
-		 *
-		 * We don't round as aggressively as we do for fetching the data in db.
-		 * If clusters are calculated on much larger bounds, there would be
-		 * significantly fewer displayed in the viewport.
-		 */
-		$bounds['neLat'] = ceil( $bounds['neLat'] );
-		$bounds['neLng'] = ceil( $bounds['neLng'] );
-		$bounds['swLat'] = ceil( $bounds['swLat'] );
-		$bounds['swLng'] = ceil( $bounds['swLng'] );
-
 		$clusterKey = getCacheKey( $minPrice, $maxPrice, $bounds['neLat'], $bounds['neLng'], $bounds['swLat'], $bounds['swLng'], $minPts, $nbrClusters );
 		$clustered = $cache->get( $clusterKey );
 	}
@@ -114,50 +88,85 @@ function cluster( $bounds, $minPrice, $maxPrice, $minPts, $nbrClusters ) {
  * @return array
  */
 function getMarkers( $bounds, $minPrice, $maxPrice ) {
-	global $cache, $db;
+	global $db;
+
+	$where = array( 'l.price >= :min AND l.price <= :max' );
 
 	/*
-	 * Extend bounds a little bit to a rounder number, that way similar
-	 * requests can use the same cache. Round to a multiple of 10 only when
-	 * caching (that way, there are less different caches and odds that
-	 * that region is cached already are larger).
-	 *
-	 * The bounds are aggressive and may fetch significantly more than
-	 * requested, but that'll only result in fewer follow-up queries later!
+	 * Bounds will usually be part of the map where the left side of the viewport
+	 * is more western and right side is more eastern. It could happen though that
+	 * the right side displays a next part of the map though, starting from the west.
+	 * In that case, part of the center will not be visible, only both sides, and
+	 * neLat will actually be lower than swLat.
 	 */
-	$bounds['neLat'] = ceil( $bounds['neLat'] / 10 ) * 10;
-	$bounds['neLng'] = ceil( $bounds['neLng'] / 10 ) * 10;
-	$bounds['swLat'] = floor( $bounds['swLat'] / 10 ) * 10;
-	$bounds['swLng'] = floor( $bounds['swLng'] / 10 ) * 10;
+	$where[] = $bounds['neLat'] >= $bounds['swLat'] ? 'l.lat > :swlat AND l.lat < :nelat' : 'l.lat > :swlat OR l.lat < :nelat';
+	$where[] = $bounds['neLng'] >= $bounds['swLng'] ? 'l.lng > :swlng AND l.lng < :nelng' : 'l.lng > :swlng OR l.lng < :nelng';
 
-	$markersKey = getCacheKey( $minPrice, $maxPrice, $bounds['neLat'], $bounds['neLng'], $bounds['swLat'], $bounds['swLng'] );
-	$markers = $cache->get( $markersKey );
+	$prepareMarkers = $db->prepare('
+		SELECT l.id, l.lat, l.lng, l.price
+		FROM locations AS l
+		WHERE ('.implode( ') AND (', $where ).')
+	');
 
-	if ( $markers === false ) {
-		$prepareMarkers = $db->prepare('
-			SELECT l.id, l.lat, l.lng, l.price
-			FROM locations AS l
-			WHERE
-				l.price > :min AND l.price < :max AND
-				l.lat > :swlat AND l.lat < :nelat AND
-				l.lng > :swlng AND l.lng < :nelng
-		');
+	$prepareMarkers->execute(
+		array(
+			':min' => $minPrice,
+			':max' => $maxPrice,
+			':nelat' => $bounds['neLat'],
+			':nelng' => $bounds['neLng'],
+			':swlat' => $bounds['swLat'],
+			':swlng' => $bounds['swLng'],
+		)
+	);
+	return $prepareMarkers->fetchAll();
+}
 
-		$prepareMarkers->execute(
-			array(
-				':min' => $minPrice,
-				':max' => $maxPrice,
-				':nelat' => $bounds['neLat'],
-				':nelng' => $bounds['neLng'],
-				':swlat' => $bounds['swLat'],
-				':swlng' => $bounds['swLng'],
-			)
-		);
-		$markers = $prepareMarkers->fetchAll();
+function getCacheKey( $arguments ) {
+	global $cache;
+	$key = call_user_func_array( array( $cache, 'getKey' ), func_get_args() );
+
+	// save cache key to another cache, so we know about all existing keys (so we can purge them)
+	$keysKey = $cache->getKey( 'keys' );
+	$keys = $cache->get( $keysKey );
+	if ( $keys === false ) {
+		$keys = array();
 	}
+	$keys[] = $key;
+	$cache->set( $keysKey, array_unique( $keys ) );
 
-	// save to/extend cache
-	$cache->set( $markersKey, $markers, 60 * 60 * 24 );
+	return $key;
+}
 
-	return $markers;
+/**
+ * Extend bounds a little bit to a rounder number, that way similar
+ * requests can use the same cache. Round to a multiple of X only when
+ * caching (that way, there are less different caches and odds that
+ * that region is cached already are larger).
+ *
+ * @param $bounds
+ * @param int $multiple
+ * @return mixed
+ */
+function roundBounds( $bounds ) {
+	/*
+	 * Rounding should be different depending on how much of the map is displayed.
+	 * If most of the map is showing, rounding can be more rough. This is important
+	 * because at high zoom levels (= zoomed in), we don't want the clusters to be
+	 * calculated on really rough bounds: if e.g. we only see lat 54.2 to 54.7 in
+	 * our viewport, we don't want the clusters to be calculated on lat 50 to 60.
+	 * Coordinate differences > 100 will result in rounding to a multiple of 10.
+	 * Differences < 100 and > 10 will result in rounding to a multiple of 5.
+	 * Differences < 10 will round to a multiple of 2.5.
+	 */
+	$totalLat = $bounds['neLat'] > $bounds['swLat'] ? $bounds['neLat'] - $bounds['swLat'] : 180 - ( $bounds['swLat'] - $bounds['neLat'] );
+	$totalLng = $bounds['neLng'] > $bounds['swLng'] ? $bounds['neLng'] - $bounds['swLng'] : 360 - ( $bounds['swLng'] - $bounds['neLng'] );
+	$multipleLat = 2.5 * pow( 2, strlen( round( $totalLat ) ) - 2 );
+	$multipleLng = 2.5 * pow( 2, strlen( round( $totalLng ) ) - 2 );
+
+	$bounds['neLat'] = ceil( $bounds['neLat'] / $multipleLat ) * $multipleLat;
+	$bounds['neLng'] = ceil( $bounds['neLng'] / $multipleLng ) * $multipleLng;
+	$bounds['swLat'] = floor( $bounds['swLat'] / $multipleLat ) * $multipleLat;
+	$bounds['swLng'] = floor( $bounds['swLng'] / $multipleLng ) * $multipleLng;
+
+	return $bounds;
 }
