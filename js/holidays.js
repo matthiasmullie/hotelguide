@@ -234,8 +234,8 @@ var holidays =
 		google.maps.event.addListener(marker, 'click', function(e)
 		{
 			holidays.map.setZoom(holidays.map.getZoom() + 1);
-			holidays.map.setCenter(marker.getPosition()); // cluster center
-//			holidays.map.setCenter(e.latLng); // clicked position
+//			holidays.map.setCenter(marker.getPosition()); // cluster center
+			holidays.map.setCenter(e.latLng); // clicked position
 		});
 
 		return marker;
