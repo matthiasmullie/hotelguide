@@ -71,28 +71,9 @@ var holidays =
 		var crossBoundsLat = bounds.getNorthEast().lat() < bounds.getSouthWest().lat();
 		var crossBoundsLng = bounds.getNorthEast().lng() < bounds.getSouthWest().lng();
 
-		bounds = holidays.roundBounds(bounds);
+		bounds = holidays.roundBounds(bounds, crossBoundsLat, crossBoundsLng);
 
-		var redraw = true;
-
-		// don't redraw if bounds have not changed
-		redraw &= typeof(JSON) == 'undefined' || JSON.stringify(holidays.bounds) != JSON.stringify(bounds);
-
-		// don't redraw if we're zooming into an area where we no longer had clustering (= all locations are drawn already)
-		redraw &=
-			holidays.numClusters != 0 ||
-			// most common
-			( !crossBoundsLat && bounds.neLat > holidays.bounds.neLat ) ||
-			( !crossBoundsLng && bounds.neLng > holidays.bounds.neLng ) ||
-			( !crossBoundsLat && bounds.swLat < holidays.bounds.swLat ) ||
-			( !crossBoundsLng && bounds.swLat < holidays.bounds.swLat ) ||
-			// north-south or east-west overlap, without center displaying
-			( crossBoundsLat && bounds.neLat < holidays.bounds.neLat ) ||
-			( crossBoundsLng && bounds.neLng < holidays.bounds.neLng ) ||
-			( crossBoundsLat && bounds.swLat > holidays.bounds.swLat ) ||
-			( crossBoundsLng && bounds.swLat > holidays.bounds.swLat );
-
-		if (!redraw) return;
+		if (!holidays.needRedraw(bounds, crossBoundsLat, crossBoundsLng)) return;
 
 		// things changed; change new bounds!
 		holidays.bounds = bounds;
@@ -425,6 +406,29 @@ var holidays =
 		$('#infowindow').hide();
 	},
 
+	needRedraw: function(bounds, crossBoundsLat, crossBoundsLng)
+	{
+		var redraw = true;
+
+		// don't redraw if bounds have not changed
+		redraw &= typeof(JSON) == 'undefined' || JSON.stringify(holidays.bounds) != JSON.stringify(bounds);
+
+		// don't redraw if we're zooming into an area where we no longer had clustering (= all locations are drawn already)
+		redraw &=
+			holidays.numClusters != 0 ||
+				// most common
+				( !crossBoundsLat && bounds.neLat > holidays.bounds.neLat ) ||
+				( !crossBoundsLng && bounds.neLng > holidays.bounds.neLng ) ||
+				( !crossBoundsLat && bounds.swLat < holidays.bounds.swLat ) ||
+				( !crossBoundsLng && bounds.swLat < holidays.bounds.swLat ) ||
+				// north-south or east-west overlap, without center displaying
+				( crossBoundsLat && bounds.neLat < holidays.bounds.neLat ) ||
+				( crossBoundsLng && bounds.neLng < holidays.bounds.neLng ) ||
+				( crossBoundsLat && bounds.swLat > holidays.bounds.swLat ) ||
+				( crossBoundsLng && bounds.swLat > holidays.bounds.swLat );
+
+		return redraw;
+	},
 
 	/**
 	 * Extend bounds a little bit to a rounder number, that way similar
@@ -440,23 +444,28 @@ var holidays =
 	 * Always round to the nearest power of 2.
 	 *
 	 * @param google.maps.LatLngBounds bounds
+	 * @param bool crossBoundsLat
+	 * @param bool crossBoundsLng
 	 * @return object
 	 */
-	roundBounds: function(bounds)
+	roundBounds: function(bounds, crossBoundsLat, crossBoundsLng)
 	{
 		var totalLat = bounds.getNorthEast().lat() - bounds.getSouthWest().lat();
 		var totalLng = bounds.getNorthEast().lng() - bounds.getSouthWest().lng();
 
-		var multiplierLat = Math.pow( 2, Math.ceil( Math.log( Math.abs( totalLat / 2 ) ) / Math.log( 2 ) ) );
-		var multiplierLng = Math.pow( 2, Math.ceil( Math.log( Math.abs( totalLng / 2 ) ) / Math.log( 2 ) ) );
+		totalLat += crossBoundsLat ? 180 : 0;
+		totalLng += crossBoundsLng ? 360 : 0;
+
+		var multiplierLat = Math.pow(2, Math.ceil(Math.log(Math.abs(totalLat / 2)) / Math.log(2)));
+		var multiplierLng = Math.pow(2, Math.ceil(Math.log(Math.abs(totalLng / 2)) / Math.log(2)));
 
 		// round coordinates (we don't want calls for every minor change)
 		var bounds =
 		{
-			neLat: Math.max(-180, Math.min(180, Math.ceil( bounds.getNorthEast().lat() / multiplierLat ) * multiplierLat)),
-			swLat: Math.max(-180, Math.min(180, Math.floor( bounds.getSouthWest().lat() / multiplierLat ) * multiplierLat)),
-			neLng: Math.max(-360, Math.min(360, Math.ceil( bounds.getNorthEast().lng() / multiplierLng ) * multiplierLng)),
-			swLng: Math.max(-360, Math.min(360, Math.floor( bounds.getSouthWest().lng() / multiplierLng ) * multiplierLng))
+			neLat: Math.max(-90, Math.min(90, Math.ceil(bounds.getNorthEast().lat() / multiplierLat) * multiplierLat)),
+			swLat: Math.max(-90, Math.min(90, Math.floor(bounds.getSouthWest().lat() / multiplierLat) * multiplierLat)),
+			neLng: Math.max(-180, Math.min(180, Math.ceil(bounds.getNorthEast().lng() / multiplierLng) * multiplierLng)),
+			swLng: Math.max(-180, Math.min(180, Math.floor(bounds.getSouthWest().lng() / multiplierLng) * multiplierLng))
 		}
 
 		return bounds;

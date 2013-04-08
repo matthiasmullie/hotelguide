@@ -45,12 +45,22 @@ class Clusterer {
 		 * (and east as west). Now, coordinates will go from 360 to 361.
 		 */
 		if ( $this->crossBoundsLat ) {
-			$neLat = 180 + $this->swLat;
+			// workaround for crossover bounds being rounded too aggressively
+			if ( $this->swLat == 0 ) {
+				$this->swLat += 180;
+			}
+
+			$neLat = max( 180 + $this->neLat, 180 + $this->swLat );
 			$this->swLat = $this->neLat;
 			$this->neLat = $neLat;
 		}
 		if ( $this->crossBoundsLng ) {
-			$neLng = 360 + $this->swLng;
+			// workaround for crossover bounds being rounded too aggressively
+			if ( $this->swLng == 0 ) {
+				$this->swLng += 360;
+			}
+
+			$neLng = max( 360 + $this->neLng, 360 + $this->swLng );
 			$this->swLng = $this->neLng;
 			$this->neLng = $neLng;
 		}
