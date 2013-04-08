@@ -45,6 +45,10 @@ function cluster( $bounds, $minPrice, $maxPrice, $minPts, $nbrClusters ) {
 	 */
 	$cacheCluster = $bounds['neLat'] - $bounds['swLat'] > 25 || $bounds['neLng'] - $bounds['swLng'] > 25;
 
+	// check if the request crosses lat/lng bounds before rounding the numbers
+	$crossBoundsLat = $bounds['neLat'] < $bounds['swLat'];
+	$crossBoundsLng = $bounds['neLng'] < $bounds['swLng'];
+
 	$bounds = roundBounds( $bounds );
 
 	$clustered = false;
@@ -55,10 +59,10 @@ function cluster( $bounds, $minPrice, $maxPrice, $minPts, $nbrClusters ) {
 
 	// clustered data not in cache; fetch from db
 	if ( $clustered === false ) {
-		$markers = getMarkers( $bounds, $minPrice, $maxPrice );
+		$markers = getMarkers( $bounds, $minPrice, $maxPrice, $crossBoundsLat, $crossBoundsLng );
 
 		// build clusterer
-		$clusterer = new Clusterer( $bounds['neLat'], $bounds['neLng'], $bounds['swLat'], $bounds['swLng'] );
+		$clusterer = new Clusterer( $bounds['neLat'], $bounds['neLng'], $bounds['swLat'], $bounds['swLng'], $crossBoundsLat, $crossBoundsLng );
 		$clusterer->setMinClusterLocations( $minPts );
 		$clusterer->setNumberOfClusters( $nbrClusters );
 
@@ -87,9 +91,11 @@ function cluster( $bounds, $minPrice, $maxPrice, $minPts, $nbrClusters ) {
  * @param array $bounds array( 'neLat' => Y2, 'neLng' => X2, 'swLat' => Y1, 'swLng' => X1 )
  * @param int $minPrice
  * @param int $maxPrice
+ * @param bool $crossBoundsLat
+ * @param bool $crossBoundsLng
  * @return array
  */
-function getMarkers( $bounds, $minPrice, $maxPrice ) {
+function getMarkers( $bounds, $minPrice, $maxPrice, $crossBoundsLat = false, $crossBoundsLng = false ) {
 	global $db;
 
 	$where = array( 'l.price >= :min AND l.price <= :max' );
@@ -101,8 +107,8 @@ function getMarkers( $bounds, $minPrice, $maxPrice ) {
 	 * In that case, part of the center will not be visible, only both sides, and
 	 * neLat will actually be lower than swLat.
 	 */
-	$where[] = $bounds['neLat'] >= $bounds['swLat'] ? 'l.lat > :swlat AND l.lat < :nelat' : 'l.lat > :swlat OR l.lat < :nelat';
-	$where[] = $bounds['neLng'] >= $bounds['swLng'] ? 'l.lng > :swlng AND l.lng < :nelng' : 'l.lng > :swlng OR l.lng < :nelng';
+	$where[] = $crossBoundsLat ? 'l.lat > :swlat OR l.lat < :nelat' : 'l.lat > :swlat AND l.lat < :nelat';
+	$where[] = $crossBoundsLng ? 'l.lng > :swlng OR l.lng < :nelng' : 'l.lng > :swlng AND l.lng < :nelng';
 
 	$prepareMarkers = $db->prepare('
 		SELECT l.id, l.lat, l.lng, l.price

@@ -23,12 +23,17 @@ class Clusterer {
 	 * @param string|float $seLng
 	 * @param string|float $nwLat
 	 * @param string|float $nwLng
+	 * @param bool $crossBoundsLat
+	 * @param bool $crossBoundsLng
 	 */
-	public function __construct( $neLat, $neLng, $swLat, $swLng ) {
+	public function __construct( $neLat, $neLng, $swLat, $swLng, $crossBoundsLat = false, $crossBoundsLng = false ) {
 		$this->neLat = $neLat;
 		$this->neLng = $neLng;
 		$this->swLat = $swLat;
 		$this->swLng = $swLng;
+
+		$this->crossBoundsLat = $crossBoundsLat;
+		$this->crossBoundsLng = $crossBoundsLng;
 
 		/*
 		 * North and east coordinates can actually be lower than south & west.
@@ -39,16 +44,12 @@ class Clusterer {
 		 * (= negative) coordinates by 360, and consider those to now be east
 		 * (and east as west). Now, coordinates will go from 360 to 361.
 		 */
-		if ( $this->neLat < $this->swLat ) {
-			$this->crossBoundsLat = true;
-
+		if ( $this->crossBoundsLat ) {
 			$neLat = 180 + $this->swLat;
 			$this->swLat = $this->neLat;
 			$this->neLat = $neLat;
 		}
-		if ( $this->neLng < $this->swLng ) {
-			$this->crossBoundsLng = true;
-
+		if ( $this->crossBoundsLng ) {
 			$neLng = 360 + $this->swLng;
 			$this->swLng = $this->neLng;
 			$this->neLng = $neLng;
@@ -223,10 +224,10 @@ class Clusterer {
 	 * @return array [lat, lng]
 	 */
 	function fixCoords( $lat, $lng ) {
-		if ( $this->crossBoundsLat && $lat < 0 ) {
+		if ( $this->crossBoundsLat && $lat < $this->swLat ) {
 			$lat += 180;
 		}
-		if ( $this->crossBoundsLng && $lng < 0 ) {
+		if ( $this->crossBoundsLng && $lng < $this->swLng ) {
 			$lng += 360;
 		}
 
@@ -260,6 +261,15 @@ class Clusterer {
 	 * @return bool
 	 */
 	protected function inBounds( $lat, $lng ) {
+/*
+		if ( $lat >= 0 && $lat < $this->numLat && $lng >= 0 && $lng < $this->numLng ) {
+			return true;
+		} else {
+			var_dump( $lat, $lng );
+			var_dump( $this->numLat, $this->numLng );
+			exit;
+		}
+*/
 		return $lat >= 0 && $lat < $this->numLat && $lng >= 0 && $lng < $this->numLng;
 	}
 }
