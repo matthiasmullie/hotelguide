@@ -148,27 +148,40 @@ function getCacheKey( $arguments ) {
  * Rounding should be different depending on how much of the map is displayed.
  * If most of the map is showing, rounding can be more rough. This is important
  * because at high zoom levels (= zoomed in), we don't want the clusters to be
- * calculated on really rough bounds: if e.g. we only see lat 54.2 to 54.7 in
+ * calculated on really rough bounds: if e.g. we only see lat 54.657 to 54.723 in
  * our viewport, we don't want the clusters to be calculated on lat 50 to 60.
+ * Always round to the nearest power of 2.
  *
  * @param $bounds
  * @param int $multiple
  * @return mixed
  */
 function roundBounds( $bounds ) {
-	$totalLat = $bounds['neLat'] > $bounds['swLat'] ? $bounds['neLat'] - $bounds['swLat'] : 180 - ( $bounds['swLat'] - $bounds['neLat'] );
-	$totalLng = $bounds['neLng'] > $bounds['swLng'] ? $bounds['neLng'] - $bounds['swLng'] : 360 - ( $bounds['swLng'] - $bounds['neLng'] );
+	$round = function( $value, $func, $min, $max ) {
+		if ( !in_array( $func, array( 'ceil', 'floor' ) ) ) {
+			throw new Exception( 'Unknown round function. Valid options: ceil|floor.' );
+		}
 
-	$exponentLat = preg_replace( '/([0-9\.]+e)/', '', sprintf( '%e', $totalLat) );
-	$exponentLng = preg_replace( '/([0-9\.]+e)/', '', sprintf( '%e', $totalLng) );
+		$sign = min( 1, max( -1, $value ) );
 
-	$multipleLat = pow( 2, $exponentLat );
-	$multipleLng = pow( 2, $exponentLng );
+		/*
+		 * If the value is negative, ceil (which rounds down) should become floor,
+		 * because we'll want to round up the absolute number of the negative value.
+		 * And vice versa.
+		 */
+		if ( $sign < 0 ) {
+			$func = ( $func == 'ceil' ? 'floor' : 'ceil' );
+		}
 
-	$bounds['neLat'] = ceil( $bounds['neLat'] / $multipleLat ) * $multipleLat;
-	$bounds['neLng'] = ceil( $bounds['neLng'] / $multipleLng ) * $multipleLng;
-	$bounds['swLat'] = floor( $bounds['swLat'] / $multipleLat ) * $multipleLat;
-	$bounds['swLng'] = floor( $bounds['swLng'] / $multipleLng ) * $multipleLng;
+		$abs = pow( 2, $func( log( abs( $value ) ) / log( 2 ) ) );
+
+		return min( $max, max( $min, $sign * $abs ) );
+	};
+
+	$bounds['neLat'] = $round( $bounds['neLat'], 'ceil', -180, 180 );
+	$bounds['swLat'] = $round( $bounds['swLat'], 'floor', -180, 180 );
+	$bounds['neLng'] = $round( $bounds['neLng'], 'ceil', -360, 360 );
+	$bounds['swLng'] = $round( $bounds['swLng'], 'floor', -360, 360 );
 
 	return $bounds;
 }
