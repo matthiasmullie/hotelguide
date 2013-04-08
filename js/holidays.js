@@ -13,6 +13,7 @@ var holidays =
 	minPrice: 50,
 	maxPrice: 300,
 	zoomTimer: null,
+	bounds: [],
 
 	init: function()
 	{
@@ -60,8 +61,8 @@ var holidays =
 		// don't fire new request while previous one is still running
 		if(loadingMessage.is(':visible')) return;
 
-		// don't display right away; if everything's done under 250ms, user won't even have noticed the new request
-		var messageTimer = setTimeout("$('#loadingMarkers').show()", 250);
+		// don't display right away; if everything's done really fast, user won't even have noticed the new request
+		var messageTimer = setTimeout("$('#loadingMarkers').show()", 350);
 
 		// close any open windows (sometimes, on touch devices, they're touched accidentally during pich-zoom)
 		holidays.infowindowClose();
@@ -87,33 +88,61 @@ var holidays =
 			dataType: 'json',
 			success: function(json)
 			{
-				// clear existing markers
-				for(var i in holidays.markers) holidays.markers[i].setMap(null);
-				holidays.markers = [];
+				var redraw = true;
 
-				for(var i = 0; i < json.locations.length; i++)
+				// don't redraw if bounds have not changed
+				redraw &= typeof(JSON) == 'undefined' || JSON.stringify(holidays.bounds) != JSON.stringify(json.bounds);
+
+				// don't redraw if we're zooming into an area where we no longer had clustering (= all locations are drawn already)
+				redraw &=
+					holidays.numClusters != 0 ||
+					// most common
+					( json.bounds.neLat >= json.bounds.swLat && json.bounds.neLat > holidays.bounds.neLat ) ||
+					( json.bounds.neLng >= json.bounds.swLng && json.bounds.neLng > holidays.bounds.neLng ) ||
+					( json.bounds.neLat >= json.bounds.swLat && json.bounds.swLat < holidays.bounds.swLat ) ||
+					( json.bounds.neLng >= json.bounds.swLng && json.bounds.swLat < holidays.bounds.swLat ) ||
+					// north-south or east-west overlap, without center displaying
+					( json.bounds.neLat < json.bounds.swLat && json.bounds.neLat < holidays.bounds.neLat ) ||
+					( json.bounds.neLng < json.bounds.swLng && json.bounds.neLng < holidays.bounds.neLng ) ||
+					( json.bounds.neLat < json.bounds.swLat && json.bounds.swLat > holidays.bounds.swLat ) ||
+					( json.bounds.neLng < json.bounds.swLng && json.bounds.swLat > holidays.bounds.swLat );
+
+				if(redraw)
 				{
-					var marker = holidays.drawMarker(
-						new google.maps.LatLng(json.locations[i].extra.lat, json.locations[i].extra.lng),
-						json.locations[i].extra.id,
-						json.locations[i].extra.price
-					);
-					holidays.markers.push(marker);
-				}
+					// clear existing markers
+					for(var i in holidays.markers) holidays.markers[i].setMap(null);
+					holidays.markers = [];
 
-				for(var i = 0; i < json.clusters.length; i++)
-				{
-					var ne = new google.maps.LatLng(json.clusters[i].bounds.neLat, json.clusters[i].bounds.neLng);
-					var sw = new google.maps.LatLng(json.clusters[i].bounds.swLat, json.clusters[i].bounds.swLng);
+					for(var i = 0; i < json.locations.length; i++)
+					{
+						var marker = holidays.drawMarker(
+							new google.maps.LatLng(json.locations[i].extra.lat, json.locations[i].extra.lng),
+							json.locations[i].extra.id,
+							json.locations[i].extra.price
+						);
+						holidays.markers.push(marker);
+					}
 
-					var count = json.clusters[i]['total'];
-					var bounds = new google.maps.LatLngBounds(sw, ne);
+					holidays.numClusters = 0;
+					for(var i = 0; i < json.clusters.length; i++)
+					{
+						var ne = new google.maps.LatLng(json.clusters[i].bounds.neLat, json.clusters[i].bounds.neLng);
+						var sw = new google.maps.LatLng(json.clusters[i].bounds.swLat, json.clusters[i].bounds.swLng);
 
-					var coordinate = new google.maps.LatLng(json.clusters[i].center.lat, json.clusters[i].center.lng); // weighed center
-//					var coordinate = bounds.getCenter(); // exact center of bounds
+						var count = json.clusters[i]['total'];
+						var bounds = new google.maps.LatLngBounds(sw, ne);
 
-					var marker = holidays.drawCluster(coordinate, count, bounds);
-					holidays.markers.push(marker);
+						var coordinate = new google.maps.LatLng(json.clusters[i].center.lat, json.clusters[i].center.lng); // weighed center
+//						var coordinate = bounds.getCenter(); // exact center of bounds
+
+						var marker = holidays.drawCluster(coordinate, count, bounds);
+						holidays.markers.push(marker);
+
+						holidays.numClusters++;
+					}
+
+					// things changed; change new bounds!
+					holidays.bounds = json.bounds;
 				}
 
 				clearTimeout(messageTimer);

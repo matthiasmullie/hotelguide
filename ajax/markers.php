@@ -68,6 +68,7 @@ function cluster( $bounds, $minPrice, $maxPrice, $minPts, $nbrClusters ) {
 		$clustered = array(
 			'locations' => $clusterer->getLocations(),
 			'clusters' => $clusterer->getClusters(),
+			'bounds' => $bounds
 		);
 	}
 
@@ -143,25 +144,25 @@ function getCacheKey( $arguments ) {
  * caching (that way, there are less different caches and odds that
  * that region is cached already are larger).
  *
+ * Rounding should be different depending on how much of the map is displayed.
+ * If most of the map is showing, rounding can be more rough. This is important
+ * because at high zoom levels (= zoomed in), we don't want the clusters to be
+ * calculated on really rough bounds: if e.g. we only see lat 54.2 to 54.7 in
+ * our viewport, we don't want the clusters to be calculated on lat 50 to 60.
+ *
  * @param $bounds
  * @param int $multiple
  * @return mixed
  */
 function roundBounds( $bounds ) {
-	/*
-	 * Rounding should be different depending on how much of the map is displayed.
-	 * If most of the map is showing, rounding can be more rough. This is important
-	 * because at high zoom levels (= zoomed in), we don't want the clusters to be
-	 * calculated on really rough bounds: if e.g. we only see lat 54.2 to 54.7 in
-	 * our viewport, we don't want the clusters to be calculated on lat 50 to 60.
-	 * Coordinate differences > 100 will result in rounding to a multiple of 10.
-	 * Differences < 100 and > 10 will result in rounding to a multiple of 5.
-	 * Differences < 10 will round to a multiple of 2.5.
-	 */
 	$totalLat = $bounds['neLat'] > $bounds['swLat'] ? $bounds['neLat'] - $bounds['swLat'] : 180 - ( $bounds['swLat'] - $bounds['neLat'] );
 	$totalLng = $bounds['neLng'] > $bounds['swLng'] ? $bounds['neLng'] - $bounds['swLng'] : 360 - ( $bounds['swLng'] - $bounds['neLng'] );
-	$multipleLat = 2.5 * pow( 2, strlen( round( $totalLat ) ) - 2 );
-	$multipleLng = 2.5 * pow( 2, strlen( round( $totalLng ) ) - 2 );
+
+	$exponentLat = preg_replace( '/([0-9\.]+e)/', '', sprintf( '%e', $totalLat) );
+	$exponentLng = preg_replace( '/([0-9\.]+e)/', '', sprintf( '%e', $totalLng) );
+
+	$multipleLat = pow( 2, $exponentLat );
+	$multipleLng = pow( 2, $exponentLng );
 
 	$bounds['neLat'] = ceil( $bounds['neLat'] / $multipleLat ) * $multipleLat;
 	$bounds['neLng'] = ceil( $bounds['neLng'] / $multipleLng ) * $multipleLng;
