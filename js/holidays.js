@@ -10,11 +10,10 @@ var holidays =
 			{ lightness: 50 }
 		]
 	}],
-	minPrice: 50,
-	maxPrice: 300,
 	zoomTimer: null,
 	messageTimer: null,
 	bounds: [],
+	prices: [],
 
 	init: function()
 	{
@@ -72,11 +71,13 @@ var holidays =
 		var crossBoundsLng = bounds.getNorthEast().lng() < bounds.getSouthWest().lng();
 
 		bounds = holidays.roundBounds(bounds, crossBoundsLat, crossBoundsLng);
+		var prices = $('.noUiSlider').val();
 
-		if (!holidays.needRedraw(bounds, crossBoundsLat, crossBoundsLng)) return;
+		if (!holidays.needRedraw(bounds, crossBoundsLat, crossBoundsLng, prices)) return;
 
-		// things changed; change new bounds!
+		// things changed; change new data!
 		holidays.bounds = bounds;
+		holidays.prices = prices;
 
 		// don't display right away; if everything's done really fast, user won't even have noticed the new request
 		holidays.messageTimer = setTimeout("$('#loadingMarkers').show()", 350);
@@ -86,8 +87,8 @@ var holidays =
 			url: 'ajax/markers.php',
 			data:
 			{
-				min: holidays.minPrice,
-				max: holidays.maxPrice,
+				min: prices[0],
+				max: prices[1],
 				bounds:
 				{
 					neLat: bounds.neLat,
@@ -317,12 +318,10 @@ var holidays =
 	{
 		var updatePrices = function()
 		{
-			var values = $('.noUiSlider').val();
-			holidays.minPrice = values[0];
-			holidays.maxPrice = values[1];
+			var prices = $('.noUiSlider').val();
 
 			// update display
-			$('#price').val('€' + holidays.minPrice + ' - €' + holidays.maxPrice);
+			$('#price').val('€' + prices[0] + ' - €' + prices[1]);
 		};
 
 		$('.noUiSlider').noUiSlider(
@@ -335,7 +334,7 @@ var holidays =
 		}).change(function()
 		{
 			// re-fetch markers, based on new price
-			holidays.drawMarkers();
+			holidays.reload();
 		});
 
 		updatePrices();
@@ -344,14 +343,14 @@ var holidays =
 	bindInfoWindow: function()
 	{
 		// bind events to handle infowindow
-		$('.submenu').click(function(e)
+		$(document ).on('click', '.submenu', function(e)
 		{
 			e.preventDefault();
 			holidays.infowindowOpen($(this).attr('href'));
 		});
 
 		// mouseclick close
-		$(document, '#infowindowClose').click(function(e)
+		$(document).on('click', 'body, #infowindowClose', function(e)
 		{
 			$infowindow = $('#infowindow');
 			$closeButton = $('#infowindowClose');
@@ -376,7 +375,7 @@ var holidays =
 		});
 
 		// escape key close
-		$(document).keyup(function(e)
+		$(document).on('keyup', function(e)
 		{
 			if(e.keyCode == 27)
 			{
@@ -406,7 +405,7 @@ var holidays =
 		$('#infowindow').hide();
 	},
 
-	needRedraw: function(bounds, crossBoundsLat, crossBoundsLng)
+	needRedraw: function(bounds, crossBoundsLat, crossBoundsLng, prices)
 	{
 		var redraw = true;
 
@@ -416,16 +415,19 @@ var holidays =
 		// don't redraw if we're zooming into an area where we no longer had clustering (= all locations are drawn already)
 		redraw &=
 			holidays.numClusters != 0 ||
-				// most common
-				( !crossBoundsLat && bounds.neLat > holidays.bounds.neLat ) ||
-				( !crossBoundsLng && bounds.neLng > holidays.bounds.neLng ) ||
-				( !crossBoundsLat && bounds.swLat < holidays.bounds.swLat ) ||
-				( !crossBoundsLng && bounds.swLat < holidays.bounds.swLat ) ||
-				// north-south or east-west overlap, without center displaying
-				( crossBoundsLat && bounds.neLat < holidays.bounds.neLat ) ||
-				( crossBoundsLng && bounds.neLng < holidays.bounds.neLng ) ||
-				( crossBoundsLat && bounds.swLat > holidays.bounds.swLat ) ||
-				( crossBoundsLng && bounds.swLat > holidays.bounds.swLat );
+			// most common
+			( !crossBoundsLat && bounds.neLat > holidays.bounds.neLat ) ||
+			( !crossBoundsLng && bounds.neLng > holidays.bounds.neLng ) ||
+			( !crossBoundsLat && bounds.swLat < holidays.bounds.swLat ) ||
+			( !crossBoundsLng && bounds.swLat < holidays.bounds.swLat ) ||
+			// north-south or east-west overlap, without center displaying
+			( crossBoundsLat && bounds.neLat < holidays.bounds.neLat ) ||
+			( crossBoundsLng && bounds.neLng < holidays.bounds.neLng ) ||
+			( crossBoundsLat && bounds.swLat > holidays.bounds.swLat ) ||
+			( crossBoundsLng && bounds.swLat > holidays.bounds.swLat );
+
+		// don't redraw if price range hasn't changed
+		redraw |= typeof(JSON) == 'undefined' || JSON.stringify(holidays.prices) != JSON.stringify(prices);
 
 		return redraw;
 	},

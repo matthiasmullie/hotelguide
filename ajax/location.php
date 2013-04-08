@@ -29,6 +29,9 @@ if ( $data !== false ) {
 				<a id="markerUrl" class="clearfix" href="' . $data['url'] . '"><span class="leftSpan">Bestel</span> <span class="rightSpan">€' . $data['price'] . '</span></a>
 				<p id="markerText">' . $data['text'] . '</p>
 			</div>
+			<div id="infowindowBottom">
+				<p id="markerDisclaimer"><a class="submenu" href="ajax/disclaimer.php?url='. urlencode( 'ajax/location.php?id='.$id ) .'">Disclaimer</a></p>
+			</div>
 			<div id="markerImage" style="background-image: url(' . $data['image'] . ')">
 				<a href="' . $data['url'] . '"></a>
 			</div>
