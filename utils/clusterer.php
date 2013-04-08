@@ -1,7 +1,6 @@
 <?php
 
 class Clusterer {
-	// bounds
 	private $neLat;
 	private $neLng;
 	private $swLat;
@@ -16,6 +15,9 @@ class Clusterer {
 	private $coefficientLat = 0;
 	private $coefficientLng = 0;
 
+	private $crossBoundsLat = false;
+	private $crossBoundsLng = false;
+
 	/**
 	 * @param string|float $seLat
 	 * @param string|float $seLng
@@ -27,6 +29,30 @@ class Clusterer {
 		$this->neLng = $neLng;
 		$this->swLat = $swLat;
 		$this->swLng = $swLng;
+
+		/*
+		 * North and east coordinates can actually be lower than south & west.
+		 * This will happen when the left side of a map is displaying east and
+		 * the right side is displaying west. At the center of the map, we'll
+		 * suddenly have coordinates jumping from 360 to -359.
+		 * To make calculating things easier, we'll just increase the west
+		 * (= negative) coordinates by 360, and consider those to now be east
+		 * (and east as west). Now, coordinates will go from 360 to 361.
+		 */
+		if ( $this->neLat < $this->swLat ) {
+			$this->crossBoundsLat = true;
+
+			$neLat = 180 + $this->swLat;
+			$this->swLat = $this->neLat;
+			$this->neLat = $neLat;
+		}
+		if ( $this->neLng < $this->swLng ) {
+			$this->crossBoundsLng = true;
+
+			$neLng = 360 + $this->swLng;
+			$this->swLng = $this->neLng;
+			$this->neLng = $neLng;
+		}
 	}
 
 	/**
@@ -59,6 +85,8 @@ class Clusterer {
 			$this->createBuckets();
 		}
 
+		list( $lat, $lng ) = $this->fixCoords( $lat, $lng );
+
 		list( $indexLat, $indexLng ) = $this->findBucket( $lat, $lng );
 
 		$bucket = isset( $this->buckets[$indexLat][$indexLng] ) ? $this->buckets[$indexLat][$indexLng] : array();
@@ -84,6 +112,15 @@ class Clusterer {
 
 		// not cluster yet, but entry limit reached = cluster now
 		} elseif ( count( $bucket ) >= $this->minLocations - 1 ) {
+			$totalLats = 0;
+			$totalLngs = 0;
+			$count = 0;
+			foreach ( $this->buckets[$indexLat][$indexLng] as $location ) {
+				$totalLats += $location['lat'];
+				$lng += $location['lng'];
+				$count++;
+			}
+
 			$this->buckets[$indexLat][$indexLng] = array(
 //				'bounds' => array(
 //					'neLat' => $lat,
@@ -92,10 +129,10 @@ class Clusterer {
 //					'swLng' => $lng,
 //				),
 				'center' => array(
-					'lat' => $lat,
-					'lng' => $lng,
+					'lat' => ( $totalLats + $lat ) / ( $count + 1 ),
+					'lng' => ( $totalLngs + $lng ) / ( $count + 1 ),
 				),
-				'total' => count( $bucket ) + 1,
+				'total' => $count + 1,
 			);
 
 		// entry limit not yet reached, save entry
@@ -115,7 +152,11 @@ class Clusterer {
 		foreach ( $this->buckets as $lat => $lngs ) {
 			foreach ( $lngs as $lng => $data ) {
 				if ( $this->inBounds( $lat, $lng ) && $data && !isset( $data['center'] ) ) {
-					$locations = array_merge( $locations, $data );
+					foreach ( $data as $location ) {
+						list( $location['lat'], $location['lng'] ) = $this->unfixCoords( $location['lat'], $location['lng'] );
+
+						$locations[] = $location;
+					}
 				}
 			}
 		}
@@ -132,6 +173,8 @@ class Clusterer {
 		foreach ( $this->buckets as $lat => $lngs ) {
 			foreach ( $lngs as $lng => $data ) {
 				if ( $this->inBounds( $lat, $lng ) && $data && isset( $data['center'] ) ) {
+					list( $data['center']['lat'], $data['center']['lng'] ) = $this->unfixCoords( $data['center']['lat'], $data['center']['lng'] );
+
 					$clusters[] = $data;
 				}
 			}
@@ -144,8 +187,8 @@ class Clusterer {
 	 * Based on the given lat & lng coordinates, determine matrix size/structure
 	 */
 	protected function createBuckets() {
-		$totalLat = $this->neLat > $this->swLat ? $this->neLat - $this->swLat : 180 - ( $this->swLat - $this->neLat );
-		$totalLng = $this->neLng > $this->swLng ? $this->neLng - $this->swLng : 360 - ( $this->swLng - $this->neLng );
+		$totalLat = $this->neLat - $this->swLat;
+		$totalLng = $this->neLng - $this->swLng;
 
 		$approxMiddle = round( sqrt( $this->numberOfClusters ) );
 		$func = $this->numLat > $this->numLng ? 'floor' : 'ceil'; // the smaller one gets the advantage ;)
@@ -172,7 +215,45 @@ class Clusterer {
 	}
 
 	/**
-	 * Check if a coordinate is withing the defined bounds
+	 * "Fix" coordinates - when leaping from east 360 to west -359, increase
+	 * the west coordinated by 360 to make calculating easier.
+	 *
+	 * @param string|float $lat
+	 * @param string|float $lng
+	 * @return array [lat, lng]
+	 */
+	function fixCoords( $lat, $lng ) {
+		if ( $this->crossBoundsLat && $lat < 0 ) {
+			$lat += 180;
+		}
+		if ( $this->crossBoundsLng && $lng < 0 ) {
+			$lng += 360;
+		}
+
+		return array( $lat, $lng );
+	}
+
+	/**
+	 * Undo "fixed" coordinates. Before returning data, undo "fixed" (increased)
+	 * coordinates and return the real coordinates.
+	 *
+	 * @param string|float $lat
+	 * @param string|float $lng
+	 * @return array [lat, lng]
+	 */
+	function unfixCoords( $lat, $lng ) {
+		if ( $this->crossBoundsLat && $lat > 180 ) {
+			$lat -= 180;
+		}
+		if ( $this->crossBoundsLng && $lng > 360 ) {
+			$lng -= 360;
+		}
+
+		return array( $lat, $lng );
+	}
+
+	/**
+	 * Check if a coordinate is within the defined bounds
 	 *
 	 * @param string|float $lat
 	 * @param string|float $lng
