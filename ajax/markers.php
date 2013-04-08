@@ -61,8 +61,9 @@ function cluster( $bounds, $minPrice, $maxPrice, $minPts, $nbrClusters ) {
 		$clusterer = new Clusterer( $bounds['neLat'], $bounds['neLng'], $bounds['swLat'], $bounds['swLng'] );
 		$clusterer->setMinClusterLocations( $minPts );
 		$clusterer->setNumberOfClusters( $nbrClusters );
+
 		foreach ( $markers as $marker ) {
-			$clusterer->addLocation( $marker['lat'], $marker['lng'], $marker );
+			$clusterer->addLocation( $marker['lat'], $marker['lng'], array( 'id' => $marker['id'], 'price' => $marker['price'] ) );
 		}
 
 		$clustered = array(

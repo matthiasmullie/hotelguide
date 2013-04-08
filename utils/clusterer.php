@@ -51,20 +51,10 @@ class Clusterer {
 	/**
 	 * @param string|float $lat
 	 * @param string|float $lng
-	 * @param mixed $extra
+	 * @param array $data
 	 * @return bool
 	 */
-	public function addLocation( $lat, $lng, $extra ) {
-		// out of bounds = fail
-		if (
-			( $this->neLat > $this->swLat && ( $lat > $this->neLat || $lat < $this->swLat ) ) ||
-			( $this->neLat < $this->swLat && ( $lat > $this->neLat && $lat < $this->swLat ) ) ||
-			( $this->neLng > $this->swLng && ( $lng > $this->neLng || $lng < $this->swLng ) ) ||
-			( $this->neLng < $this->swLng && ( $lng > $this->neLng && $lng < $this->swLng ) )
-		) {
-			return false;
-		}
-
+	public function addLocation( $lat, $lng, $data = array() ) {
 		if ( empty( $this->buckets ) ) {
 			$this->createBuckets();
 		}
@@ -74,14 +64,16 @@ class Clusterer {
 		$bucket = isset( $this->buckets[$indexLat][$indexLng] ) ? $this->buckets[$indexLat][$indexLng] : array();
 
 		// cluster already, correct cluster bounds
-		if ( isset( $bucket['bounds'] ) ) {
+		if ( isset( $bucket['center'] ) ) {
 			$this->buckets[$indexLat][$indexLng] = array(
-				'bounds' => array(
-					'neLat' => max( $bucket['bounds']['neLat'], $lat ),
-					'neLng' => max( $bucket['bounds']['neLng'], $lng ),
-					'swLat' => min( $bucket['bounds']['swLat'], $lat ),
-					'swLng' => min( $bucket['bounds']['swLng'], $lng ),
-				),
+// bounds are currently unused; commented out because they're relatively expensive to calculate
+//				'bounds' => array(
+					// these shorthand ifs are equivalent to min() and max(), but faster
+//					'neLat' => $bucket['bounds']['neLat'] > $lat ? $bucket['bounds']['neLat'] : $lat,
+//					'neLng' => $bucket['bounds']['neLng'] > $lng ? $bucket['bounds']['neLng'] : $lng,
+//					'swLat' => $bucket['bounds']['swLat'] < $lat ? $bucket['bounds']['swLat'] : $lat,
+//					'swLng' => $bucket['bounds']['swLng'] < $lng ? $bucket['bounds']['swLng'] : $lng,
+//				),
 				// weighed center
 				'center' => array(
 					'lat' => ( ( $bucket['center']['lat'] * $bucket['total'] ) + $lat ) / ( $bucket['total'] + 1 ),
@@ -93,12 +85,12 @@ class Clusterer {
 		// not cluster yet, but entry limit reached = cluster now
 		} elseif ( count( $bucket ) >= $this->minLocations - 1 ) {
 			$this->buckets[$indexLat][$indexLng] = array(
-				'bounds' => array(
-					'neLat' => $lat,
-					'neLng' => $lng,
-					'swLat' => $lat,
-					'swLng' => $lng,
-				),
+//				'bounds' => array(
+//					'neLat' => $lat,
+//					'neLng' => $lng,
+//					'swLat' => $lat,
+//					'swLng' => $lng,
+//				),
 				'center' => array(
 					'lat' => $lat,
 					'lng' => $lng,
@@ -108,11 +100,7 @@ class Clusterer {
 
 		// entry limit not yet reached, save entry
 		} else {
-			$this->buckets[$indexLat][$indexLng][] = array(
-				'lat' => $lat,
-				'lng' => $lng,
-				'extra' => $extra
-			);
+			$this->buckets[$indexLat][$indexLng][] = $data + array( 'lat' => $lat, 'lng' => $lng );
 		}
 
 		return true;
@@ -124,9 +112,9 @@ class Clusterer {
 	public function getLocations() {
 		$locations = array();
 
-		foreach ( $this->buckets as $lngs ) {
-			foreach ( $lngs as $data ) {
-				if ( $data && !isset( $data['bounds'] ) ) {
+		foreach ( $this->buckets as $lat => $lngs ) {
+			foreach ( $lngs as $lng => $data ) {
+				if ( $this->inBounds( $lat, $lng ) && $data && !isset( $data['center'] ) ) {
 					$locations = array_merge( $locations, $data );
 				}
 			}
@@ -141,9 +129,9 @@ class Clusterer {
 	public function getClusters() {
 		$clusters = array();
 
-		foreach ( $this->buckets as $lngs ) {
-			foreach ( $lngs as $data ) {
-				if ( $data && isset( $data['bounds'] ) ) {
+		foreach ( $this->buckets as $lat => $lngs ) {
+			foreach ( $lngs as $lng => $data ) {
+				if ( $this->inBounds( $lat, $lng ) && $data && isset( $data['center'] ) ) {
 					$clusters[] = $data;
 				}
 			}
@@ -181,5 +169,16 @@ class Clusterer {
 			floor( ( $lat - $this->swLat ) * $this->coefficientLat ),
 			floor( ( $lng - $this->swLng ) * $this->coefficientLng ),
 		);
+	}
+
+	/**
+	 * Check if a coordinate is withing the defined bounds
+	 *
+	 * @param string|float $lat
+	 * @param string|float $lng
+	 * @return bool
+	 */
+	protected function inBounds( $lat, $lng ) {
+		return $lat >= 0 && $lat < $this->numLat && $lng >= 0 && $lng < $this->numLng;
 	}
 }

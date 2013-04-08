@@ -116,9 +116,9 @@ var holidays =
 					for(var i = 0; i < json.locations.length; i++)
 					{
 						var marker = holidays.drawMarker(
-							new google.maps.LatLng(json.locations[i].extra.lat, json.locations[i].extra.lng),
-							json.locations[i].extra.id,
-							json.locations[i].extra.price
+							new google.maps.LatLng(json.locations[i].lat, json.locations[i].lng),
+							json.locations[i].id,
+							json.locations[i].price
 						);
 						holidays.markers.push(marker);
 					}
@@ -126,16 +126,10 @@ var holidays =
 					holidays.numClusters = 0;
 					for(var i = 0; i < json.clusters.length; i++)
 					{
-						var ne = new google.maps.LatLng(json.clusters[i].bounds.neLat, json.clusters[i].bounds.neLng);
-						var sw = new google.maps.LatLng(json.clusters[i].bounds.swLat, json.clusters[i].bounds.swLng);
-
-						var count = json.clusters[i]['total'];
-						var bounds = new google.maps.LatLngBounds(sw, ne);
-
 						var coordinate = new google.maps.LatLng(json.clusters[i].center.lat, json.clusters[i].center.lng); // weighed center
-//						var coordinate = bounds.getCenter(); // exact center of bounds
+						var count = json.clusters[i]['total'];
 
-						var marker = holidays.drawCluster(coordinate, count, bounds);
+						var marker = holidays.drawCluster(coordinate, count);
 						holidays.markers.push(marker);
 
 						holidays.numClusters++;
@@ -200,7 +194,7 @@ var holidays =
 		return marker;
 	},
 
-	drawCluster: function(coordinate, count, bounds)
+	drawCluster: function(coordinate, count)
 	{
 		// outerradius can range from 25 to 100; the more entries, the larger the radius
 		var outerradius = 25;
@@ -233,18 +227,15 @@ var holidays =
 				anchor: new google.maps.Point(100, 100)
 			},
 			zIndex: 1,
-			flat: true,
-			bounds: bounds
+			flat: true
 		});
 
 		// add click listener
 		google.maps.event.addListener(marker, 'click', function(e)
 		{
 			holidays.map.setZoom(holidays.map.getZoom() + 1);
-			holidays.map.setCenter(e.latLng);
-
-			// alternative: zoom to boundaries of clicked marker
-//			holidays.map.fitBounds(this.bounds);
+			holidays.map.setCenter(marker.getPosition()); // cluster center
+//			holidays.map.setCenter(e.latLng); // clicked position
 		});
 
 		return marker;
