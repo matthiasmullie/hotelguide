@@ -74,7 +74,7 @@ function cluster( $bounds, $minPrice, $maxPrice, $minPts, $nbrClusters ) {
 
 	// save to/extend cache
 	if ( $cacheCluster ) {
-		$cache->set( $clusterKey, $clustered, 60 * 60 * 24 );
+		$cache->set( $clusterKey, $clustered, 0 );
 	}
 
 	return $clustered;
