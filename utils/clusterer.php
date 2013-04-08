@@ -261,15 +261,6 @@ class Clusterer {
 	 * @return bool
 	 */
 	protected function inBounds( $lat, $lng ) {
-/*
-		if ( $lat >= 0 && $lat < $this->numLat && $lng >= 0 && $lng < $this->numLng ) {
-			return true;
-		} else {
-			var_dump( $lat, $lng );
-			var_dump( $this->numLat, $this->numLng );
-			exit;
-		}
-*/
 		return $lat >= 0 && $lat < $this->numLat && $lng >= 0 && $lng < $this->numLng;
 	}
 }

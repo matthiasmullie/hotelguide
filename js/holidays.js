@@ -13,6 +13,7 @@ var holidays =
 	minPrice: 50,
 	maxPrice: 300,
 	zoomTimer: null,
+	messageTimer: null,
 	bounds: [],
 
 	init: function()
@@ -48,27 +49,56 @@ var holidays =
 		google.maps.event.addListener(holidays.map, 'bounds_changed', function()
 		{
 			if(holidays.zoomTimer) clearTimeout(holidays.zoomTimer);
-			holidays.zoomTimer = setTimeout(holidays.drawMarkers, 250);
+			holidays.zoomTimer = setTimeout(holidays.reload, 250);
 		});
 
 		$('#loadingMap').hide();
 	},
 
-	drawMarkers: function()
+	reload: function()
 	{
-		var loadingMessage = $('#loadingMarkers');
+		// close any open windows (sometimes, on touch devices, they're touched accidentally during pinch-zoom)
+		holidays.infowindowClose();
 
 		// don't fire new request while previous one is still running
-		if(loadingMessage.is(':visible')) return;
-
-		// don't display right away; if everything's done really fast, user won't even have noticed the new request
-		var messageTimer = setTimeout("$('#loadingMarkers').show()", 350);
-
-		// close any open windows (sometimes, on touch devices, they're touched accidentally during pich-zoom)
-		holidays.infowindowClose();
+		var loadingMarkers = $('#loadingMarkers');
+		if(loadingMarkers.is(':visible')) return;
 
 		// get viewport
 		var bounds = holidays.map.getBounds();
+
+		// check if the request crosses lat/lng bounds before rounding the numbers
+		var crossBoundsLat = bounds.getNorthEast().lat() < bounds.getSouthWest().lat();
+		var crossBoundsLng = bounds.getNorthEast().lng() < bounds.getSouthWest().lng();
+
+		bounds = holidays.roundBounds(bounds);
+
+		var redraw = true;
+
+		// don't redraw if bounds have not changed
+		redraw &= typeof(JSON) == 'undefined' || JSON.stringify(holidays.bounds) != JSON.stringify(bounds);
+
+		// don't redraw if we're zooming into an area where we no longer had clustering (= all locations are drawn already)
+		redraw &=
+			holidays.numClusters != 0 ||
+			// most common
+			( !crossBoundsLat && bounds.neLat > holidays.bounds.neLat ) ||
+			( !crossBoundsLng && bounds.neLng > holidays.bounds.neLng ) ||
+			( !crossBoundsLat && bounds.swLat < holidays.bounds.swLat ) ||
+			( !crossBoundsLng && bounds.swLat < holidays.bounds.swLat ) ||
+			// north-south or east-west overlap, without center displaying
+			( crossBoundsLat && bounds.neLat < holidays.bounds.neLat ) ||
+			( crossBoundsLng && bounds.neLng < holidays.bounds.neLng ) ||
+			( crossBoundsLat && bounds.swLat > holidays.bounds.swLat ) ||
+			( crossBoundsLng && bounds.swLat > holidays.bounds.swLat );
+
+		if (!redraw) return;
+
+		// things changed; change new bounds!
+		holidays.bounds = bounds;
+
+		// don't display right away; if everything's done really fast, user won't even have noticed the new request
+		holidays.messageTimer = setTimeout("$('#loadingMarkers').show()", 350);
 
 		$.ajax(
 		{
@@ -77,72 +107,59 @@ var holidays =
 			{
 				min: holidays.minPrice,
 				max: holidays.maxPrice,
-				neLat: bounds.getNorthEast().lat(),
-				neLng: bounds.getNorthEast().lng(),
-				swLat: bounds.getSouthWest().lat(),
-				swLng: bounds.getSouthWest().lng(),
+				bounds:
+				{
+					neLat: bounds.neLat,
+					swLat: bounds.swLat,
+					neLng: bounds.neLng,
+					swLng: bounds.swLng
+				},
+				crossBounds:
+				{
+					lat: crossBoundsLat ? 1 : 0,
+					lng: crossBoundsLng ? 1 : 0
+				},
 				minPts: holidays.map.getZoom() > 13 ? 99999999 : 10, // zoomed in much = don't cluster
-				nbrClusters: Math.round(($('#map').width() + $('#map').height()) / 20) // smaller screen = less clusters
+				nbrClusters: Math.round(($('#map').width() + $('#map').height()) / 25) // smaller screen = less clusters
 			},
 			type: 'GET',
 			dataType: 'json',
-			success: function(json)
-			{
-				var redraw = true;
+			success: function(json) {
+				holidays.drawMarkers(json);
 
-				// don't redraw if bounds have not changed
-				redraw &= typeof(JSON) == 'undefined' || JSON.stringify(holidays.bounds) != JSON.stringify(json.bounds);
-
-				// don't redraw if we're zooming into an area where we no longer had clustering (= all locations are drawn already)
-				redraw &=
-					holidays.numClusters != 0 ||
-					// most common
-					( json.bounds.neLat >= json.bounds.swLat && json.bounds.neLat > holidays.bounds.neLat ) ||
-					( json.bounds.neLng >= json.bounds.swLng && json.bounds.neLng > holidays.bounds.neLng ) ||
-					( json.bounds.neLat >= json.bounds.swLat && json.bounds.swLat < holidays.bounds.swLat ) ||
-					( json.bounds.neLng >= json.bounds.swLng && json.bounds.swLat < holidays.bounds.swLat ) ||
-					// north-south or east-west overlap, without center displaying
-					( json.bounds.neLat < json.bounds.swLat && json.bounds.neLat < holidays.bounds.neLat ) ||
-					( json.bounds.neLng < json.bounds.swLng && json.bounds.neLng < holidays.bounds.neLng ) ||
-					( json.bounds.neLat < json.bounds.swLat && json.bounds.swLat > holidays.bounds.swLat ) ||
-					( json.bounds.neLng < json.bounds.swLng && json.bounds.swLat > holidays.bounds.swLat );
-
-				if(redraw)
-				{
-					// clear existing markers
-					for(var i in holidays.markers) holidays.markers[i].setMap(null);
-					holidays.markers = [];
-
-					for(var i = 0; i < json.locations.length; i++)
-					{
-						var marker = holidays.drawMarker(
-							new google.maps.LatLng(json.locations[i].lat, json.locations[i].lng),
-							json.locations[i].id,
-							json.locations[i].price
-						);
-						holidays.markers.push(marker);
-					}
-
-					holidays.numClusters = 0;
-					for(var i = 0; i < json.clusters.length; i++)
-					{
-						var coordinate = new google.maps.LatLng(json.clusters[i].center.lat, json.clusters[i].center.lng); // weighed center
-						var count = json.clusters[i]['total'];
-
-						var marker = holidays.drawCluster(coordinate, count);
-						holidays.markers.push(marker);
-
-						holidays.numClusters++;
-					}
-
-					// things changed; change new bounds!
-					holidays.bounds = json.bounds;
-				}
-
-				clearTimeout(messageTimer);
-				loadingMessage.hide();
+				clearTimeout(holidays.messageTimer);
+				loadingMarkers.hide();
 			}
 		});
+	},
+
+	drawMarkers: function(json)
+	{
+		// clear existing markers
+		for(var i in holidays.markers) holidays.markers[i].setMap(null);
+		holidays.markers = [];
+
+		for(var i = 0; i < json.locations.length; i++)
+		{
+			var marker = holidays.drawMarker(
+				new google.maps.LatLng(json.locations[i].lat, json.locations[i].lng),
+				json.locations[i].id,
+				json.locations[i].price
+			);
+			holidays.markers.push(marker);
+		}
+
+		holidays.numClusters = 0;
+		for(var i = 0; i < json.clusters.length; i++)
+		{
+			var coordinate = new google.maps.LatLng(json.clusters[i].center.lat, json.clusters[i].center.lng); // weighed center
+			var count = json.clusters[i]['total'];
+
+			var marker = holidays.drawCluster(coordinate, count);
+			holidays.markers.push(marker);
+
+			holidays.numClusters++;
+		}
 	},
 
 	drawMarker: function(coordinate, id, price)
@@ -406,6 +423,43 @@ var holidays =
 	infowindowClose: function()
 	{
 		$('#infowindow').hide();
+	},
+
+
+	/**
+	 * Extend bounds a little bit to a rounder number, that way similar
+	 * requests can use the same cache. Round to a multiple of X only when
+	 * caching (that way, there are less different caches and odds that
+	 * that region is cached already are larger).
+	 *
+	 * Rounding should be different depending on how much of the map is displayed.
+	 * If most of the map is showing, rounding can be more rough. This is important
+	 * because at high zoom levels (= zoomed in), we don't want the clusters to be
+	 * calculated on really rough bounds: if e.g. we only see lat 54.657 to 54.723 in
+	 * our viewport, we don't want the clusters to be calculated on lat 50 to 60.
+	 * Always round to the nearest power of 2.
+	 *
+	 * @param google.maps.LatLngBounds bounds
+	 * @return object
+	 */
+	roundBounds: function(bounds)
+	{
+		var totalLat = bounds.getNorthEast().lat() - bounds.getSouthWest().lat();
+		var totalLng = bounds.getNorthEast().lng() - bounds.getSouthWest().lng();
+
+		var multiplierLat = Math.pow( 2, Math.ceil( Math.log( Math.abs( totalLat / 2 ) ) / Math.log( 2 ) ) );
+		var multiplierLng = Math.pow( 2, Math.ceil( Math.log( Math.abs( totalLng / 2 ) ) / Math.log( 2 ) ) );
+
+		// round coordinates (we don't want calls for every minor change)
+		var bounds =
+		{
+			neLat: Math.max(-180, Math.min(180, Math.ceil( bounds.getNorthEast().lat() / multiplierLat ) * multiplierLat)),
+			swLat: Math.max(-180, Math.min(180, Math.floor( bounds.getSouthWest().lat() / multiplierLat ) * multiplierLat)),
+			neLng: Math.max(-360, Math.min(360, Math.ceil( bounds.getNorthEast().lng() / multiplierLng ) * multiplierLng)),
+			swLng: Math.max(-360, Math.min(360, Math.floor( bounds.getSouthWest().lng() / multiplierLng ) * multiplierLng))
+		}
+
+		return bounds;
 	}
 }
 
