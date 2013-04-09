@@ -1,6 +1,7 @@
 <div id="infowindowData">
 	<div id="infowindowContent">
 		<h2>Contactformulier</h2>
+		<p>Vragen? Opmerkingen? Laat het ons weten!</p>
 		<?php
 			$submitted = isset( $_POST['name'] ) && isset( $_POST['email'] ) && isset( $_POST['message'] );
 

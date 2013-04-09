@@ -272,6 +272,30 @@ body {
 
 		}
 
+			#searchLocate {
+				/* don't show by default; will be enabled in JS if browser supports this */
+				display: none;
+
+				/* @todo: style... */
+				-moz-border-radius: 29px;
+				-webkit-border-radius: 29px;
+				border-radius: 29px;
+				border: 1px solid #ddd;
+				width: 55px;
+				height: 55px;
+				text-indent: -9999px;
+				float: right;
+				display: block;
+				background-color: #fff;
+				background-image: url(../images/locate_icon.png);
+				background-image: url(../images/locate_icon.png), -moz-linear-gradient(0% 4px 90deg,#fff, #eaeaea);
+				background-image: url(../images/locate_icon.png), -webkit-gradient(linear, 0% 0%, 0% 4, from(#eaeaea), to(#fff));
+				background-size: 24px auto;
+				background-position: center center;
+				background-repeat: no-repeat;
+				cursor: pointer;
+			}
+
 			#searchField {
 				font: 300 20px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
 				-moz-border-radius: 29px;
@@ -280,9 +304,9 @@ body {
 				color: #999;
 				background: #fff;
 				border: 1px solid #ddd;
-				padding: 16px 20px 14px 60px;
+				padding: 16px 20px 14px 50px;
 				margin: 0;
-				width: 602px;
+				width: 545px;
 				background-color: #fff;
 				background-image: none;
 				background-image: -moz-linear-gradient(0% 4px 90deg,#fff, #eaeaea);
@@ -293,7 +317,7 @@ body {
 			@media only screen and (min-width: 481px) and (max-width: 767px) {
 
 				#searchField {
-					width: 358px;
+					width: 301px;
 				}
 
 			}
@@ -301,7 +325,7 @@ body {
 			@media only screen and (max-width: 480px) {
 
 				#searchField {
-					width: 198px;
+					width: 141px;
 				}
 
 			}
@@ -317,14 +341,14 @@ body {
 			}
 
 			#search .inputHolder:before {
-				z-index: 10;
+				z-index: 1001;
 				content: ".";
 				display: block;
 				width: 24px;
 				height: 24px;
 				position: absolute;
 				top: 28px;
-				left: 40px;
+				left: 30px;
 				text-indent: -9999px;
 				background-image: url(../images/search_icon.png);
 				background-size: 24px auto;
@@ -377,15 +401,16 @@ body {
 						color: #000;
 						border-top: 1px solid #ddd;
 						overflow: visible;
-						margin-top: -1px;
+						margin-top: -2px;
+						width: 100%;
 					}
 
 					.pac-container:before {
 						z-index: 10;
 						content: ".";
 						display: block;
-						width: 24px;
 						height: 24px;
+						width: 24px;
 						position: absolute;
 						top: -25px;
 						left: -1px;
@@ -399,8 +424,8 @@ body {
 						z-index: 10;
 						content: ".";
 						display: block;
-						width: 24px;
 						height: 24px;
+						width: 24px;
 						position: absolute;
 						top: -25px;
 						right: -1px;
@@ -411,7 +436,7 @@ body {
 					}
 
 						.pac-item {
-							padding: 6px 20px 6px 60px;
+							padding: 6px 20px 6px 50px;
 							border-bottom: 1px solid #ddd;
 						}
 

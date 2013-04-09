@@ -18,6 +18,7 @@ var holidays =
 	init: function()
 	{
 		holidays.drawMap();
+		holidays.locate();
 		holidays.autocomplete();
 		holidays.priceRange();
 		holidays.bindInfoWindow();
@@ -269,6 +270,34 @@ var holidays =
 			text: '<strong>' + text + '</strong>'
 		});
 		return marker;
+	},
+
+	locate: function()
+	{
+		if(navigator.geolocation)
+		{
+			$('#searchLocate')
+				// if supported, show marker
+				.show()
+				.on('click', function(e) {
+					e.preventDefault();
+
+					// add marker to current location
+					navigator.geolocation.getCurrentPosition(function(position)
+					{
+						var coordinates = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+
+						// remove existing marker
+						if(holidays.locationMarker) holidays.locationMarker.setMap(null);
+						holidays.locationMarker = null;
+
+						holidays.locationMarker = holidays.drawReferencePoint(coordinates, 'Huidige locatie');
+
+						holidays.map.setZoom(14);
+						holidays.map.setCenter(coordinates);
+					});
+				});
+		}
 	},
 
 	autocomplete: function()
