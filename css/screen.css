@@ -374,10 +374,9 @@ body {
 						width: 615px;
 						padding: 17px 20px 15px 50px;
 					}
-
 				}
 
-				@media only screen and (min-width: 481px) and (max-width: 767px) { /* Safari */
+				@media only screen and (min-width: 481px) and (max-width: 767px) and (-webkit-min-device-pixel-ratio:0) { /* Safari */
 
 					#searchField {
 						width: 371px;
@@ -386,7 +385,7 @@ body {
 
 				}
 
-				@media only screen and (max-width: 480px) { /* Safari */
+				@media only screen and (max-width: 480px) and (-webkit-min-device-pixel-ratio:0) { /* Safari */
 
 					#searchField {
 						width: 211px;
