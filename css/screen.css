@@ -208,7 +208,7 @@ body {
 	#header {
 		height: 131px;
 		background-repeat: repeat-x;
-		background-image: url(../images/background.png);
+		background-image: url(../img/background.png);
 		background-size: auto 5px;
 		background-position: bottom center;
 	}
@@ -287,9 +287,9 @@ body {
 				float: right;
 				display: block;
 				background-color: #fff;
-				background-image: url(../images/locate_icon.png);
-				background-image: url(../images/locate_icon.png), -moz-linear-gradient(0% 4px 90deg,#fff, #eaeaea);
-				background-image: url(../images/locate_icon.png), -webkit-gradient(linear, 0% 0%, 0% 4, from(#eaeaea), to(#fff));
+				background-image: url(../img/locate_icon.png);
+				background-image: url(../img/locate_icon.png), -moz-linear-gradient(0% 4px 90deg,#fff, #eaeaea);
+				background-image: url(../img/locate_icon.png), -webkit-gradient(linear, 0% 0%, 0% 4, from(#eaeaea), to(#fff));
 				background-size: 55px auto;
 				background-position: center center;
 				background-repeat: no-repeat;
@@ -350,7 +350,7 @@ body {
 				top: 28px;
 				left: 30px;
 				text-indent: -9999px;
-				background-image: url(../images/search_icon.png);
+				background-image: url(../img/search_icon.png);
 				background-size: 24px auto;
 				background-position: 0 0;
 			}

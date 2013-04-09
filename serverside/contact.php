@@ -14,7 +14,7 @@
 			if ( !$submitted || !$valid ) {
 				// form not yet submitted or submitted invalid; display form
 				echo '
-					<form name="contact" action="contact.php" method="POST"'. ( $submitted ? 'class="submitted"' : '' ) .'>
+					<form name="contact" action="/serverside/contact.php" method="POST"'. ( $submitted ? 'class="submitted"' : '' ) .'>
 						<input type="text" name="name" id="name" placeholder="Naam"'. ( $name ? "value='$name'" : 'class="error"' ) .' />
 						<input type="text" name="email" id="email" placeholder="E-mail adres"'. ( $email ? "value='$email'" : 'class="error"' ) .' />
 						<textarea name="message" id="message" placeholder="Boodschap"'. ( $message ? '' : 'class="error"' ) .'>'. ( $message ?: '' ) .'</textarea>

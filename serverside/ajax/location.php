@@ -32,7 +32,7 @@ if ( $data !== false ) {
 				</div>
 			</div>
 			<div id="infowindowBottom">
-				<p id="markerDisclaimer"><a class="submenu" href="disclaimer.php?url='. urlencode( 'ajax/location.php?id='.$id ) .'">Disclaimer</a></p>
+				<p id="markerDisclaimer"><a class="submenu" href="/serverside/disclaimer.php?url='. urlencode( '/serverside/ajax/location.php?id='.$id ) .'">Disclaimer</a></p>
 			</div>
 			<div id="markerImage" style="background-image: url(' . $data['image'] . ')">
 				<a href="' . $data['url'] . '"></a>
@@ -47,7 +47,7 @@ if ( $data !== false ) {
 				Dit probleem kan zich voordoen wanneer we onze locatie-database aan het updaten zijn met de laatste promoties.
 				In dit geval zal u binnenkort wel over de gevraagde informatie kunnen beschikken, en raden we u aan om straks opnieuw te proberen.
 			</p>
-			<p>Mocht u dit probleem blijven ervaren, gelieve contact met ons op te nemen op <a href="mailto:info@last-minute-vakanties.be">info@last-minute-vakanties.be</a>.</p>
+			<p>Mocht u dit probleem blijven ervaren, gelieve contact met ons op te nemen via ons <a class="submenu" href="/serverside/contact.php" title="contacteer last-minute-vakanties.be">contactformulier</a>.</p>
 			<p>Alvast onze excuses!</p>
 		</div>';
 }

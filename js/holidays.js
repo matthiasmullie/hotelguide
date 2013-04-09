@@ -1,5 +1,9 @@
 var holidays =
 {
+	// detect if running in app
+	app: document.location.host ? false : true,
+	// on apps, perform calls to specified url
+	host: holidays.app ? '' : 'http://www.last-minute-vakanties.be',
 	map: null,
 	markers: [],
 	locationMarker: null,
@@ -88,7 +92,7 @@ var holidays =
 
 		$.ajax(
 		{
-			url: 'ajax/markers.php',
+			url: holidays.host + '/serverside/ajax/markers.php',
 			data:
 			{
 				min: prices[0],
@@ -194,7 +198,7 @@ var holidays =
 			// add click listener
 			google.maps.event.addListener(marker, 'click', function(e)
 			{
-				holidays.infowindowOpen('ajax/location.php?id=' + this.id);
+				holidays.infowindowOpen('/serverside/ajax/location.php?id=' + this.id);
 			});
 
 			return marker;
@@ -341,12 +345,19 @@ var holidays =
 			service.textSearch({ query: searchField.val() }, setMarker);
 		});
 
-		// non-existing uri = launch search for that location!
-		var location = decodeURIComponent(document.location.pathname.replace(/(^\/|\/$)/, '').replace(/-/g, ' '));
-		if(location)
+		if(!holidays.app)
 		{
-			searchField.val(location);
-			searchField.parents('form').submit();
+			/*
+			 * If URI has a non-existing slug, start a search for that location.
+			 * e.g. http://www.last-minute-vakanties.be/new-york will zoom in and
+			 * add a marker on New York.
+			 */
+			var location = decodeURIComponent(document.location.pathname.replace(/(^\/|\/$)/, '').replace(/-/g, ' '));
+			if(location)
+			{
+				searchField.val(location);
+				searchField.parents('form').submit();
+			}
 		}
 	},
 
@@ -428,7 +439,7 @@ var holidays =
 	{
 		$.ajax(
 		{
-			url: url,
+			url: holidays.host + url,
 			dataType: 'html',
 			success: function(html)
 			{
@@ -534,7 +545,7 @@ var holidays =
 
 			$.ajax(
 			{
-				url: action,
+				url: holidays.host + action,
 				data: data,
 				type: method,
 				dataType: 'html',
