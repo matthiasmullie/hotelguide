@@ -63,12 +63,14 @@
 
 	<p id="loadingMap" class="spinner" style="display: none;">Kaart wordt geladen&hellip;</p>
 	<p id="loadingMarkers" class="spinner" style="display: none;">Locaties worden geladen&hellip;</p>
-	<div id="infowindow">
-		<a id="infowindowClose" href="#">&times;</a>
-		<div id="infowindowContainer">
-			<!-- this will contain both menu-items' content & markers content -->
-		</div>
-	</div>
+    <div id="infowindow">
+    	<div id="infowindowBounds">
+            <a id="infowindowClose" href="#">&times;</a>
+            <div id="infowindowContainer">
+                <!-- this will contain both menu-items' content & markers content -->
+            </div>
+        </div>
+    </div>
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="js/jquery.nouislider.min.js"></script>

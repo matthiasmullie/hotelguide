@@ -20,6 +20,7 @@ FileETag MTime Size
 	# one url to rule them all
 	RewriteCond %{HTTP_HOST} !^www\.last-minute-vakanties\.be [NC]
 	RewriteCond %{HTTP_HOST} !.*\.dev [NC]
+	RewriteCond %{HTTP_HOST} !.*\.xip.io [NC]
 	RewriteRule ^(.*)$ http://www.last-minute-vakanties.be/$1 [R=301,L]
 
 	# handle urls

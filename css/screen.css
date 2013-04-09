@@ -290,7 +290,7 @@ body {
 				background-image: url(../images/locate_icon.png);
 				background-image: url(../images/locate_icon.png), -moz-linear-gradient(0% 4px 90deg,#fff, #eaeaea);
 				background-image: url(../images/locate_icon.png), -webkit-gradient(linear, 0% 0%, 0% 4, from(#eaeaea), to(#fff));
-				background-size: 24px auto;
+				background-size: 55px auto;
 				background-position: center center;
 				background-repeat: no-repeat;
 				cursor: pointer;
@@ -365,13 +365,13 @@ body {
 				.ie7 #searchField,
 				.ie8 #searchField {
 					padding: 16px 20px 14px 20px;
-					width: 642px;
+					width: 575px;
 				}
 
 				@media screen and (-webkit-min-device-pixel-ratio:0) { /* Safari */
 
 					#searchField {
-						width: 682px;
+						width: 615px;
 						padding: 17px 20px 15px 60px;
 					}
 
@@ -380,7 +380,7 @@ body {
 				@media only screen and (min-width: 481px) and (max-width: 767px) { /* Safari */
 
 					#searchField {
-						width: 438px;
+						width: 371px;
 						padding: 17px 20px 15px 60px;
 					}
 
@@ -389,7 +389,7 @@ body {
 				@media only screen and (max-width: 480px) { /* Safari */
 
 					#searchField {
-						width: 278px;
+						width: 211px;
 						padding: 17px 20px 15px 60px;
 					}
 
@@ -427,7 +427,7 @@ body {
 						height: 24px;
 						width: 24px;
 						position: absolute;
-						top: -25px;
+						top: -28px;
 						right: -1px;
 						text-indent: -9999px;
 						background: #fff;
@@ -438,6 +438,7 @@ body {
 						.pac-item {
 							padding: 6px 20px 6px 50px;
 							border-bottom: 1px solid #ddd;
+							overflow: hidden;
 						}
 
 						.pac-selected {
@@ -812,9 +813,17 @@ html, body {
 */
 
 #infowindow {
-	outline: rgba(0, 0, 0, .7) solid 1000px;
-	background: rgba(0, 0, 0, .7);
+	z-index: 1002;
 	display: none;
+	background: rgba(0, 0, 0, .7);
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+#infowindowBounds {
 	z-index: 20;
 	position: absolute;
 	left: 50%;
@@ -846,19 +855,24 @@ html, body {
 	}
 
 		#infowindowClose {
-			display: none;
-			position: absolute;
+/*			display: none;
+*/			position: absolute;
 			text-align: center;
-			line-height: 18px;
-			top: -24px;
-			font-size: 20px;
-			right: -24px;
+			line-height: 36px;
+			top: 0;
+			font-size: 36px;
+			right: 0;
 			border: 0;
 			padding: 0;
 			font-weight: 700;
 			color: #fff;
-			width: 18px;
-			height: 18px
+			width: 36px;
+			height: 36px;
+			z-index: 1000;
+			background: rgba(0, 0, 0, .7);
+			-moz-border-radius: 0 6px 0 6px;
+			-webkit-border-radius: 0 6px 0 6px;
+			border-radius: 0 6px 0 6px;
 		}
 
 		#infowindow #markerImage {

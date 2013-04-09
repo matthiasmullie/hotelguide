@@ -21,7 +21,7 @@ var holidays =
 		holidays.locate();
 		holidays.autocomplete();
 		holidays.priceRange();
-		holidays.bindInfoWindow();
+		holidays.infowindowBinds();
 		holidays.contactForm();
 
 		// input field class
@@ -47,8 +47,10 @@ var holidays =
 			styles: holidays.mapStyle
 		};
 		holidays.map = new google.maps.Map($('#map').get(0), myOptions);
+
 		google.maps.event.addListener(holidays.map, 'bounds_changed', function()
 		{
+
 			if(holidays.zoomTimer) clearTimeout(holidays.zoomTimer);
 			holidays.zoomTimer = setTimeout(holidays.reload, 250);
 		});
@@ -104,11 +106,12 @@ var holidays =
 					lng: crossBoundsLng ? 1 : 0
 				},
 				minPts: holidays.map.getZoom() > 13 ? 99999999 : 10, // zoomed in much = don't cluster
-				nbrClusters: Math.round(($('#map').width() + $('#map').height()) / 25) // smaller screen = less clusters
+				nbrClusters: Math.round(($('#map').width() * $('#map').height()) / 10000) // smaller screen = less clusters
 			},
 			type: 'GET',
 			dataType: 'json',
-			success: function(json) {
+			success: function(json)
+			{
 				holidays.drawMarkers(json);
 
 				clearTimeout(holidays.messageTimer);
@@ -125,7 +128,7 @@ var holidays =
 
 		for(var i = 0; i < json.locations.length; i++)
 		{
-			var marker = holidays.drawMarker(
+			var marker = holidays.draw.marker(
 				new google.maps.LatLng(json.locations[i].lat, json.locations[i].lng),
 				json.locations[i].id,
 				json.locations[i].price
@@ -139,137 +142,140 @@ var holidays =
 			var coordinate = new google.maps.LatLng(json.clusters[i].center.lat, json.clusters[i].center.lng); // weighed center
 			var count = json.clusters[i]['total'];
 
-			var marker = holidays.drawCluster(coordinate, count);
+			var marker = holidays.draw.cluster(coordinate, count);
 			holidays.markers.push(marker);
 
 			holidays.numClusters++;
 		}
 	},
 
-	drawMarker: function(coordinate, id, price)
+	draw:
 	{
-		/*
-		 * PNG images with text overlay won't work here, so I traced the images
-		 * to SVG (where I can add text) and will just add the border colors here
-		 */
-		var colors = {
-			0: '#a9be42', // 'images/pin_green.png', // €0 - 99
-			1: '#fe7921', // 'images/pin_orange.png', // €100 - 199
-			'+': '#ea3755' // 'images/pin_red.png', // €200 - 299
+		marker: function(coordinate, id, price)
+		{
+			/*
+			 * PNG images with text overlay won't work here, so I traced the images
+			 * to SVG (where I can add text) and will just add the border colors here
+			 */
+			var colors = {
+				0: '#a9be42', // 'images/pin_green.png', // €0 - 99
+				1: '#fe7921', // 'images/pin_orange.png', // €100 - 199
+				'+': '#ea3755' // 'images/pin_red.png', // €200 - 299
+			}
+			var color = colors[Math.floor(price / 100)];
+			if(typeof color == 'undefined') color = colors['+'];
+
+			var svg =
+				'<svg width="46" height="54" xmlns="http://www.w3.org/2000/svg">' +
+					// balloon shape
+					'<path stroke="'+ color +'" stroke-width="2" fill="#fcfcfc" style="opacity: 0.9" d=" M 7.81 8.31 C 11.74 4.27 17.35 1.87 23 2 C 28.65 1.88 34.27 4.27 38.19 8.31 C 42.01 12.15 44.21 17.59 44 23.02 C 44.04 28.86 41.15 34.49 36.78 38.28 C 32.15 42.35 27.72 46.65 23 50.62 C 18.28 46.66 13.86 42.34 9.23 38.28 C 4.85 34.49 1.96 28.85 2 23.01 C 1.8 17.59 3.99 12.15 7.81 8.31 Z" />' +
+					// bottom balloon shadow
+					'<path fill="#7f7f7f" d=" M 18.18 52.59 C 19 52.19 19.83 51.81 20.64 51.41 C 21.36 51.99 22.05 52.79 23.01 52.91 C 23.96 52.79 24.64 51.99 25.36 51.42 C 26.2 51.82 27.05 52.21 27.9 52.6 C 27.79 53.07 27.67 53.53 27.55 54 L 18.33 54 C 18.28 53.53 18.24 53.06 18.18 52.59 Z" />' +
+					// text
+					'<text x="23" y="27" font-size="8pt" font-family="arial" font-weight="bold" text-anchor="middle" fill="#333" textContent="€'+ price +'">€'+ price +'</text>' +
+					'</svg>';
+			var image = 'data:image/svg+xml;base64,' + Base64.encode(svg);
+
+			var marker = new google.maps.Marker(
+				{
+					map: holidays.map,
+					position: coordinate,
+					icon:
+					{
+						url: image,
+						anchor: new google.maps.Point(28, 54)
+					},
+					zIndex: 2,
+					flat: true,
+					title: '€' + price,
+					id: id
+				});
+
+			// add click listener
+			google.maps.event.addListener(marker, 'click', function(e)
+			{
+				holidays.infowindowOpen('ajax/location.php?id=' + this.id);
+			});
+
+			return marker;
+		},
+
+		cluster: function(coordinate, count)
+		{
+			// outerradius can range from 25 to 100; the more entries, the larger the radius
+			var outerradius = 25;
+			var index = 1;
+			while(index < count && outerradius < 100)
+			{
+				outerradius += 4;
+				index *= 2;
+			}
+			outerradius = Math.max(25, Math.min(100, outerradius));
+
+			var svg =
+				'<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">' +
+					// transparent outer circle
+					'<circle cx="100" cy="100" r="'+ outerradius +'" fill="#0097f5" style="opacity: 0.2"  />' +
+					// inner circle
+					'<circle cx="100" cy="100" r="23" stroke="#0097f5" fill="#fcfcfc" stroke-width="5" style="opacity: 0.9" />' +
+					// text
+					'<text x="100" y="105" font-size="8pt" font-family="arial" font-weight="bold" text-anchor="middle" fill="#007fce" textContent="'+ count +'">'+ count +'</text>' +
+					'</svg>';
+			var image = 'data:image/svg+xml;base64,' + Base64.encode(svg);
+
+			var marker = new google.maps.Marker(
+				{
+					map: holidays.map,
+					position: coordinate,
+					icon:
+					{
+						url: image,
+						anchor: new google.maps.Point(100, 100)
+					},
+					zIndex: 1,
+					flat: true
+				});
+
+			// add click listener
+			google.maps.event.addListener(marker, 'click', function(e)
+			{
+				holidays.map.setZoom(holidays.map.getZoom() + 1);
+//				holidays.map.setCenter(marker.getPosition()); // cluster center
+				holidays.map.setCenter(e.latLng); // clicked position
+			});
+
+			return marker;
+		},
+
+		reference: function(coordinate, text)
+		{
+			var svg =
+				'<svg width="46" height="54" xmlns="http://www.w3.org/2000/svg">' +
+					// balloon shape
+					'<path fill="#0097f5" d=" M 7.81 8.31 C 11.74 4.27 17.35 1.87 23 2 C 28.65 1.88 34.27 4.27 38.19 8.31 C 42.01 12.15 44.21 17.59 44 23.02 C 44.04 28.86 41.15 34.49 36.78 38.28 C 32.15 42.35 27.72 46.65 23 50.62 C 18.28 46.66 13.86 42.34 9.23 38.28 C 4.85 34.49 1.96 28.85 2 23.01 C 1.8 17.59 3.99 12.15 7.81 8.31 Z" />' +
+					// circle inside balloon
+					'<circle cx="23" cy="23" r="13" fill="#0078c2" />' +
+					// bottom balloon shadow
+					'<path fill="#7f7f7f" d=" M 18.18 52.59 C 19 52.19 19.83 51.81 20.64 51.41 C 21.36 51.99 22.05 52.79 23.01 52.91 C 23.96 52.79 24.64 51.99 25.36 51.42 C 26.2 51.82 27.05 52.21 27.9 52.6 C 27.79 53.07 27.67 53.53 27.55 54 L 18.33 54 C 18.28 53.53 18.24 53.06 18.18 52.59 Z" />' +
+					'</svg>'
+			var image = 'data:image/svg+xml;base64,' + Base64.encode(svg);
+
+			var marker = new google.maps.Marker(
+				{
+					map: holidays.map,
+					position: coordinate,
+					icon:
+					{
+						url: image,
+						anchor: new google.maps.Point(28, 54)
+					},
+					zIndex: 3,
+					clickable: false,
+					flat: true,
+					text: '<strong>' + text + '</strong>'
+				});
+			return marker;
 		}
-		var color = colors[Math.floor(price / 100)];
-		if(typeof color == 'undefined') color = colors['+'];
-
-		var svg =
-			'<svg width="46" height="54" xmlns="http://www.w3.org/2000/svg">' +
-				// balloon shape
-				'<path stroke="'+ color +'" stroke-width="2" fill="#fcfcfc" style="opacity: 0.9" d=" M 7.81 8.31 C 11.74 4.27 17.35 1.87 23 2 C 28.65 1.88 34.27 4.27 38.19 8.31 C 42.01 12.15 44.21 17.59 44 23.02 C 44.04 28.86 41.15 34.49 36.78 38.28 C 32.15 42.35 27.72 46.65 23 50.62 C 18.28 46.66 13.86 42.34 9.23 38.28 C 4.85 34.49 1.96 28.85 2 23.01 C 1.8 17.59 3.99 12.15 7.81 8.31 Z" />' +
-				// bottom balloon shadow
-				'<path fill="#7f7f7f" d=" M 18.18 52.59 C 19 52.19 19.83 51.81 20.64 51.41 C 21.36 51.99 22.05 52.79 23.01 52.91 C 23.96 52.79 24.64 51.99 25.36 51.42 C 26.2 51.82 27.05 52.21 27.9 52.6 C 27.79 53.07 27.67 53.53 27.55 54 L 18.33 54 C 18.28 53.53 18.24 53.06 18.18 52.59 Z" />' +
-				// text
-				'<text x="23" y="27" font-size="8pt" font-family="arial" font-weight="bold" text-anchor="middle" fill="#333" textContent="€'+ price +'">€'+ price +'</text>' +
-			'</svg>';
-		var image = 'data:image/svg+xml;base64,' + Base64.encode(svg);
-
-		var marker = new google.maps.Marker(
-		{
-			map: holidays.map,
-			position: coordinate,
-			icon:
-			{
-				url: image,
-				anchor: new google.maps.Point(28, 54)
-			},
-			zIndex: 2,
-			flat: true,
-			title: '€' + price,
-			id: id
-		});
-
-		// add click listener
-		google.maps.event.addListener(marker, 'click', function(e)
-		{
-			holidays.infowindowOpen('ajax/location.php?id=' + this.id);
-		});
-
-		return marker;
-	},
-
-	drawCluster: function(coordinate, count)
-	{
-		// outerradius can range from 25 to 100; the more entries, the larger the radius
-		var outerradius = 25;
-		var index = 1;
-		while(index < count && outerradius < 100)
-		{
-			outerradius += 4;
-			index *= 2;
-		}
-		outerradius = Math.max(25, Math.min(100, outerradius));
-
-		var svg =
-			'<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">' +
-				// transparent outer circle
-				'<circle cx="100" cy="100" r="'+ outerradius +'" fill="#0097f5" style="opacity: 0.2"  />' +
-				// inner circle
-				'<circle cx="100" cy="100" r="23" stroke="#0097f5" fill="#fcfcfc" stroke-width="5" style="opacity: 0.9" />' +
-				// text
-				'<text x="100" y="105" font-size="8pt" font-family="arial" font-weight="bold" text-anchor="middle" fill="#007fce" textContent="'+ count +'">'+ count +'</text>' +
-			'</svg>';
-		var image = 'data:image/svg+xml;base64,' + Base64.encode(svg);
-
-		var marker = new google.maps.Marker(
-		{
-			map: holidays.map,
-			position: coordinate,
-			icon:
-			{
-				url: image,
-				anchor: new google.maps.Point(100, 100)
-			},
-			zIndex: 1,
-			flat: true
-		});
-
-		// add click listener
-		google.maps.event.addListener(marker, 'click', function(e)
-		{
-			holidays.map.setZoom(holidays.map.getZoom() + 1);
-//			holidays.map.setCenter(marker.getPosition()); // cluster center
-			holidays.map.setCenter(e.latLng); // clicked position
-		});
-
-		return marker;
-	},
-
-	drawReferencePoint: function(coordinate, text)
-	{
-		var svg =
-			'<svg width="46" height="54" xmlns="http://www.w3.org/2000/svg">' +
-				// balloon shape
-				'<path fill="#0097f5" d=" M 7.81 8.31 C 11.74 4.27 17.35 1.87 23 2 C 28.65 1.88 34.27 4.27 38.19 8.31 C 42.01 12.15 44.21 17.59 44 23.02 C 44.04 28.86 41.15 34.49 36.78 38.28 C 32.15 42.35 27.72 46.65 23 50.62 C 18.28 46.66 13.86 42.34 9.23 38.28 C 4.85 34.49 1.96 28.85 2 23.01 C 1.8 17.59 3.99 12.15 7.81 8.31 Z" />' +
-				// circle inside balloon
-				'<circle cx="23" cy="23" r="13" fill="#0078c2" />' +
-				// bottom balloon shadow
-				'<path fill="#7f7f7f" d=" M 18.18 52.59 C 19 52.19 19.83 51.81 20.64 51.41 C 21.36 51.99 22.05 52.79 23.01 52.91 C 23.96 52.79 24.64 51.99 25.36 51.42 C 26.2 51.82 27.05 52.21 27.9 52.6 C 27.79 53.07 27.67 53.53 27.55 54 L 18.33 54 C 18.28 53.53 18.24 53.06 18.18 52.59 Z" />' +
-			'</svg>'
-		var image = 'data:image/svg+xml;base64,' + Base64.encode(svg);
-
-		var marker = new google.maps.Marker(
-		{
-			map: holidays.map,
-			position: coordinate,
-			icon:
-			{
-				url: image,
-				anchor: new google.maps.Point(28, 54)
-			},
-			zIndex: 3,
-			clickable: false,
-			flat: true,
-			text: '<strong>' + text + '</strong>'
-		});
-		return marker;
 	},
 
 	locate: function()
@@ -291,7 +297,7 @@ var holidays =
 						if(holidays.locationMarker) holidays.locationMarker.setMap(null);
 						holidays.locationMarker = null;
 
-						holidays.locationMarker = holidays.drawReferencePoint(coordinates, 'Huidige locatie');
+						holidays.locationMarker = holidays.draw.reference(coordinates, 'Huidige locatie');
 
 						holidays.map.setZoom(14);
 						holidays.map.setCenter(coordinates);
@@ -316,7 +322,7 @@ var holidays =
 			holidays.locationMarker = null;
 
 			// really draw marker
-			holidays.locationMarker = holidays.drawReferencePoint(place.geometry.location, place.name);
+			holidays.locationMarker = holidays.draw.reference(place.geometry.location, place.name);
 
 			// zoom to specified location
 			holidays.map.setZoom(14);
@@ -370,20 +376,23 @@ var holidays =
 		updatePrices();
 	},
 
-	bindInfoWindow: function()
+	infowindowBinds: function()
 	{
 		// bind events to handle infowindow
-		$(document ).on('click', '.submenu', function(e)
+		$(document).on('click', '.submenu', function(e)
 		{
 			e.preventDefault();
 			holidays.infowindowOpen($(this).attr('href'));
 		});
+	},
 
+	infowindowEvents:
+	{
 		// mouseclick close
-		$(document).on('click', 'body, #infowindowClose', function(e)
+		clickClose: function(e)
 		{
-			$infowindow = $('#infowindow');
-			$closeButton = $('#infowindowClose');
+			var $infowindow = $('#infowindowContainer');
+			var $closeButton = $('#infowindowClose');
 
 			// check clicked position: click outside window or on close button = close
 			var offsetWindow = $infowindow.offset();
@@ -402,17 +411,17 @@ var holidays =
 				e.preventDefault();
 				holidays.infowindowClose();
 			}
-		});
+		},
 
 		// escape key close
-		$(document).on('keyup', function(e)
+		escapeClose: function(e)
 		{
 			if(e.keyCode == 27)
 			{
 				e.preventDefault();
 				holidays.infowindowClose();
 			}
-		});
+		}
 	},
 
 	infowindowOpen: function(url)
@@ -426,12 +435,19 @@ var holidays =
 				$('#infowindow')
 					.show()
 					.find('#infowindowContainer').html(html);
+
+				$(document).on('click', 'body, #infowindowClose', holidays.infowindowEvents.clickClose);
+				$(document).on('keyup', null, holidays.infowindowEvents.escapeClose);
 			}
 		});
 	},
 
 	infowindowClose: function()
 	{
+		// unbind events listeners to close infowindow
+		$(document).off('click', 'body, #infowindowClose', holidays.infowindowEvents.clickClose);
+		$(document).off('keyup', null, holidays.infowindowEvents.escapeClose);
+
 		$('#infowindow').hide();
 	},
 
@@ -522,7 +538,8 @@ var holidays =
 				data: data,
 				type: method,
 				dataType: 'html',
-				success: function(html) {
+				success: function(html)
+				{
 					$('#infowindow')
 						.show()
 						.find('#infowindowContainer').html(html);
