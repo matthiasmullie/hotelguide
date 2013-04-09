@@ -944,19 +944,15 @@ html, body {
 				text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
 			}
 
-		#markerText {
-			padding: 0;
-		}
-
-		#infowindowData, #infowindowContent {
+		#infowindowData {
 			min-height: 100%;
 			height: auto !important;
 			height: 100%;
-			margin: 20px 20px 10px 20px;
+			margin: 0 0 -20px 0;
 		}
 
-		#infowindowData {
-			margin-top: 10px;
+		#infowindowContent {
+			padding: 10px 20px 20px 20px;
 		}
 
 		#infowindowBottom {
@@ -976,3 +972,67 @@ html, body {
 					color: #fff;
 					border: 0;
 				}
+
+.button {
+	display: block;
+	height: 24px;
+	padding: 5px 12px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	margin-bottom: 12px;
+	border: 1px solid #0078c2;
+	background: #58b8f4;
+	background: #8acaf2;
+	background: -moz-linear-gradient(top,  #8acaf2 3%, #58b8f4 3%, #0097f5 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,#8acaf2), color-stop(3%,#58b8f4), color-stop(100%,#0097f5));
+	background: -webkit-linear-gradient(top,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
+	background: -o-linear-gradient(top,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
+	background: -ms-linear-gradient(top,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
+	background: linear-gradient(to bottom,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
+	text-align: center;
+}
+
+.button:hover {
+	border: 1px solid #00609b;
+	background: #0079c4;
+	background: -moz-linear-gradient(top,  #0079c4 0%, #259de8 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0079c4), color-stop(100%,#259de8));
+	background: -webkit-linear-gradient(top,  #0079c4 0%,#259de8 100%);
+	background: -o-linear-gradient(top,  #0079c4 0%,#259de8 100%);
+	background: -ms-linear-gradient(top,  #0079c4 0%,#259de8 100%);
+	background: linear-gradient(to bottom,  #0079c4 0%,#259de8 100%);
+}
+
+	.button span {
+		font-weight: 700;
+		font-size: 14px;
+		color: #fff;
+		line-height: 24px;
+		text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
+	}
+
+form input,
+form textarea {
+	font: 300 14px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #999;
+	background: #fff;
+	border: 1px solid #ddd;
+	padding: 6px 0px 6px 12px;
+	margin: 0 0 12px 0;
+	width: 248px;
+	background-color: #fff;
+	background-image: none;
+	background-image: -moz-linear-gradient(0% 4px 90deg,#fff, #eaeaea);
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 4, from(#eaeaea), to(#fff));
+	-webkit-appearance: none;
+}
+
+form textarea {
+	height: 100px;
+}
+
+	form.submitted input.error,
+	form.submitted textarea.error {
+		border: 1px solid red;
+	}

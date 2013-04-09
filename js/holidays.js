@@ -21,6 +21,7 @@ var holidays =
 		holidays.autocomplete();
 		holidays.priceRange();
 		holidays.bindInfoWindow();
+		holidays.contactForm();
 
 		// input field class
 		$('#search input.inputText').focus(function()
@@ -471,6 +472,34 @@ var holidays =
 		}
 
 		return bounds;
+	},
+
+	contactForm: function()
+	{
+		$(document).on('click', '#submit', function(e)
+		{
+			e.preventDefault();
+
+			var $form = $(this ).parents('form');
+
+			// submit form via ajax
+			var action = $form.attr('action');
+			var method = $form.attr('method');
+			var data = $form.serialize();
+
+			$.ajax(
+			{
+				url: action,
+				data: data,
+				type: method,
+				dataType: 'html',
+				success: function(html) {
+					$('#infowindow')
+						.show()
+						.find('#infowindowContainer').html(html);
+				}
+			});
+		});
 	}
 }
 
