@@ -1056,9 +1056,9 @@ form textarea {
 	color: #999;
 	background: #fff;
 	border: 1px solid #ddd;
-	padding: 6px 0px 6px 12px;
+	padding: 6px 0 6px 6px;
 	margin: 0 0 12px 0;
-	width: 248px;
+	width: 252px;
 	background-color: #fff;
 	background-image: none;
 	background-image: -moz-linear-gradient(0% 4px 90deg,#fff, #eaeaea);

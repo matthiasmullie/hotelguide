@@ -3,7 +3,7 @@ var holidays =
 	// detect if running in app
 	app: document.location.host ? false : true,
 	// on apps, perform calls to specified url
-	host: holidays.app ? '' : 'http://www.last-minute-vakanties.be',
+	host: document.location.host ? '' : 'http://www.last-minute-vakanties.be',
 	map: null,
 	markers: [],
 	locationMarker: null,
@@ -21,6 +21,9 @@ var holidays =
 
 	init: function()
 	{
+		// hide the address bar (in apps)
+		window.scrollTo(0, 1);
+
 		holidays.drawMap();
 		holidays.locate();
 		holidays.autocomplete();
