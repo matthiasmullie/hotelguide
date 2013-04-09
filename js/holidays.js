@@ -106,7 +106,7 @@ var holidays =
 					lng: crossBoundsLng ? 1 : 0
 				},
 				minPts: holidays.map.getZoom() > 13 ? 99999999 : 10, // zoomed in much = don't cluster
-				nbrClusters: Math.round(($('#map').width() * $('#map').height()) / 10000) // smaller screen = less clusters
+				nbrClusters: Math.round(($('#map').width() * $('#map').height()) / 15000) // smaller screen = less clusters
 			},
 			type: 'GET',
 			dataType: 'json',
