@@ -18,6 +18,7 @@ var holidays =
 	messageTimer: null,
 	bounds: [],
 	prices: [],
+	historyCallbacks: [],
 
 	init: function()
 	{
@@ -30,6 +31,7 @@ var holidays =
 		holidays.priceRange();
 		holidays.infowindowBinds();
 		holidays.contactForm();
+		holidays.historyBind();
 
 		// input field class
 		$('#search input.inputText').focus(function()
@@ -95,7 +97,7 @@ var holidays =
 
 		$.ajax(
 		{
-			url: holidays.host + '/serverside/ajax/markers.php',
+			url: holidays.host + '/server/ajax/markers.php',
 			data:
 			{
 				min: prices[0],
@@ -201,7 +203,7 @@ var holidays =
 			// add click listener
 			google.maps.event.addListener(marker, 'click', function(e)
 			{
-				holidays.infowindowOpen('/serverside/ajax/location.php?id=' + this.id);
+				holidays.infowindowOpen('/server/ajax/location.php?id=' + this.id);
 			});
 
 			return marker;
@@ -317,7 +319,7 @@ var holidays =
 	{
 		// bind autocomplete
 		var searchField = $('#searchField');
-		var searchbox = new google.maps.places.SearchBox(searchField.get(0));
+		var searchbox = new google.maps.places.Autocomplete(searchField.get(0));
 
 		var setMarker = function(places)
 		{
@@ -334,10 +336,14 @@ var holidays =
 			// zoom to specified location
 			holidays.map.setZoom(14);
 			holidays.map.setCenter(place.geometry.location);
+
+			// add to url
+			var slug = encodeURIComponent(place.name.toLowerCase().replace(/ /g, '-'));
+			holidays.historyPush([place.name], place.name, '/' + slug, holidays.findLocation);
 		}
 
-		// selecting a specific place from the autocomplete drowndown
-		google.maps.event.addListener(searchbox, 'places_changed', function() { setMarker(searchbox.getPlaces()); });
+		// selecting a specific place from the autocomplete dropdown
+		google.maps.event.addListener(searchbox, 'place_changed', function() { setMarker([searchbox.getPlace()]); });
 
 		// form submission (either automated in code or pressing enter) = launch search and assume first result
 		searchField.parents('form').submit(function(e)
@@ -356,12 +362,21 @@ var holidays =
 			 * add a marker on New York.
 			 */
 			var location = decodeURIComponent(document.location.pathname.replace(/(^\/|\/$)/, '').replace(/-/g, ' '));
-			if(location)
-			{
-				searchField.val(location);
-				searchField.parents('form').submit();
-			}
+			if(location) holidays.findLocation(location);
 		}
+	},
+
+	/*
+	 * Will search for and add a marker to the given location
+	 *
+	 * @param string
+	 */
+	findLocation: function(location /*, addToHistory*/)
+	{
+		var searchField = $('#searchField');
+
+		searchField.val(location);
+		searchField.parents('form').submit();
 	},
 
 	priceRange: function()
@@ -452,6 +467,17 @@ var holidays =
 
 				$(document).on('click', 'body, #infowindowClose', holidays.infowindowEvents.clickClose);
 				$(document).on('keyup', null, holidays.infowindowEvents.escapeClose);
+
+				// add to url
+				var name = url.match(/([^/]+?)\.(php|html?)/);
+				if(typeof name[1] == 'undefined') name[1] == '#';
+
+				holidays.historyPush(
+					[url, false],
+					name[1].charAt(0).toUpperCase() + name[1].slice(1),
+					'/infowindow/' + name[1],
+					holidays.infowindowOpen
+				);
 			}
 		});
 	},
@@ -560,6 +586,30 @@ var holidays =
 				}
 			});
 		});
+	},
+
+	historyBind: function() {
+		window.onpopstate = function(e)
+		{
+			if('callback' in e.state)
+			{
+				e.preventDefault();
+
+				var callback = holidays.historyCallbacks[e.state.callback];
+				callback.apply(this, e.state.state);
+			}
+		};
+	},
+
+	historyPush: function(state, name, slug, callback)
+	{
+		// don't re-add current state
+		if(history.state && JSON.stringify(history.state.state) == JSON.stringify(state)) return;
+
+		var i = holidays.historyCallbacks.length;
+		holidays.historyCallbacks[i] = callback;
+
+		window.history.pushState({ callback: i, state: state }, name, slug);
 	}
 }
 

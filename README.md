@@ -7,10 +7,10 @@ Setup
 =====
 
 * Clone this code into a folder on your local system, where <something>.dev resolves to
-* Copy /serverside/config.example.php to /serverside/config.php and fill in your system's details
-* Make sure /serverside/cache folder is writable to our code
+* Copy /server/config.example.php to /server/config.php and fill in your system's details
+* Make sure /server/cache folder is writable to our code
 * Create a database and execute the below query to set up the schema.
-* Run /serverside/import/*.php scripts to populate the database
+* Run /server/import/*.php scripts to populate the database
 
         CREATE TABLE IF NOT EXISTS `locations` (
           `feed_id` int(11) NOT NULL,
@@ -32,5 +32,5 @@ Phonegap
 ========
 
 This source should be Phonegap-compatible: the folder can just be copy-pasted into a Phonegap project.
-All serverside scripts are bundled in the /serverside/ folder, and will only run on a webserver.
+All serverside scripts are bundled in the /server/ folder, and will only run on a webserver.
 Javascript will detect if the code is running in an app and - if so - fire all requests to the production server.
