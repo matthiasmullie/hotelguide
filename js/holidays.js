@@ -93,72 +93,83 @@ var holidays =
 		google.maps.event.addListener(holidays.map, 'bounds_changed', function()
 		{
 			if(holidays.zoomTimer) clearTimeout(holidays.zoomTimer);
-			holidays.zoomTimer = setTimeout(function()
-			{
-				if(holidays.ongoingRequest) holidays.ongoingRequest.abort()
-				holidays.ongoingRequest = holidays.reload();
-			}, 250);
+			holidays.zoomTimer = setTimeout(holidays.reload, 250);
 		});
 
 		$('#loadingMap').hide();
 	},
 
+	setMapView: function(centerLat, centerLng, zoom)
+	{
+		var coordinate = new google.maps.LatLng(centerLat, centerLng);
+		holidays.map.setCenter(coordinate);
+		holidays.map.setZoom(zoom);
+	},
+
 	reload: function()
 	{
-		// close any open windows (sometimes, on touch devices, they're touched accidentally during pinch-zoom)
-		holidays.infowindowClose();
-
-		// get viewport
-		var bounds = holidays.map.getBounds();
-
-		// check if the request crosses lat/lng bounds before rounding the numbers
-		var crossBoundsLat = bounds.getNorthEast().lat() < bounds.getSouthWest().lat();
-		var crossBoundsLng = bounds.getNorthEast().lng() < bounds.getSouthWest().lng();
-
-		bounds = holidays.roundBounds(bounds, crossBoundsLat, crossBoundsLng);
-		var prices = $('.noUiSlider').val();
-
-		if (!holidays.needRedraw(bounds, crossBoundsLat, crossBoundsLng, prices)) return;
-
-		// things changed; change new data!
-		holidays.bounds = bounds;
-		holidays.prices = prices;
-
-		// don't display right away; if everything's done really fast, user won't even have noticed the new request
-		holidays.messageTimer = setTimeout(function() { $('#loadingMarkers').show(); }, 350);
-
-		return $.ajax(
+		var fetchMarkers = function()
 		{
-			url: holidays.host + '/server/ajax/markers.php',
-			data:
-			{
-				min: prices[0],
-				max: prices[1],
-				bounds:
-				{
-					neLat: bounds.neLat,
-					swLat: bounds.swLat,
-					neLng: bounds.neLng,
-					swLng: bounds.swLng
-				},
-				crossBounds:
-				{
-					lat: crossBoundsLat ? 1 : 0,
-					lng: crossBoundsLng ? 1 : 0
-				},
-				minPts: holidays.map.getZoom() > 15 ? 99999999 : 10, // zoomed in much = don't cluster
-				nbrClusters: Math.round(($('#map').width() * $('#map').height()) / 15000) // smaller screen = less clusters
-			},
-			type: 'GET',
-			dataType: 'json',
-			success: function(json)
-			{
-				holidays.drawMarkers(json);
+			// close any open windows (sometimes, on touch devices, they're touched accidentally during pinch-zoom)
+			holidays.infowindowClose();
 
-				clearTimeout(holidays.messageTimer);
-				$('#loadingMarkers').hide();
-			}
-		});
+			holidays.historyPush([holidays.map.getCenter().lat(), holidays.map.getCenter().lng(), holidays.map.getZoom()], 'reload', '/', holidays.setMapView);
+
+			// get viewport
+			var bounds = holidays.map.getBounds();
+
+			// check if the request crosses lat/lng bounds before rounding the numbers
+			var crossBoundsLat = bounds.getNorthEast().lat() < bounds.getSouthWest().lat();
+			var crossBoundsLng = bounds.getNorthEast().lng() < bounds.getSouthWest().lng();
+
+			bounds = holidays.roundBounds(bounds, crossBoundsLat, crossBoundsLng);
+			var prices = $('.noUiSlider').val();
+
+			if (!holidays.needRedraw(bounds, crossBoundsLat, crossBoundsLng, prices)) return;
+
+			// don't display right away; if everything's done really fast, user won't even have noticed the new request
+			holidays.messageTimer = setTimeout(function() { $('#loadingMarkers').show(); }, 350);
+
+			return $.ajax(
+			{
+				url: holidays.host + '/server/ajax/markers.php',
+				data:
+				{
+					min: prices[0],
+					max: prices[1],
+					bounds:
+					{
+						neLat: bounds.neLat,
+						swLat: bounds.swLat,
+						neLng: bounds.neLng,
+						swLng: bounds.swLng
+					},
+					crossBounds:
+					{
+						lat: crossBoundsLat ? 1 : 0,
+						lng: crossBoundsLng ? 1 : 0
+					},
+					minPts: holidays.map.getZoom() > 15 ? 99999999 : 10, // zoomed in much = don't cluster
+					nbrClusters: Math.round(($('#map').width() * $('#map').height()) / 15000) // smaller screen = less clusters
+				},
+				type: 'GET',
+				dataType: 'json',
+				success: function(json)
+				{
+					holidays.drawMarkers(json);
+
+					// things changed; change new data!
+					holidays.bounds = bounds;
+					holidays.prices = prices;
+
+					clearTimeout(holidays.messageTimer);
+					$('#loadingMarkers').hide();
+				}
+			});
+		}
+
+		if(holidays.ongoingRequest) holidays.ongoingRequest.abort();
+		holidays.ongoingRequest = fetchMarkers();
 	},
 
 	drawMarkers: function(json)
@@ -280,9 +291,7 @@ var holidays =
 			// add click listener
 			google.maps.event.addListener(marker, 'click', function(e)
 			{
-				holidays.map.setZoom(holidays.map.getZoom() + 1);
-//				holidays.map.setCenter(marker.getPosition()); // cluster center
-				holidays.map.setCenter(e.latLng); // clicked position
+				holidays.setMapView(e.latLng.lat(), e.latLng.lng(), holidays.map.getZoom() + 1);
 			});
 
 			return marker;
@@ -340,8 +349,9 @@ var holidays =
 
 						holidays.locationMarker = holidays.draw.reference(coordinates, 'Huidige locatie');
 
-						holidays.map.setZoom(14);
-						holidays.map.setCenter(coordinates);
+						holidays.setMapView(coordinates.lat(), coordinates.lng(), 14);
+
+						holidays.historyPush([], 'locate', '/current-position', holidays.locate);
 					});
 				});
 		}
@@ -366,12 +376,11 @@ var holidays =
 			holidays.locationMarker = holidays.draw.reference(place.geometry.location, place.name);
 
 			// zoom to specified location
-			holidays.map.setZoom(14);
-			holidays.map.setCenter(place.geometry.location);
+			holidays.setMapView(place.geometry.location.lat(), place.geometry.location.lng(), 14);
 
 			// add to url
 			var slug = encodeURIComponent(place.name.toLowerCase().replace(/ /g, '-'));
-			holidays.historyPush([place.name], place.name, '/' + slug, holidays.findLocation);
+			holidays.historyPush([place.name], 'autocomplete', '/' + slug, holidays.findLocation);
 		}
 
 		// selecting a specific place from the autocomplete dropdown
@@ -396,7 +405,7 @@ var holidays =
 			 * Make sure the uri is no history of opened infowindows
 			 */
 			var location = decodeURIComponent(document.location.pathname.replace(/(^\/|\/$)/, '').replace(/-/g, ' '));
-			if(location && !location.match(/^infowindow/)) holidays.findLocation(location);
+			if(location && !location.match(/^(infowindow|current-position)/)) holidays.findLocation(location);
 		}
 	},
 
@@ -508,7 +517,7 @@ var holidays =
 
 				holidays.historyPush(
 					[url, false],
-					name[1].charAt(0).toUpperCase() + name[1].slice(1),
+					'infowindow',
 					'/infowindow/' + name[1],
 					holidays.infowindowOpen
 				);
@@ -625,7 +634,7 @@ var holidays =
 	historyBind: function() {
 		window.onpopstate = function(e)
 		{
-			if('callback' in e.state)
+			if(e.state && 'callback' in e.state)
 			{
 				e.preventDefault();
 
@@ -638,12 +647,19 @@ var holidays =
 	historyPush: function(state, name, slug, callback)
 	{
 		// don't re-add current state
-		if(history.state && JSON.stringify(history.state.state) == JSON.stringify(state)) return;
+		if(
+			history.state &&
+			JSON.stringify(history.state.state) == JSON.stringify(state) &&
+			history.state.name == name
+		)
+		{
+			return;
+		}
 
 		var i = holidays.historyCallbacks.length;
 		holidays.historyCallbacks[i] = callback;
 
-		window.history.pushState({ callback: i, state: state }, name, slug);
+		window.history.pushState({ callback: i, state: state, name: name }, name, slug);
 	}
 }
 
