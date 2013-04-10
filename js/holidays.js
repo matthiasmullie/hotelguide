@@ -22,9 +22,7 @@ var holidays =
 
 	init: function()
 	{
-		// hide the address bar (in apps)
-		window.scrollTo(0, 1);
-
+		holidays.hideAddressBar();
 		holidays.drawMap();
 		holidays.locate();
 		holidays.autocomplete();
@@ -42,6 +40,38 @@ var holidays =
 		{
 			$('#search').removeClass('inputHolderActive');
 		});
+	},
+
+	hideAddressBar: function()
+	{
+		var hide = function(e)
+		{
+			/*
+			 * On iPhone, the address bar will be hidden when scrolling up.
+			 * For scrolling to be possible, the document height will have to be higher
+			 * than the viewport though, but we only want to have exact viewport height.
+			 *
+			 * Let's first set an absurdly high height, scroll (to hide the address bar),
+			 * and then calculate the viewport height difference. After that, we can
+			 * reset the absurdely high height to the viewport height and increase the
+			 * map hight with the viewport height difference.
+			 */
+
+			var height = window.innerHeight;
+
+			// hide the address bar (in apps)
+			$('body')
+				.height(9999)
+				.scrollTop(1)
+				.height(window.innerHeight);
+
+			var difference = window.innerHeight - height;
+
+			$('#map').height($('#map').height() + difference);
+		}
+
+		window.addEventListener('load', hide);
+		window.addEventListener('orientationchange', hide);
 	},
 
 	drawMap: function()
@@ -93,7 +123,7 @@ var holidays =
 		holidays.prices = prices;
 
 		// don't display right away; if everything's done really fast, user won't even have noticed the new request
-		holidays.messageTimer = setTimeout("$('#loadingMarkers').show()", 350);
+		holidays.messageTimer = setTimeout(function() { $('#loadingMarkers').show(); }, 350);
 
 		$.ajax(
 		{
@@ -502,15 +532,15 @@ var holidays =
 		redraw &=
 			holidays.numClusters != 0 ||
 			// most common
-			( !crossBoundsLat && bounds.neLat > holidays.bounds.neLat ) ||
-			( !crossBoundsLng && bounds.neLng > holidays.bounds.neLng ) ||
-			( !crossBoundsLat && bounds.swLat < holidays.bounds.swLat ) ||
-			( !crossBoundsLng && bounds.swLat < holidays.bounds.swLat ) ||
+			(!crossBoundsLat && bounds.neLat > holidays.bounds.neLat) ||
+			(!crossBoundsLng && bounds.neLng > holidays.bounds.neLng) ||
+			(!crossBoundsLat && bounds.swLat < holidays.bounds.swLat) ||
+			(!crossBoundsLng && bounds.swLat < holidays.bounds.swLat) ||
 			// north-south or east-west overlap, without center displaying
-			( crossBoundsLat && bounds.neLat < holidays.bounds.neLat ) ||
-			( crossBoundsLng && bounds.neLng < holidays.bounds.neLng ) ||
-			( crossBoundsLat && bounds.swLat > holidays.bounds.swLat ) ||
-			( crossBoundsLng && bounds.swLat > holidays.bounds.swLat );
+			(crossBoundsLat && bounds.neLat < holidays.bounds.neLat) ||
+			(crossBoundsLng && bounds.neLng < holidays.bounds.neLng) ||
+			(crossBoundsLat && bounds.swLat > holidays.bounds.swLat) ||
+			(crossBoundsLng && bounds.swLat > holidays.bounds.swLat);
 
 		// don't redraw if price range hasn't changed
 		redraw |= typeof(JSON) == 'undefined' || JSON.stringify(holidays.prices) != JSON.stringify(prices);
@@ -565,7 +595,7 @@ var holidays =
 		{
 			e.preventDefault();
 
-			var $form = $(this ).parents('form');
+			var $form = $(this).parents('form');
 
 			// submit form via ajax
 			var action = $form.attr('action');
