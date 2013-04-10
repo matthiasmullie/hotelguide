@@ -16,6 +16,7 @@ var holidays =
 	}],
 	zoomTimer: null,
 	messageTimer: null,
+	ongoingRequest: null,
 	bounds: [],
 	prices: [],
 	historyCallbacks: [],
@@ -91,9 +92,12 @@ var holidays =
 
 		google.maps.event.addListener(holidays.map, 'bounds_changed', function()
 		{
-
 			if(holidays.zoomTimer) clearTimeout(holidays.zoomTimer);
-			holidays.zoomTimer = setTimeout(holidays.reload, 250);
+			holidays.zoomTimer = setTimeout(function()
+			{
+				if(holidays.ongoingRequest) holidays.ongoingRequest.abort()
+				holidays.ongoingRequest = holidays.reload();
+			}, 250);
 		});
 
 		$('#loadingMap').hide();
@@ -103,10 +107,6 @@ var holidays =
 	{
 		// close any open windows (sometimes, on touch devices, they're touched accidentally during pinch-zoom)
 		holidays.infowindowClose();
-
-		// don't fire new request while previous one is still running
-		var loadingMarkers = $('#loadingMarkers');
-		if(loadingMarkers.is(':visible')) return;
 
 		// get viewport
 		var bounds = holidays.map.getBounds();
@@ -127,7 +127,7 @@ var holidays =
 		// don't display right away; if everything's done really fast, user won't even have noticed the new request
 		holidays.messageTimer = setTimeout(function() { $('#loadingMarkers').show(); }, 350);
 
-		$.ajax(
+		return $.ajax(
 		{
 			url: holidays.host + '/server/ajax/markers.php',
 			data:
@@ -146,7 +146,7 @@ var holidays =
 					lat: crossBoundsLat ? 1 : 0,
 					lng: crossBoundsLng ? 1 : 0
 				},
-				minPts: holidays.map.getZoom() > 13 ? 99999999 : 10, // zoomed in much = don't cluster
+				minPts: holidays.map.getZoom() > 15 ? 99999999 : 10, // zoomed in much = don't cluster
 				nbrClusters: Math.round(($('#map').width() * $('#map').height()) / 15000) // smaller screen = less clusters
 			},
 			type: 'GET',
@@ -156,7 +156,7 @@ var holidays =
 				holidays.drawMarkers(json);
 
 				clearTimeout(holidays.messageTimer);
-				loadingMarkers.hide();
+				$('#loadingMarkers').hide();
 			}
 		});
 	},
@@ -396,7 +396,7 @@ var holidays =
 			 * Make sure the uri is no history of opened infowindows
 			 */
 			var location = decodeURIComponent(document.location.pathname.replace(/(^\/|\/$)/, '').replace(/-/g, ' '));
-			if(location && !location.match(/^infowindow/ ).length) holidays.findLocation(location);
+			if(location && !location.match(/^infowindow/)) holidays.findLocation(location);
 		}
 	},
 
