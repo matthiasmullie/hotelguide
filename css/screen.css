@@ -691,40 +691,32 @@ html, body {
 	background: white;
 }
 
-.touch #topWrapper {
-	margin-bottom: -131px;
-	height: 131px;
-}
-
 @media only screen and (max-width: 767px) {
 
 	#topWrapper {
 		height: 143px;
 	}
 
-	.touch #topWrapper {
-		height: 93px;
-	}
-
 }
 
 #bottomWrapper {
-	height: 100%;
-	background: #dde8f6;
-}
-
-#map {
 	position: absolute;
 	top: 181px;
 	bottom: 0;
 	width: 100%;
+	background: #dde8f6;
+}
+
+#map {
+	width: 100%;
+	height: 100%;
 
 	-ms-touch-action: manipulation double-tap-zoom;
 }
 
 @media only screen and (max-width: 767px) {
 
-	#map {
+	#bottomWrapper {
 		top: 143px;
 	}
 

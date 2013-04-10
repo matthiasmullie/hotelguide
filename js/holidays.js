@@ -44,31 +44,33 @@ var holidays =
 
 	hideAddressBar: function()
 	{
-		var hide = function(e)
+		var hide = function()
 		{
-			/*
-			 * On iPhone, the address bar will be hidden when scrolling up.
-			 * For scrolling to be possible, the document height will have to be higher
-			 * than the viewport though, but we only want to have exact viewport height.
-			 *
-			 * Let's first set an absurdly high height, scroll (to hide the address bar),
-			 * and then calculate the viewport height difference. After that, we can
-			 * reset the absurdely high height to the viewport height and increase the
-			 * map hight with the viewport height difference.
-			 */
-
-			var height = window.innerHeight;
-
-			// hide the address bar (in apps)
-			$('body')
-				.height(9999)
-				.scrollTop(1)
-				.height(window.innerHeight);
-
-			var difference = window.innerHeight - height;
-
-			$('#map').height($('#map').height() + difference);
+			$('body').scrollTop(1);
 		}
+
+		var height = window.innerHeight;
+		var $body = $('body');
+
+		/*
+		 * On iPhone, the address bar will be hidden when scrolling up.
+		 * For scrolling to be possible, the document height will have to be higher
+		 * than the viewport though, but we only want to have exact viewport height.
+		 *
+		 * Let's first set an absurdly high height, scroll (to hide the address bar),
+		 * and then calculate the viewport height difference. After that, we can
+		 * reset the absurdely high height to the viewport height and increase the
+		 * map hight with the viewport height difference.
+		 */
+		$body.height(9999)
+		hide();
+		$body.height(window.innerHeight);
+
+		var difference = window.innerHeight - height;
+
+		// fix elements that were positioned absolutely against a now incorrect body height
+		$('#bottomWrapper').css('bottom', -difference);
+		$('#infowindow').css('bottom', -difference);
 
 		window.addEventListener('load', hide);
 		window.addEventListener('orientationchange', hide);
@@ -390,9 +392,11 @@ var holidays =
 			 * If URI has a non-existing slug, start a search for that location.
 			 * e.g. http://www.last-minute-vakanties.be/new-york will zoom in and
 			 * add a marker on New York.
+			 *
+			 * Make sure the uri is no history of opened infowindows
 			 */
 			var location = decodeURIComponent(document.location.pathname.replace(/(^\/|\/$)/, '').replace(/-/g, ' '));
-			if(location) holidays.findLocation(location);
+			if(location && !location.match(/^infowindow/ ).length) holidays.findLocation(location);
 		}
 	},
 
