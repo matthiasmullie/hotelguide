@@ -1048,6 +1048,11 @@ form textarea {
 	height: 100px;
 }
 
+	form.submitted p.error,
+	form.submitted label.error {
+		color: red;
+	}
+
 	form.submitted input.error,
 	form.submitted textarea.error {
 		border: 1px solid red;

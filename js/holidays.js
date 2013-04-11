@@ -66,7 +66,7 @@ var holidays = {
 			slide: updatePrices
 		} ).change( function() {
 			// re-fetch markers, based on new price
-			holidays.reload();
+			holidays.map.reload();
 		} );
 
 		updatePrices();

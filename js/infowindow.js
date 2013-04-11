@@ -97,7 +97,7 @@ holidays.infowindow = {
 		$( document ).on( 'keyup', null, holidays.infowindow.events.escape );
 
 		// save details in history, allowing people to use browser next/previous to return to the infowindow
-		holidays.history.push( [content, title], 'infowindow', '/#!/' + title, holidays.infowindow.display );
+		holidays.history.push( [content, title], 'infowindow', '/', holidays.infowindow.display );
 	},
 
 	/**

@@ -344,7 +344,7 @@ holidays.map = {
 			holidays.map.referenceMarker = holidays.map.marker.reference( coordinates, '' );
 
 			// save action in history, allowing people to use browser next/previous to return to user's current position
-			holidays.history.push( [], 'locate', '/#!/current-position', holidays.map.locate );
+			holidays.history.push( [], 'locate', '/', holidays.map.locate );
 			holidays.map.allowHistory = false;
 
 			// zoom to specified location
@@ -414,11 +414,9 @@ holidays.map = {
 			 * If URI has a non-existing slug, start a search for that location.
 			 * e.g. http://www.last-minute-vakanties.be/new-york will zoom in and
 			 * add a marker on New York.
-			 *
-			 * Make sure the uri is no history of opened infowindows
 			 */
 			var location = decodeURIComponent( document.location.pathname.replace( /(^\/|\/$)/, '' ).replace( /-/g, ' ' ) );
-			if ( location && !location.match( /^#/ ) ) {
+			if ( location ) {
 				holidays.map.findLocation( location );
 			}
 		}
