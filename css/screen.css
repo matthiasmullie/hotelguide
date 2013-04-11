@@ -786,10 +786,6 @@ html, body {
 
 #infowindowMarker {
 	padding: 162px 0 0 0;
-	background: #fff;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
-	border-radius: 6px;
 }
 
 #infowindow #markerImage {

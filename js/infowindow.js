@@ -11,7 +11,7 @@ holidays.infowindow = {
 		// every link with class="infowindow" will see its content opened in an infowindow
 		$( document ).on( 'click', 'a.infowindow', function( e ) {
 			e.preventDefault();
-			holidays.infowindow.open( $( this ).attr( 'href' ));
+			holidays.infowindow.open( $( this ).attr( 'href' ) );
 		});
 
 		// every form with class="infowindow" will submit over ajax and display the results in the infowindow
@@ -110,7 +110,7 @@ holidays.infowindow = {
 			url: holidays.host + url,
 			dataType: 'html',
 			success: function( html ) {
-				var name = url.match(/([^/]+?)\.(php|html?)/);
+				var name = url.match( /([^/]+?)\.(php|html?)/ );
 				name = ( typeof name[1] != 'undefined' ? name[1] : 'unknown' );
 
 				holidays.infowindow.display( html, name );

@@ -34,7 +34,7 @@ if ( $data !== false ) {
 			</div>
 		</div>
 		<div id="infowindowBottom">
-			<p id="markerDisclaimer"><a class="infowindow" href="/server/disclaimer.php?url='. urlencode( '/server/ajax/location.php?id='.$id ) .'">Disclaimer</a></p>
+			<p id="markerDisclaimer"><a class="infowindow" href="/server/disclaimer.php">Disclaimer</a></p>
 		</div>';
 } else {
 	echo '
