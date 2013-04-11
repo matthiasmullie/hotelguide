@@ -780,207 +780,130 @@ html, body {
 
 /*
 	Infowindows
+	General infowindow styles in infowindow.css; below is marker-specific CSS
 */
 
-#infowindow {
-	z-index: 1002;
-	display: none;
-	background: rgba(0, 0, 0, .7);
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
+
+#infowindowMarker {
+	padding: 162px 0 0 0;
+	background: #fff;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
 }
 
-#infowindowBounds {
-	z-index: 20;
+#infowindow #markerImage {
+	z-index: 30;
 	position: absolute;
-	left: 50%;
-	top: 50%;
-	margin-left: -150px;
-	margin-top: -200px;
+	top: 0;
+	left: 0;
 	width: 300px;
-	height: 400px;
+	height: 160px;
+	background-size: 300px auto;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-top-right-radius: 6px;
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: 6px;
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;
+}
+
+#infowindow #markerImage a {
+	display: block;
+	width: 300px;
+	height: 160px;
+	border: 0;
+}
+
+#infowindowTop {
+	z-index: 32;
+	font-weight: 700;
+	position: absolute;
+	top: 126px;
+	left: 0;
+	background: rgba(0, 0, 0, .7);
+	color: #fff;
+	padding: 5px 20px;
+	width: 260px;
+	height: 25px;
 	overflow: hidden;
 }
 
-	#infowindowMarker {
-		padding: 162px 0 0 0;
-		height: 238px;
-		background: #fff;
-		-moz-border-radius: 6px;
-		-webkit-border-radius: 6px;
-		border-radius: 6px;
-		overflow: auto;
-	}
+#infowindowTop h2 {
+	text-align: left;
+	float: left;
+	color: #fff;
+	font-size: 18px;
+	line-height: 24px;
+	padding: 0;
+	width: 220px;
+	overflow: hidden;
+}
 
-	#infowindowContainer {
-		height: 400px;
-		background: #fff;
-		-moz-border-radius: 6px;
-		-webkit-border-radius: 6px;
-		border-radius: 6px;
-		overflow: auto;
-	}
+#infowindowTop p {
+	text-align: right;
+	float: right;
+	color: #fff;
+	font-size: 8px;
+	line-height: 22px;
+	padding: 2px 0 0 0;
+	width: 40px;
+	overflow: hidden;
+}
 
-		#infowindowClose {
-/*			display: none;
-*/			position: absolute;
-			text-align: center;
-			line-height: 36px;
-			top: 0;
-			font-size: 36px;
-			right: 0;
-			border: 0;
-			padding: 0;
-			font-weight: 700;
-			color: #fff;
-			width: 36px;
-			height: 36px;
-			z-index: 1000;
-			background: rgba(0, 0, 0, .7);
-			-moz-border-radius: 0 6px 0 6px;
-			-webkit-border-radius: 0 6px 0 6px;
-			border-radius: 0 6px 0 6px;
-		}
+#markerUrl {
+	display: block;
+	height: 24px;
+	padding: 10px 12px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	margin-bottom: 12px;
+	border: 1px solid #0078c2;
+	background: #58b8f4;
+	background: #8acaf2;
+	background: -moz-linear-gradient(top,  #8acaf2 3%, #58b8f4 3%, #0097f5 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,#8acaf2), color-stop(3%,#58b8f4), color-stop(100%,#0097f5));
+	background: -webkit-linear-gradient(top,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
+	background: -o-linear-gradient(top,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
+	background: -ms-linear-gradient(top,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
+	background: linear-gradient(to bottom,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
+}
 
-		#infowindow #markerImage {
-			z-index: 30;
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 300px;
-			height: 160px;
-			background-size: 300px auto;
-			-webkit-border-top-left-radius: 6px;
-			-webkit-border-top-right-radius: 6px;
-			-moz-border-radius-topleft: 6px;
-			-moz-border-radius-topright: 6px;
-			border-top-left-radius: 6px;
-			border-top-right-radius: 6px;
-		}
+#markerUrl:hover {
+	border: 1px solid #00609b;
+	background: #0079c4;
+	background: -moz-linear-gradient(top,  #0079c4 0%, #259de8 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0079c4), color-stop(100%,#259de8));
+	background: -webkit-linear-gradient(top,  #0079c4 0%,#259de8 100%);
+	background: -o-linear-gradient(top,  #0079c4 0%,#259de8 100%);
+	background: -ms-linear-gradient(top,  #0079c4 0%,#259de8 100%);
+	background: linear-gradient(to bottom,  #0079c4 0%,#259de8 100%);
+}
 
-			#infowindow #markerImage a {
-				display: block;
-				width: 300px;
-				height: 160px;
-				border: 0;
-			}
+#markerUrl .leftSpan {
+	font-weight: 700;
+	font-size: 18px;
+	color: #fff;
+	float: left;
+	line-height: 24px;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
+}
 
-		#infowindowTop {
-			z-index: 32;
-			font-weight: 700;
-			position: absolute;
-			top: 126px;
-			left: 0;
-			background: rgba(0, 0, 0, .7);
-			color: #fff;
-			padding: 5px 20px;
-			width: 260px;
-			height: 25px;
-			overflow: hidden;
-		}
+#markerUrl .rightSpan {
+	font-weight: 700;
+	font-size: 14px;
+	color: #fff;
+	float: right;
+	line-height: 22px;
+	padding: 2px 0 0 0;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
+}
 
-			#infowindowTop h2 {
-				text-align: left;
-				float: left;
-				color: #fff;
-				font-size: 18px;
-				line-height: 24px;
-				padding: 0;
-				width: 220px;
-				overflow: hidden;
-			}
 
-			#infowindowTop p {
-				text-align: right;
-				float: right;
-				color: #fff;
-				font-size: 8px;
-				line-height: 22px;
-				padding: 2px 0 0 0;
-				width: 40px;
-				overflow: hidden;
-			}
-
-		#markerUrl {
-			display: block;
-			height: 24px;
-			padding: 10px 12px;
-			-moz-border-radius: 6px;
-			-webkit-border-radius: 6px;
-			border-radius: 6px;
-			margin-bottom: 12px;
-			border: 1px solid #0078c2;
-			background: #58b8f4;
-			background: #8acaf2;
-			background: -moz-linear-gradient(top,  #8acaf2 3%, #58b8f4 3%, #0097f5 100%);
-			background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,#8acaf2), color-stop(3%,#58b8f4), color-stop(100%,#0097f5));
-			background: -webkit-linear-gradient(top,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
-			background: -o-linear-gradient(top,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
-			background: -ms-linear-gradient(top,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
-			background: linear-gradient(to bottom,  #8acaf2 3%,#58b8f4 3%,#0097f5 100%);
-		}
-
-		#markerUrl:hover {
-			border: 1px solid #00609b;
-			background: #0079c4;
-			background: -moz-linear-gradient(top,  #0079c4 0%, #259de8 100%);
-			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0079c4), color-stop(100%,#259de8));
-			background: -webkit-linear-gradient(top,  #0079c4 0%,#259de8 100%);
-			background: -o-linear-gradient(top,  #0079c4 0%,#259de8 100%);
-			background: -ms-linear-gradient(top,  #0079c4 0%,#259de8 100%);
-			background: linear-gradient(to bottom,  #0079c4 0%,#259de8 100%);
-		}
-
-			#markerUrl .leftSpan {
-				font-weight: 700;
-				font-size: 18px;
-				color: #fff;
-				float: left;
-				line-height: 24px;
-				text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
-			}
-
-			#markerUrl .rightSpan {
-				font-weight: 700;
-				font-size: 14px;
-				color: #fff;
-				float: right;
-				line-height: 22px;
-				padding: 2px 0 0 0;
-				text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
-			}
-
-		#infowindowData {
-			min-height: 100%;
-			height: auto !important;
-			height: 100%;
-			margin: 0 0 -20px 0;
-		}
-
-		#infowindowContent {
-			padding: 10px 20px 20px 20px;
-		}
-
-		#infowindowBottom {
-			height: 20px;
-			background: none repeat scroll 0 0 rgba(0, 0, 0, 0.7);
-			color: #fff;
-			width: 100%;
-			text-align: center;
-		}
-
-			#infowindowBottom p {
-				padding: 0;
-				line-height: 20px;
-			}
-
-				#infowindowBottom a {
-					color: #fff;
-					border: 0;
-				}
+/*
+	Forms
+*/
 
 .button {
 	display: block;
