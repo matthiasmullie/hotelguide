@@ -1,7 +1,6 @@
 <div id="infowindowData">
 	<div id="infowindowContent">
 		<h2>Contactformulier</h2>
-		<p>Vragen? Opmerkingen? Laat het ons weten!</p>
 		<?php
 			$submitted = isset( $_POST['name'] ) && isset( $_POST['email'] ) && isset( $_POST['message'] );
 
@@ -12,13 +11,18 @@
 			$valid = $name && $email && $message;
 
 			if ( !$submitted || !$valid ) {
+				$formClass = 'infowindow';
+				$formClass .= ( $submitted ? ' submitted' : '' );
+				$formClass .= ( $valid ? ' valid' : '' );
+
 				// form not yet submitted or submitted invalid; display form
 				echo '
-					<form name="contact" action="/server/contact.php" method="POST"'. ( $submitted ? 'class="submitted"' : '' ) .'>
+					<p>Vragen? Opmerkingen? Laat het ons weten!</p>
+					<form name="contact" action="/server/contact.php" method="POST" class="'. $formClass .'">
 						<input type="text" name="name" id="name" placeholder="Naam"'. ( $name ? "value='$name'" : 'class="error"' ) .' />
 						<input type="email" name="email" id="email" placeholder="E-mail adres"'. ( $email ? "value='$email'" : 'class="error"' ) .' />
 						<textarea name="message" id="message" placeholder="Boodschap"'. ( $message ? '' : 'class="error"' ) .'>'. ( $message ?: '' ) .'</textarea>
-						<a href="#" class="button" id="submit"><span>Verstuur</span></a>
+						<input type="submit" class="button" id="submit" value="Verstuur" />
 					</form>';
 			} else {
 				// form submitted; email to recipient & display thanks message

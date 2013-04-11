@@ -19,8 +19,8 @@ $clustered = cluster(
 		'swLat' => isset( $_GET['bounds']['swLat'] ) ? (float) $_GET['bounds']['swLat'] : 0,
 		'swLng' => isset( $_GET['bounds']['swLng'] ) ? (float) $_GET['bounds']['swLng'] : 0
 	),
-	isset( $_GET['min'] ) ? (int) $_GET['min'] : 50,
-	isset( $_GET['max'] ) ? (int) $_GET['max'] : 300,
+	isset( $_GET['prices']['min'] ) ? (int) $_GET['prices']['min'] : 50,
+	isset( $_GET['prices']['max'] ) ? (int) $_GET['prices']['max'] : 300,
 	isset( $_GET['minPts'] ) ? (int) $_GET['minPts'] : 1,
 	isset( $_GET['nbrClusters'] ) ? (int) $_GET['nbrClusters'] : 50,
 	isset( $_GET['crossBounds']['lat'] ) ? (bool) $_GET['crossBounds']['lat'] : false,

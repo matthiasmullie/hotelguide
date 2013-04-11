@@ -268,7 +268,6 @@ body {
 				/* don't show by default; will be enabled in JS if browser supports this */
 				display: none;
 
-				/* @todo: style... */
 				-moz-border-radius: 29px;
 				-webkit-border-radius: 29px;
 				border-radius: 29px;
@@ -985,8 +984,8 @@ html, body {
 
 .button {
 	display: block;
-	height: 24px;
-	padding: 5px 12px;
+	width: 100%;
+	padding: 0;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
 	border-radius: 6px;
@@ -1014,11 +1013,18 @@ html, body {
 	background: linear-gradient(to bottom,  #0079c4 0%,#259de8 100%);
 }
 
-	.button span {
+	/*
+	 * Buttons can be either:
+	 * * <input class="submit" value="text" />
+	 * * <a class="submit"><span>text</text></a>
+	 */
+	input.button,
+	a.button span {
 		font-weight: 700;
 		font-size: 14px;
 		color: #fff;
-		line-height: 24px;
+		height: 29px;
+		line-height: 27px;
 		text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
 	}
 
