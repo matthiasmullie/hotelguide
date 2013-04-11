@@ -6,10 +6,10 @@ require_once '../config.php';
 require_once '../utils/clusterer.php';
 require_once '../utils/cache/cache.php';
 
-ini_set('memory_limit', '1G');
+ini_set( 'memory_limit', '1G' );
 
 // init db & cache objects
-$db = new PDO('mysql:host=' . $host . ';dbname=' . $db, $user, $pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));
+$db = new PDO( "mysql:host=$host;dbname=$db", $user, $pass, array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "UTF8"' ) );
 $cache = Cache::load( $cache );
 
 $clustered = cluster(

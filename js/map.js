@@ -111,7 +111,7 @@ holidays.map = {
 		holidays.map.messageTimer = setTimeout( function() { loadingMessage.show(); }, 350 );
 
 		holidays.map.lastRequest = $.ajax( {
-			url: holidays.host + '/server/ajax/markers.php',
+			url: holidays.host + '/ajax/markers.php',
 			data:
 			{
 				prices: {
@@ -143,9 +143,7 @@ holidays.map = {
 				clearTimeout( holidays.map.messageTimer );
 				loadingMessage.hide();
 			},
-			error: function() {
-				// @todo: display error!
-			}
+			error: holidays.infowindow.error
 		} );
 	},
 
@@ -229,7 +227,7 @@ holidays.map = {
 
 			// add click listener
 			google.maps.event.addListener( marker, 'click', function( e ) {
-				holidays.infowindow.open( '/server/ajax/location.php?id=' + this.id );
+				holidays.infowindow.open( '/ajax/location.php?id=' + this.id );
 			} );
 
 			return marker;

@@ -7,22 +7,23 @@
 require_once __DIR__ . '/../db.php';
 require_once '../utils/cache/cache.php';
 
-set_time_limit(0);
+set_time_limit( 0 );
+
+$db = new PDO( "mysql:host=$host;dbname=$db", $user, $pass, array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "UTF8"' ) );
 
 // feed data
 $feedUrl = 'http://pf.tradetracker.net/?aid=51300&encoding=utf-8&type=xml-v2-simple&fid=251048&categoryType=2&additionalType=2';
 $feedId = 1; // id in db - quick and dirty in code, let's just assume this won't change in db ;)
 
-$prepareLocation = $db->prepare('INSERT INTO locations (feed_id, lat, lng, title, text, image, url, type, stars, price) VALUES (:feed_id, :lat, :lng, :title, :text, :image, :url, :type, :stars, :price)');
+$prepareLocation = $db->prepare( 'INSERT INTO locations (feed_id, lat, lng, title, text, image, url, type, stars, price) VALUES (:feed_id, :lat, :lng, :title, :text, :image, :url, :type, :stars, :price)' );
 
 // empty existing data
-$emptyLocation = $db->prepare('DELETE FROM locations WHERE feed_id = :feed_id');
-$emptyLocation->execute(array(':feed_id' => 1));
+$emptyLocation = $db->prepare( 'DELETE FROM locations WHERE feed_id = :feed_id' );
+$emptyLocation->execute( array( ':feed_id' => 1 ) );
 
 // parse xml
-$xml = new SimpleXMLElement($feedUrl, 0, true);
-foreach($xml->xpath('/products/product') as $node)
-{
+$xml = new SimpleXMLElement( $feedUrl, 0, true );
+foreach ( $xml->xpath( '/products/product' ) as $node ) {
 	// build data to insert in db
 	$location = array();
 	$location[':feed_id'] = $feedId;
@@ -33,20 +34,24 @@ foreach($xml->xpath('/products/product') as $node)
 	$location[':image'] = (string) $node->images->image;
 	$location[':url'] = (string) $node->URL;
 	$location[':type'] = (string) $node->categories->category;
-	$location[':stars'] = round((float) $node->properties->stars->value / 2);
+	$location[':stars'] = round( (float) $node->properties->stars->value / 2 );
 	$location[':price'] = (float) $node->price->amount;
 
 	// validate data
-	if(!$location[':feed_id']) continue;
-	if(!$location[':lat']) continue;
-	if(!$location[':lng']) continue;
-	if(!$location[':title']) continue;
-	if(!$location[':url']) continue;
-	if(!$location[':type']) continue;
-	if(!$location[':price']) continue;
+	if (
+		!$location[':feed_id'] ||
+		!$location[':lat'] ||
+		!$location[':lng'] ||
+		!$location[':title'] ||
+		!$location[':url'] ||
+		!$location[':type'] ||
+		!$location[':price']
+	) {
+		continue;
+	}
 
 	// insert into db
-	$prepareLocation->execute($location);
+	$prepareLocation->execute( $location );
 }
 
 // purge caches

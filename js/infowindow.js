@@ -28,14 +28,8 @@ holidays.infowindow = {
 				data: data,
 				type: method,
 				dataType: 'html',
-				success: function( html ) {
-					$( '#infowindow' )
-						.show()
-						.find( '#infowindowContainer' ).html( html );
-				},
-				error: function() {
-					// @todo: display error!
-				}
+				success: holidays.infowindow.output,
+				error: holidays.infowindow.error
 			} );
 		});
 	},
@@ -81,23 +75,29 @@ holidays.infowindow = {
 	},
 
 	/**
-	 * Display the content into an infowindow.
+	 * Outputs a certain content into an infowindow.
 	 *
 	 * @param string content
-	 * @param string[optional] title
 	 */
-	display: function( content, title ) {
-		title = ( typeof title != 'undefined' ? title : '' );
-
+	output: function( content ) {
 		$('#infowindow')
 			.show()
 			.find( '#infowindowContainer' ).html( content );
 
 		$( document ).on( 'click', 'body, #infowindowClose', holidays.infowindow.events.click );
 		$( document ).on( 'keyup', null, holidays.infowindow.events.escape );
+	},
+
+	/**
+	 * Display the content into an infowindow.
+	 *
+	 * @param string content
+	 */
+	display: function( content ) {
+		holidays.infowindow.output( content );
 
 		// save details in history, allowing people to use browser next/previous to return to the infowindow
-		holidays.history.push( [content, title], 'infowindow', '/', holidays.infowindow.display );
+		holidays.history.push( [content], 'infowindow', '/', holidays.infowindow.display );
 	},
 
 	/**
@@ -109,15 +109,8 @@ holidays.infowindow = {
 		$.ajax( {
 			url: holidays.host + url,
 			dataType: 'html',
-			success: function( html ) {
-				var name = url.match( /([^/]+?)\.(php|html?)/ );
-				name = ( typeof name[1] != 'undefined' ? name[1] : 'unknown' );
-
-				holidays.infowindow.display( html, name );
-			},
-			error: function() {
-				// @todo: display error!
-			}
+			success: holidays.infowindow.display,
+			error: holidays.infowindow.error
 		} );
 	},
 
@@ -130,6 +123,17 @@ holidays.infowindow = {
 		$( document ).off( 'keyup', null, holidays.infowindow.events.escape );
 
 		$( '#infowindow' ).hide();
+	},
+
+	/**
+	 * Display an generic error message (error.html)
+	 */
+	error: function() {
+		$.ajax( {
+			url: '/error.html',
+			dataType: 'html',
+			success: holidays.infowindow.display
+		} );
 	}
 };
 
