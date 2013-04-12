@@ -6,6 +6,7 @@ require_once __DIR__.'/../config.php';
 require_once __DIR__.'/../utils/cache/cache.php';
 
 set_time_limit( 0 );
+ini_set( 'memory_limit', '1G' );
 
 $db = new PDO( "mysql:host=$host;dbname=$db", $user, $pass, array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "UTF8"' ) );
 
@@ -35,7 +36,7 @@ foreach ( $xml->xpath( '/products/product' ) as $node ) {
 	$location[':url'] = (string) $node->URL;
 	$location[':stars'] = (float) $node->properties->stars->value;
 	$location[':price'] = (float) $node->price->amount;
-	$location[':price_currency'] = 'EUR';
+	$location[':price_currency'] = (string) $node->price->currency;
 
 	// validate data
 	if (

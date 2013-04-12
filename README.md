@@ -29,7 +29,7 @@ Setup
           `price_currency` char(3) NOT NULL,
           PRIMARY KEY (`id`),
           UNIQUE KEY `coordinates` (`lat`,`lng`),
-          UNIQUE KEY `price` (`price`)
+          INDEX `price` (`price`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
         CREATE TABLE IF NOT EXISTS `track` (
