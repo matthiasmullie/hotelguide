@@ -1,8 +1,6 @@
 <?php
 
-/*
- * Hello! This ugly piece of code will parse the relevant data of hotel.com's product feed to our database
- */
+// Hello! This ugly piece of code will parse the relevant data of hotel.com's product feed to our database
 
 require_once __DIR__ . '/../db.php';
 require_once '../utils/cache/cache.php';
@@ -15,7 +13,7 @@ $db = new PDO( "mysql:host=$host;dbname=$db", $user, $pass, array( PDO::MYSQL_AT
 $feedUrl = 'http://pf.tradetracker.net/?aid=51300&encoding=utf-8&type=xml-v2-simple&fid=278357&categoryType=2&additionalType=2';
 $feedId = 2; // id in db - quick and dirty in code, let's just assume this won't change in db ;)
 
-$prepareLocation = $db->prepare( 'INSERT INTO locations (feed_id, lat, lng, title, text, image, url, type, stars, price) VALUES (:feed_id, :lat, :lng, :title, :text, :image, :url, :type, :stars, :price)' );
+$prepareLocation = $db->prepare( 'INSERT INTO locations (feed_id, product_id, lat, lng, title, text, image, url, stars, price) VALUES (:feed_id, :product_id, :lat, :lng, :title, :text, :image, :url, :stars, :price)' );
 
 // empty existing data
 $emptyLocation = $db->prepare( 'DELETE FROM locations WHERE feed_id = :feed_id' );
@@ -27,24 +25,24 @@ foreach ( $xml->xpath( '/products/product' ) as $node ) {
 	// build data to insert in db
 	$location = array();
 	$location[':feed_id'] = $feedId;
+	$location[':product_id'] = (string) $node->ID;
 	$location[':lat'] = (float) $node->properties->latitude->value;
 	$location[':lng'] = (float) $node->properties->longitude->value;
 	$location[':title'] = (string) $node->name;
 	$location[':text'] = (string) $node->description;
 	$location[':image'] = (string) $node->images->image;
 	$location[':url'] = (string) $node->URL;
-	$location[':type'] = 'hotel';
 	$location[':stars'] = (float) $node->properties->stars->value;
 	$location[':price'] = (float) $node->price->amount;
 
 	// validate data
 	if (
+		!$location[':product_id'] ||
 		!$location[':feed_id'] ||
 		!$location[':lat'] ||
 		!$location[':lng'] ||
 		!$location[':title'] ||
 		!$location[':url'] ||
-		!$location[':type'] ||
 		!$location[':price']
 	) {
 		continue;

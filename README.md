@@ -13,8 +13,9 @@ Setup
 * Run /import/*.php scripts to populate the database
 
         CREATE TABLE IF NOT EXISTS `locations` (
-          `feed_id` int(11) NOT NULL,
-          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+          `feed_id` int(11) unsigned NOT NULL,
+          `product_id` varchar(255) NOT NULL,
           `lat` float NOT NULL,
           `lng` float NOT NULL,
           `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -25,7 +26,8 @@ Setup
           `stars` float NOT NULL,
           `price` float NOT NULL,
           PRIMARY KEY (`id`),
-          UNIQUE KEY `coordinates` (`lat`,`lng`)
+          UNIQUE KEY `coordinates` (`lat`,`lng`),
+          UNIQUE KEY `price` (`price`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
         CREATE TABLE IF NOT EXISTS `track` (
