@@ -2,8 +2,8 @@
 
 // Hello! This ugly piece of code will parse the relevant data of expedia.com's product feed to our database
 
-require_once '../config.php';
-require_once '../utils/cache/cache.php';
+require_once __DIR__.'/../config.php';
+require_once __DIR__.'/../utils/cache/cache.php';
 
 set_time_limit( 0 );
 
@@ -13,11 +13,11 @@ $db = new PDO( "mysql:host=$host;dbname=$db", $user, $pass, array( PDO::MYSQL_AT
 $feedUrl = 'http://pf.tradetracker.net/?aid=51300&encoding=utf-8&type=xml-v2-simple&fid=273779&categoryType=2&additionalType=2';
 $feedId = 1; // id in db - quick and dirty in code, let's just assume this won't change in db ;)
 
-$prepareLocation = $db->prepare( 'INSERT INTO locations (feed_id, product_id, lat, lng, title, text, image, url, stars, price) VALUES (:feed_id, :product_id, :lat, :lng, :title, :text, :image, :url, :stars, :price)' );
+$prepareLocation = $db->prepare( 'INSERT INTO locations (feed_id, product_id, lat, lng, title, text, text_language, image, url, stars, price, price_currency) VALUES (:feed_id, :product_id, :lat, :lng, :title, :text, :text_language, :image, :url, :stars, :price, :price_currency)' );
 
 // empty existing data
 $emptyLocation = $db->prepare( 'DELETE FROM locations WHERE feed_id = :feed_id' );
-$emptyLocation->execute( array( ':feed_id' => 1 ) );
+$emptyLocation->execute( array( ':feed_id' => $feedId ) );
 
 // parse xml
 $xml = new SimpleXMLElement( $feedUrl, 0, true );
@@ -30,10 +30,15 @@ foreach ( $xml->xpath( '/products/product' ) as $node ) {
 	$location[':lng'] = (float) $node->properties->longitude->value;
 	$location[':title'] = (string) $node->name;
 	$location[':text'] = (string) $node->description;
+	$location[':text_language'] = 'nl';
 	$location[':image'] = (string) $node->images->image;
 	$location[':url'] = (string) $node->URL;
 	$location[':stars'] = (float) $node->properties->stars->value;
 	$location[':price'] = (float) $node->properties->totalPrice->value; // (float) $node->price->amount;
+	$location[':price_currency'] = 'EUR';
+
+	// change image size to url with better size
+	$location[':image'] = str_replace( '_t.jpg', '_b.jpg', $location[':image'] );
 
 	// validate data
 	if (

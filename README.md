@@ -20,11 +20,13 @@ Setup
           `lng` float NOT NULL,
           `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
           `text` text COLLATE utf8_unicode_ci NOT NULL,
+          `text_language` char(2) COLLATE utf8_unicode_ci NOT NULL,
           `image` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
           `url` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
           `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
           `stars` float NOT NULL,
           `price` float NOT NULL,
+          `price_currency` char(3) NOT NULL,
           PRIMARY KEY (`id`),
           UNIQUE KEY `coordinates` (`lat`,`lng`),
           UNIQUE KEY `price` (`price`)

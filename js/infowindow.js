@@ -80,7 +80,7 @@ holidays.infowindow = {
 	 * @param string content
 	 */
 	output: function( content ) {
-		$('#infowindow')
+		$( '#infowindow' )
 			.show()
 			.find( '#infowindowContainer' ).html( content );
 

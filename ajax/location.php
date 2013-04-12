@@ -16,19 +16,21 @@ if ( isset( $_GET['id'] ) ) {
 
 	if ( $data !== false ) {
 		echo '
-			<div id="infowindowMarker">
-				<div id="infowindowTop" class="clearfix">
-					<a href="/ajax/redirect.php?id=' . $data['id'] . '">
-						<h2>' . $data['title'] . '</h2>
-						<p>' . str_repeat('&#9733;', (int) $data['stars']) . '</p>
-					</a>
-				</div>
-				<div id="infowindowContent">
-					<a id="markerUrl" class="clearfix" href="/ajax/redirect.php?id=' . $data['id'] . '"><span class="leftSpan">Bestel</span> <span class="rightSpan">€' . $data['price'] . '</span></a>
-					<p id="markerText">' . $data['text'] . '</p>
-				</div>
-				<div id="markerImage" style="background-image: url(' . $data['image'] . ')">
-					<a href="/ajax/redirect.php?id=' . $data['id'] . '"></a>
+			<div id="infowindowData">
+				<div id="infowindowMarker">
+					<div id="infowindowTop" class="clearfix">
+						<a href="/ajax/redirect.php?id=' . $data['id'] . '">
+							<h2>' . $data['title'] . '</h2>
+							<p>' . str_repeat('&#9733;', (int) $data['stars']) . '</p>
+						</a>
+					</div>
+					<div id="infowindowContent">
+						<a id="markerUrl" class="clearfix" href="/ajax/redirect.php?id=' . $data['id'] . '"><span class="leftSpan">Bestel</span> <span class="rightSpan">€' . $data['price'] . '</span></a>
+						<p id="markerText" data-language="' . $data['text_language'] . '">' . $data['text'] . '</p>
+					</div>
+					<div id="markerImage" style="background-image: url(' . $data['image'] . ')">
+						<a href="/ajax/redirect.php?id=' . $data['id'] . '"></a>
+					</div>
 				</div>
 			</div>
 			<div id="infowindowBottom">
