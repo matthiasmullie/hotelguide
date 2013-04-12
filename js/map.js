@@ -143,7 +143,14 @@ holidays.map = {
 				clearTimeout( holidays.map.messageTimer );
 				loadingMessage.hide();
 			},
-			error: holidays.infowindow.error
+			error: function() {
+				// don't display error message if aborted
+				if ( holidays.map.lastRequest.statusText == 'abort' ) {
+					return;
+				}
+
+				holidays.infowindow.error();
+			}
 		} );
 	},
 
