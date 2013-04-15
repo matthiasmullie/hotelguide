@@ -8,9 +8,9 @@ Setup
 
 * Clone this code into a folder on your local system, where <something>.dev resolves to
 * Copy /config.example.php to /config.php and fill in your system's details
-* Make sure /cache folder is writable to the code (or configure memcached in config.php)
+* Make sure /cache folder is writable to the code (in terminal: chmod -R 777 <your-folder>/cache)
 * Create a database and execute the below queries to set up the schema.
-* Run /import/*.php scripts to populate the database
+* Run /import/*.php scripts to populate the database (in terminal: php <your-folder>/import/<feed-name>.php)
 
         CREATE TABLE IF NOT EXISTS `locations` (
           `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
