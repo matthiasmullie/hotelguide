@@ -9,6 +9,6 @@ $pass = '<pass>';
 $cache = array(
 	'class' => 'FileCache',
 	'params' => array(
-		'path' => __DIR__.'/cache/',
+		'path' => __DIR__.'/cache/cluster/',
 	)
 );

@@ -1,0 +1,10 @@
+{
+	"name": "matthiasmullie/lastminute",
+	"description": "Source code for http://www.last-minute-vakanties.be",
+	"homepage": "http://www.last-minute-vakanties.be/",
+	"license": "MIT",
+	"require": {
+		"php": ">=5.3.0",
+		"matthiasmullie/minify": "1.1.*"
+	}
+}

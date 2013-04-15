@@ -5,5 +5,5 @@
 .settings
 .*.swp
 .DS_Store
-cache/
+vendor/
 config.php

@@ -26,6 +26,7 @@ $clustered = cluster(
 	isset( $_GET['crossBounds']['lat'] ) ? (bool) $_GET['crossBounds']['lat'] : false,
 	isset( $_GET['crossBounds']['lng'] ) ? (bool) $_GET['crossBounds']['lng'] : false
 );
+header( 'Content-type: application/json' );
 echo json_encode( $clustered );
 
 /**

@@ -14,7 +14,7 @@ FileETag MTime Size
 	# forbidden folders
 	RewriteRule .*\.gitignore - [F]
 	RewriteRule import - [F]
-	RewriteRule cache - [F]
+	RewriteRule cache/cluster - [F]
 	RewriteRule utils - [F]
 
 	# one url to rule them all
@@ -68,3 +68,7 @@ FileETag MTime Size
 	# browser issues
 	mod_gzip_item_exclude reqheader "User-agent: Mozilla/4.0[678]"
 </IfModule>
+
+# JS/CSS minifier
+AddType application/x-httpd-php .html .htm
+php_value auto_append_file utils/minify.php

@@ -1,0 +1,3 @@
+# JS/CSS minifier
+AddType application/x-httpd-php .html .htm
+php_value auto_append_file ../utils/minify.php
