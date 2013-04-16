@@ -34,6 +34,7 @@ Setup
 
         CREATE TABLE IF NOT EXISTS `track` (
           `id` int(11) NOT NULL AUTO_INCREMENT,
+          `action` varchar(255) DEFAULT NULL,
           `feed_id` int(11) NOT NULL,
           `location_id` int(11) NOT NULL,
           `data` text COLLATE utf8_unicode_ci NOT NULL,

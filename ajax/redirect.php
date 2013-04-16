@@ -16,8 +16,9 @@ if ( isset( $_GET['id'] ) ) {
 
 	if ( $data !== false && $data['url'] ) {
 		// track click
-		$prepareTrack = $db->prepare( 'INSERT INTO track (feed_id, location_id, data) VALUES (:feed_id, :location_id, :data)' );
+		$prepareTrack = $db->prepare( 'INSERT INTO track (action, feed_id, location_id, data) VALUES (:action, :feed_id, :location_id, :data)' );
 		$prepareTrack->execute( array(
+			':action' => 'clickthrough',
 			':feed_id' => $data['feed_id'],
 			':location_id' => $data['id'],
 			':data' => serialize( $_SERVER ),

@@ -14,6 +14,15 @@ if ( isset( $_GET['id'] ) ) {
 	$prepareData->execute( array( ':id' => $id ) );
 	$data = $prepareData->fetch();
 
+	// track click
+	$prepareTrack = $db->prepare( 'INSERT INTO track (action, feed_id, location_id, data) VALUES (:action, :feed_id, :location_id, :data)' );
+	$prepareTrack->execute( array(
+		':action' => 'infowindow',
+		':feed_id' => $data['feed_id'],
+		':location_id' => $data['id'],
+		':data' => serialize( $_SERVER ),
+	) );
+
 	if ( $data !== false ) {
 		echo '
 			<div id="infowindowData">
