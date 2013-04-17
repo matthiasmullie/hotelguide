@@ -18,7 +18,7 @@
 				// form not yet submitted or submitted invalid; display form
 				echo '
 					<p>Vragen? Opmerkingen? Laat het ons weten!</p>
-					<form name="contact" action="/contact.php" method="POST" class="'. $formClass .'">
+					<form name="contact" action="contact.php" method="POST" class="'. $formClass .'">
 						'. ( $submitted && !$valid ? '<p class="error">Gelieve het formulier volledig in te vullen.</p>' : '' ) .'
 						<input type="text" name="name" id="name" placeholder="Naam"'. ( $name ? "value='$name'" : 'class="error"' ) .' />
 						<input type="email" name="email" id="email" placeholder="E-mail adres"'. ( $email ? "value='$email'" : 'class="error"' ) .' />

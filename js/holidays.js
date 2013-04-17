@@ -2,7 +2,7 @@ var holidays = {
 	// detect if running in app
 	app: document.location.host ? false : true,
 	// on apps, perform calls to specified url
-	host: document.location.host ? '' : 'http://www.last-minute-vakanties.be',
+	host: document.location.host ? '/' : 'http://www.last-minute-vakanties.be/',
 	currency: '€',
 
 	init: function() {
