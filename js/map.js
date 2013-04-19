@@ -111,7 +111,7 @@ holidays.map = {
 		holidays.map.messageTimer = setTimeout( function() { loadingMessage.show(); }, 350 );
 
 		holidays.map.lastRequest = $.ajax( {
-			url: holidays.host + '/ajax/markers.php',
+			url: holidays.host + 'ajax/markers.php',
 			data:
 			{
 				prices: {
