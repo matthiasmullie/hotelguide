@@ -24,7 +24,7 @@ holidays.infowindow = {
 			var data = $( this ).serialize();
 
 			$.ajax( {
-				url: holidays.host + action,
+				url: ( holidays.host + action ).replace( '//', '/' ),
 				data: data,
 				type: method,
 				dataType: 'html',
@@ -107,7 +107,7 @@ holidays.infowindow = {
 	 */
 	open: function( url ) {
 		$.ajax( {
-			url: holidays.host + url,
+			url: ( holidays.host + url ).replace( '//', '/' ),
 			dataType: 'html',
 			success: holidays.infowindow.display,
 			error: holidays.infowindow.error
