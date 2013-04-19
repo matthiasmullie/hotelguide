@@ -23,6 +23,7 @@ Setup
           `text_language` char(2) COLLATE utf8_unicode_ci NOT NULL,
           `image` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
           `url` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+          `url_mobile` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
           `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
           `stars` float NOT NULL,
           `price` float NOT NULL,

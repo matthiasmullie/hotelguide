@@ -234,7 +234,8 @@ holidays.map = {
 
 			// add click listener
 			google.maps.event.addListener( marker, 'click', function( e ) {
-				holidays.infowindow.open( 'ajax/location.php?id=' + this.id );
+				var mobile = holidays.mobile ? 1 : 0;
+				holidays.infowindow.open( 'ajax/location.php?id=' + this.id + '&mobile=' + mobile );
 			} );
 
 			return marker;

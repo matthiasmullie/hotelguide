@@ -3,6 +3,8 @@ var holidays = {
 	app: document.location.host ? false : true,
 	// on apps, perform calls to specified url
 	host: document.location.host ? '/' : 'http://www.last-minute-vakanties.be/',
+	// on mobile, server mobile destination urls
+	mobile: !document.location.host || jQuery.browser.mobile,
 	currency: '€',
 
 	init: function() {

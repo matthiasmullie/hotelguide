@@ -4,6 +4,7 @@ require_once '../config.php';
 
 if ( isset( $_GET['id'] ) ) {
 	$id = (int) $_GET['id'];
+	$mobile = (int) isset( $_GET['mobile'] ) && $_GET['mobile'];
 
 	$db = new PDO( "mysql:host=$host;dbname=$db", $user, $pass, array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "UTF8"' ) );
 	$prepareData = $db->prepare('
@@ -25,7 +26,8 @@ if ( isset( $_GET['id'] ) ) {
 		) );
 
 		// redirect to location url
-		header( 'Location:'. $data['url'] );
+		$url = ( $mobile && $data['url_mobile'] ) ? $data['url_mobile'] : $data['url'];
+		header( 'Location:'. $url );
 		exit;
 	}
 }

@@ -14,7 +14,7 @@ $db = new PDO( "mysql:host=$host;dbname=$db", $user, $pass, array( PDO::MYSQL_AT
 $feedUrl = 'http://pf.tradetracker.net/?aid=51300&encoding=utf-8&type=xml-v2-simple&fid=278357&categoryType=2&additionalType=2';
 $feedId = 4; // id in db - quick and dirty in code, let's just assume this won't change in db ;)
 
-$prepareLocation = $db->prepare( 'INSERT INTO locations (feed_id, product_id, lat, lng, title, text, text_language, image, url, stars, price, price_currency) VALUES (:feed_id, :product_id, :lat, :lng, :title, :text, :text_language, :image, :url, :stars, :price, :price_currency)' );
+$prepareLocation = $db->prepare( 'INSERT INTO locations (feed_id, product_id, lat, lng, title, text, text_language, image, url, url_mobile, stars, price, price_currency) VALUES (:feed_id, :product_id, :lat, :lng, :title, :text, :text_language, :image, :url, :url_mobile, :stars, :price, :price_currency)' );
 
 // empty existing data
 $emptyLocation = $db->prepare( 'DELETE FROM locations WHERE feed_id = :feed_id' );
@@ -33,10 +33,20 @@ foreach ( $xml->xpath( '/products/product' ) as $node ) {
 	$location[':text'] = (string) $node->description;
 	$location[':text_language'] = 'en';
 	$location[':image'] = (string) $node->images->image;
-	$location[':url'] = (string) $node->URL;
 	$location[':stars'] = (float) $node->properties->stars->value;
 	$location[':price'] = (float) $node->price->amount;
 	$location[':price_currency'] = (string) $node->price->currency;
+
+	/*
+	 * Urls:
+	 * * TT url normal: http://tc.tradetracker.net/?c=2620&m=278357&a=51300&u=http%3A%2F%2Fnl.hotels.com%2Fho115783%2Fthe-fairmont-san-francisco-san-francisco-verenigde-staten%2F%3Fwapb1%3Dhotelcontentfeed
+	 * * Url normal: http://nl.hotels.com/ho115783/the-fairmont-san-francisco-san-francisco-verenigde-staten/
+	 * * Url mobile: http://nl.hotels.com/mobile/hotelDetails.html?hotelId=115783
+	 * * TT url mobile: http://tc.tradetracker.net/?c=2620&m=278357&a=51300&u=http%3A%2F%2Fnl.hotels.com%2Fmobile%2FhotelDetails.html%3FhotelId%3D115783%26wapb1%3Dhotelcontentfeed
+	 */
+	$location[':url'] = (string) $node->URL;
+	$mobileUrl = 'http://nl.hotels.com/mobile/hotelDetails.html?hotelId=' . $location[':product_id'] . '&wapb1=hotelcontentfeed';
+	$location[':url_mobile'] = 'http://tc.tradetracker.net/?c=2620&m=278357&a=51300&u=' . urlencode( $mobileUrl );
 
 	// validate data
 	if (

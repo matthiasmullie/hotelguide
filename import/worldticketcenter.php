@@ -20,6 +20,11 @@ $prepareLocation = $db->prepare( 'INSERT INTO locations (feed_id, product_id, la
 $emptyLocation = $db->prepare( 'DELETE FROM locations WHERE feed_id = :feed_id' );
 $emptyLocation->execute( array( ':feed_id' => $feedId ) );
 
+
+// @todo: not parsing feed for now; links to not resolve
+exit;
+
+
 // parse xml
 $xml = new SimpleXMLElement( $feedUrl, 0, true );
 foreach ( $xml->xpath( '/products/product' ) as $node ) {
