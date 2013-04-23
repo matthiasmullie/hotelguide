@@ -277,10 +277,12 @@ body {
 				text-indent: -9999px;
 				float: right;
 				display: block;
+				-webkit-box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 1);
+				box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 1);
 				background-color: #fff;
 				background-image: url(../img/locate_icon.png);
-				background-image: url(../img/locate_icon.png), -moz-linear-gradient(0% 4px 90deg,#fff, #eaeaea);
-				background-image: url(../img/locate_icon.png), -webkit-gradient(linear, 0% 0%, 0% 4, from(#eaeaea), to(#fff));
+				background-image: url(../img/locate_icon.png), -moz-linear-gradient(top, #fcfcfc 0%, #f5f5f5 100%);
+				background-image: url(../img/locate_icon.png), -webkit-linear-gradient(top, #fcfcfc 0%,#f5f5f5 100%);
 				background-size: 55px auto;
 				background-position: center center;
 				background-repeat: no-repeat;
