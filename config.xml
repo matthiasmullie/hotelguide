@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="us.envy.HotelGids" version="1.0.0">
-    <name>HotelGids</name>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="us.envy.HotelGids" version="1.0.0" defaultlocale="nl">
+    <name xml:lang="nl">HotelGids</name>
 
-    <description>
+    <description xml:lang="nl">
         De hotelgids van last-minute-vakanties.be verzamelt de hotels van online aanbieders en laat je eenvoudig filteren op locatie of prijs.
         Vind in 1 oogopslag alle hotels in de buurt van je huidige of favoriete vakantiebestemming en vergelijk in prijs met een ander hotel een straat verderop!
     </description>
 
-    <author href="http://envy.us/" email="hotelgids@envy.us">envy.us</author>
+    <author href="http://envy.us" email="hotelgids@envy.us">envy.us</author>
 
     <!-- Details: https://build.phonegap.com/docs/config-xml -->
 
@@ -47,8 +47,11 @@
     <gap:splash src="res/screen/ios/launch_ipad_landscape@2x.png" width="2048" height="1536" />
     <gap:splash src="res/screen/ios/launch_ipad_portrait@2x.png" width="1536" height="2048" />
 
+    <!-- WinPhone splash screen -->
+    <gap:splash src="res/screen/winphpne/launch_wvga.jpg" gap:platform="winphone" />
+
     <!-- Android splash screens -->
-    <!-- @todo: landscape/portrait? -->
+    <!-- @todo: Landscape is currently not supported by PhoneGap; check again later -->
     <!-- @todo: not yet sure about dimensions/using iDevice images for now -->
     <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="android" gap:density="ldpi" />
     <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="android" gap:density="mdpi" />
@@ -58,9 +61,4 @@
     <!-- Blackberry splash screen -->
     <!-- @todo: not yet sure about dimensions/using iDevice images for now -->
     <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="blackberry" />
-
-    <!-- WinPhone splash screen -->
-    <!-- @todo: should be jpg -->
-    <!-- @todo: not yet sure about dimensions/using iDevice images for now -->
-    <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="winphone" />
 </widget>
