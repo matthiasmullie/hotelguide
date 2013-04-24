@@ -201,6 +201,8 @@ holidays.map = {
 		 * @returns google.maps.Marker
 		 */
 		location: function( coordinate, id, price ) {
+			price = Math.round( price );
+
 			var colors = {
 				0: '#a9be42', // green markers: €0 - 99
 				1: '#fe7921', // orange markers: €100 - 199
@@ -216,7 +218,7 @@ holidays.map = {
 					// bottom balloon shadow
 					'<path fill="#7f7f7f" d=" M 18.18 52.59 C 19 52.19 19.83 51.81 20.64 51.41 C 21.36 51.99 22.05 52.79 23.01 52.91 C 23.96 52.79 24.64 51.99 25.36 51.42 C 26.2 51.82 27.05 52.21 27.9 52.6 C 27.79 53.07 27.67 53.53 27.55 54 L 18.33 54 C 18.28 53.53 18.24 53.06 18.18 52.59 Z" />' +
 					// text
-					'<text x="23" y="27" font-size="8pt" font-family="arial" font-weight="bold" text-anchor="middle" fill="#333" textContent="€'+ price +'">€'+ price +'</text>' +
+					'<text x="23" y="28" font-size="13" font-family="Arial,sans-serif" font-weight="bold" text-anchor="middle" fill="#333" textContent="'+ holidays.currency + price +'">'+ holidays.currency + price +'</text>' +
 				'</svg>';
 
 			var marker = new google.maps.Marker( {
@@ -265,7 +267,7 @@ holidays.map = {
 					// inner circle
 					'<circle cx="100" cy="100" r="23" stroke="#0097f5" fill="#fcfcfc" stroke-width="5" style="opacity: 0.9" />' +
 					// text
-					'<text x="100" y="105" font-size="8pt" font-family="arial" font-weight="bold" text-anchor="middle" fill="#007fce" textContent="'+ count +'">'+ count +'</text>' +
+					'<text x="100" y="105" font-size="11" font-family="Arial,sans-serif" font-weight="bold" text-anchor="middle" fill="#007fce" textContent="'+ count +'">'+ count +'</text>' +
 				'</svg>';
 
 			var marker = new google.maps.Marker( {
