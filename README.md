@@ -59,7 +59,7 @@ Download & unpack: http://phonegap.com/download/ (I'll assume you place it at ~/
 
 In terminal, create the Xcode project
 
-    ~/Sites/phonegap/lib/ios/bin/create ~/Sites/phonegap-hotelgids org.envy.us.HotelGids HotelGids
+    ~/Sites/phonegap/lib/ios/bin/create ~/Sites/phonegap-hotelgids us.envy.HotelGids HotelGids
 
 In terminal, copy source code into Xcode project
 

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="us.envy.HotelGids" version="1.0.0">
+    <name>HotelGids</name>
+
+    <description>
+        De hotelgids van last-minute-vakanties.be verzamelt de hotels van online aanbieders en laat je eenvoudig filteren op locatie of prijs.
+        Vind in 1 oogopslag alle hotels in de buurt van je huidige of favoriete vakantiebestemming en vergelijk in prijs met een ander hotel een straat verderop!
+    </description>
+
+    <author href="http://envy.us/" email="hotelgids@envy.us">envy.us</author>
+
+    <!-- Details: https://build.phonegap.com/docs/config-xml -->
+
+    <!-- Both landscape & portrait are supported -->
+    <preference name="orientation" value="default" />
+
+    <gap:platforms>
+        <gap:platform name="android" minVersion="2.1" />
+        <gap:platform name="webos" />
+        <gap:platform name="symbian.wrt" />
+        <gap:platform name="blackberry" project="widgets"/>
+    </gap:platforms>
+
+    <content src="index.html" />
+
+    <!-- Other then internet (which is required by PhoneGap already), we don't need API permissions -->
+    <preference name="permissions" value="none"/>
+
+    <!-- Allow external resources from LMV & Google services -->
+    <access origin="http://last-minute-vakanties.be" subdomains="true" />
+    <access origin="http://googleapis.com" subdomains="true" />
+    <access origin="http://googlecode.com" subdomains="true" />
+    <access origin="http://google-analytics.com" subdomains="true" />
+
+    <!-- Hi-res icon, should work for all devices/sizes; otherwise, specific icons can be added to res/icon -->
+    <icon src="icon.png" />
+
+    <!-- Default splash screen, fallback for when no splash is specified -->
+    <gap:splash src="weirdo.png" />
+
+    <!-- iDevice splash screens -->
+    <gap:splash src="res/screen/ios/launch_iphone.png" width="320" height="480" />
+    <gap:splash src="res/screen/ios/launch_iphone@2x.png" width="640" height="960" />
+    <gap:splash src="res/screen/ios/launch_iphone5.png" width="640" height="1136" />
+    <gap:splash src="res/screen/ios/launch_ipad_landscape.png" width="1024" height="768" />
+    <gap:splash src="res/screen/ios/launch_ipad_portrait.png" width="768" height="1024" />
+    <gap:splash src="res/screen/ios/launch_ipad_landscape@2x.png" width="2048" height="1536" />
+    <gap:splash src="res/screen/ios/launch_ipad_portrait@2x.png" width="1536" height="2048" />
+
+    <!-- Android splash screens -->
+    <!-- @todo: landscape/portrait? -->
+    <!-- @todo: not yet sure about dimensions/using iDevice images for now -->
+    <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="android" gap:density="ldpi" />
+    <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="android" gap:density="mdpi" />
+    <gap:splash src="res/screen/ios/launch_iphone@2x.png" gap:platform="android" gap:density="hdpi" />
+    <gap:splash src="res/screen/ios/launch_iphone@2x.png" gap:platform="android" gap:density="xhdpi" />
+
+    <!-- Blackberry splash screen -->
+    <!-- @todo: not yet sure about dimensions/using iDevice images for now -->
+    <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="blackberry" />
+
+    <!-- WinPhone splash screen -->
+    <!-- @todo: should be jpg -->
+    <!-- @todo: not yet sure about dimensions/using iDevice images for now -->
+    <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="winphone" />
+</widget>
