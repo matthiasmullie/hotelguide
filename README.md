@@ -1,16 +1,18 @@
-last-minute-vakanties.be
-========================
+# last-minute-vakanties.be / HotelGids
 
 Source code for http://www.last-minute-vakanties.be
 
-Setup
-=====
+## Setup
+
+### Instructions
 
 * Clone this code into a folder on your local system, where <something>.dev resolves to
 * Copy /config.example.php to /config.php and fill in your system's details
 * Make sure /cache folder is writable to the code (in terminal: chmod -R 777 <your-folder>/cache)
 * Create a database and execute the below queries to set up the schema.
 * Run /import/*.php scripts to populate the database (in terminal: php <your-folder>/import/<feed-name>.php)
+
+### SQL
 
         CREATE TABLE IF NOT EXISTS `locations` (
           `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -42,9 +44,29 @@ Setup
           PRIMARY KEY (`id`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-Phonegap
-========
+## Phonegap
 
 This source should be Phonegap-compatible: the folder can just be copy-pasted into a Phonegap project.
 There's quite a few files that are useless to Phonegap, but I'd rather keep the codebase together.
 Javascript will detect if the code is running in an app and - if so - fire all requests to the production server.
+
+### Instructions
+
+Download & install Xcode from Apple store
+Open Xcode > Preferences > Downloads > Components. Installer Command Line Tools & simulators.
+
+Download & unpack: http://phonegap.com/download/ (I'll assume you place it at ~/Sites/phonegap)
+
+In terminal, create the Xcode project
+
+    ~/Sites/phonegap/lib/ios/bin/create ~/Sites/phonegap-hotelgids org.envy.us.HotelGids HotelGids
+
+In terminal, copy source code into Xcode project
+
+    git clone git@github.com:matthiasmullie/lastminute.git /tmp/hotelgids --depth 1 && rsync -a /tmp/hotelgids/ ~/Sites/phonegap-hotelgids/www/ && rm -rf /tmp/hotelgids/
+
+Open what we just created in Xcode
+
+    open -a Xcode ~/Sites/phonegap-hotelgids/HotelGids.xcodeproj
+
+Top left, choose your target (device, simulator) & click "Run".
