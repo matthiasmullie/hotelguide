@@ -1,16 +1,46 @@
 var holidays = {
 	// detect if running in app
-	app: document.location.host ? false : true,
-	// on apps, perform calls to specified url
-	host: document.location.host ? '/' : 'http://www.last-minute-vakanties.be/',
-	// on mobile, server mobile destination urls
-	mobile: !document.location.host || jQuery.browser.mobile,
+	app: ( typeof cordova == 'undefined' ) ? false : true,
+	// on apps, perform calls to specified remote url
+	host: ( typeof cordova == 'undefined' ) ? '/' : 'http://www.last-minute-vakanties.be/',
+	// on mobile, we'll serve mobile destination urls
+	mobile: ( typeof cordova != 'undefined' ) || jQuery.browser.mobile,
 	currency: '€',
 
 	init: function() {
-		holidays.hideAddressBar();
-		holidays.priceRange();
-		holidays.css();
+		var init = function() {
+			holidays.hideAddressBar();
+			holidays.priceRange();
+			holidays.css();
+
+			holidays.map.init();
+			holidays.infowindow.init();
+			holidays.history.init();
+			holidays.translate.init();
+
+			if ( !holidays.hasConnection() ) {
+				holidays.infowindow.error();
+			}
+		};
+
+		// if in-app, wait for phonegap to complete
+		if ( holidays.app ) {
+			document.addEventListener( 'deviceready', init, false );
+			return;
+		} else {
+			init();
+		}
+	},
+
+	/**
+	 * Verify that we have an internet connection
+	 */
+	hasConnection: function() {
+		if ( !holidays.app ) {
+			return typeof navigator.onLine == 'undefined' || navigator.onLine;
+		}
+
+		return navigator.network.connection.type == Connection.NONE;
 	},
 
 	/**

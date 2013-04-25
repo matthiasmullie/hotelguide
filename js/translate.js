@@ -49,5 +49,3 @@ holidays.translate = {
 		} );
 	}
 };
-
-$( holidays.translate.init );

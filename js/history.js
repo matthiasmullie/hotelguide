@@ -84,5 +84,3 @@ holidays.history = {
 		var interval = setInterval( replaceNext, 50 );
 	}
 };
-
-$( holidays.history.init );

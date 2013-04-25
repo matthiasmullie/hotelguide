@@ -136,5 +136,3 @@ holidays.infowindow = {
 		} );
 	}
 };
-
-$( holidays.infowindow.init );

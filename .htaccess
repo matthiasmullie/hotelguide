@@ -16,6 +16,7 @@ FileETag MTime Size
 	RewriteRule import - [F]
 	RewriteRule cache/cluster - [F]
 	RewriteRule utils - [F]
+	RewriteRule phonegap.js - [F] # does not exist; is mobile app helper
 
 	# one url to rule them all
 	RewriteCond %{HTTP_HOST} !^www\.last-minute-vakanties\.be [NC]

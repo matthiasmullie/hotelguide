@@ -3,7 +3,7 @@
     <name xml:lang="nl">HotelGids</name>
 
     <description xml:lang="nl">
-        De hotelgids van last-minute-vakanties.be verzamelt de hotels van online aanbieders en laat je eenvoudig filteren op locatie of prijs.
+        De HotelGids van last-minute-vakanties.be verzamelt de hotels van online aanbieders en laat je eenvoudig filteren op locatie of prijs.
         Vind in 1 oogopslag alle hotels in de buurt van je huidige of favoriete vakantiebestemming en vergelijk in prijs met een ander hotel een straat verderop!
     </description>
 
@@ -14,29 +14,35 @@
     <!-- Both landscape & portrait are supported -->
     <preference name="orientation" value="default" />
 
+    <!-- Supported platforms -->
     <gap:platforms>
-        <gap:platform name="android" minVersion="2.1" />
-        <gap:platform name="webos" />
-        <gap:platform name="symbian.wrt" />
-        <gap:platform name="blackberry" project="widgets"/>
+        <gap:platform name="ios" minVersion="4.1" />
+        <gap:platform name="winphone" minVersion="8.0" />
+        <gap:platform name="android" minVersion="3.0" />
+        <gap:platform name="blackberry" />
     </gap:platforms>
 
+    <!-- App root -->
     <content src="index.html" />
 
-    <!-- Other then internet (which is required by PhoneGap already), we don't need API permissions -->
-    <preference name="permissions" value="none"/>
+    <!-- API permissions -->
+    <feature name="http://api.phonegap.com/1.0/geolocation" />
+    <feature name="http://api.phonegap.com/1.0/network" />
 
-    <!-- Allow external resources from LMV & Google services -->
-    <access origin="http://last-minute-vakanties.be" subdomains="true" />
-    <access origin="http://googleapis.com" subdomains="true" />
-    <access origin="http://googlecode.com" subdomains="true" />
-    <access origin="http://google-analytics.com" subdomains="true" />
+    <!-- Suspending app exits it for real -->
+    <preference name="exit-on-suspend" value="true" />
+
+    <!-- Allow external resources: LMV, Google (Maps, Analytics) services, hotel providers, ... -->
+    <access origin="*" />
 
     <!-- Hi-res icon, should work for all devices/sizes; otherwise, specific icons can be added to res/icon -->
     <icon src="icon.png" />
 
+    <!-- Apple can apply it's icon gloss -->
+    <preference name="prerendered-icon" value="false" />
+
     <!-- Default splash screen, fallback for when no splash is specified -->
-    <gap:splash src="weirdo.png" />
+    <gap:splash src="res/screen/ios/launch_iphone.png" />
 
     <!-- iDevice splash screens -->
     <gap:splash src="res/screen/ios/launch_iphone.png" width="320" height="480" />

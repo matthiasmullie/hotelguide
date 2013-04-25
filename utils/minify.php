@@ -20,7 +20,7 @@ use MatthiasMullie\Minify;
 $replace = array();
 
 // find JS files
-if ( preg_match_all( '/src=(["\'])(.+?\.js)\\1/', $content, $js ) ) {
+if ( preg_match_all( '/src=(["\'])(.+?\.js).*\\1/', $content, $js ) ) {
 	include 'vendor/matthiasmullie/minify/JS.php';
 
 	foreach ( $js[2] as $i => $file ) {
@@ -45,7 +45,7 @@ if ( preg_match_all( '/src=(["\'])(.+?\.js)\\1/', $content, $js ) ) {
 }
 
 // find CSS files
-if ( preg_match_all( '/href=(["\'])(.+?\.css)\\1/', $content, $css ) ) {
+if ( preg_match_all( '/href=(["\'])(.+?\.css).*\\1/', $content, $css ) ) {
 	include 'vendor/matthiasmullie/minify/CSS.php';
 
 	foreach ( $css[2] as $i => $file ) {

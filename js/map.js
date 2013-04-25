@@ -10,10 +10,18 @@ holidays.map = {
 	allowHistory: true,
 
 	init: function() {
-		holidays.map.draw();
-		holidays.map.bind();
-		holidays.map.locate();
-		holidays.map.autocomplete();
+		var init = function() {
+			// only load if Maps is initialized (app may have no internet connection)
+			if ( typeof google.maps != 'undefined' ) {
+				holidays.map.draw();
+				holidays.map.bind();
+				holidays.map.locate();
+				holidays.map.autocomplete();
+
+				clearInterval( initInterval );
+			}
+		};
+		var initInterval = setInterval( init, 250 );
 	},
 
 	/**
@@ -133,6 +141,7 @@ holidays.map = {
 			},
 			type: 'GET',
 			dataType: 'json',
+			timeout: 15000,
 			success: function( json ) {
 				holidays.map.drawMarkers( json );
 
@@ -143,9 +152,9 @@ holidays.map = {
 				clearTimeout( holidays.map.messageTimer );
 				loadingMessage.hide();
 			},
-			error: function() {
+			error: function( jqXHR, textStatus, errorThrown ) {
 				// don't display error message if aborted
-				if ( holidays.map.lastRequest.statusText == 'abort' ) {
+				if ( textStatus == 'abort' ) {
 					return;
 				}
 
@@ -531,5 +540,3 @@ holidays.map = {
 		};
 	}
 };
-
-$( holidays.map.init );
