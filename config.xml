@@ -19,7 +19,6 @@
         <gap:platform name="ios" minVersion="4.1" />
         <gap:platform name="winphone" minVersion="8.0" />
         <gap:platform name="android" minVersion="3.0" />
-        <gap:platform name="blackberry" />
     </gap:platforms>
 
     <!-- App root -->
@@ -64,13 +63,8 @@
 
     <!-- Android splash screens -->
     <!-- @todo: Landscape is currently not supported by PhoneGap; check again later -->
-    <!-- @todo: not yet sure about dimensions/using iDevice images for now -->
-    <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="android" gap:density="ldpi" />
-    <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="android" gap:density="mdpi" />
-    <gap:splash src="res/screen/ios/launch_iphone@2x.png" gap:platform="android" gap:density="hdpi" />
-    <gap:splash src="res/screen/ios/launch_iphone@2x.png" gap:platform="android" gap:density="xhdpi" />
-
-    <!-- Blackberry splash screen -->
-    <!-- @todo: not yet sure about dimensions/using iDevice images for now -->
-    <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="blackberry" />
+    <gap:splash src="res/screen/android/launch_ldpi.png" gap:platform="android" gap:density="ldpi" />
+    <gap:splash src="res/screen/android/launch_mdpi.png" gap:platform="android" gap:density="mdpi" />
+    <gap:splash src="res/screen/android/launch_hdpi.png" gap:platform="android" gap:density="hdpi" />
+    <gap:splash src="res/screen/android/launch_xhdpi.png" gap:platform="android" gap:density="xhdpi" />
 </widget>
