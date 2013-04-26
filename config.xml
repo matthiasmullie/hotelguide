@@ -50,13 +50,13 @@
     <gap:splash src="res/screen/ios/launch_iphone.png" />
 
     <!-- iDevice splash screens -->
-    <gap:splash src="res/screen/ios/launch_iphone.png" width="320" height="480" />
-    <gap:splash src="res/screen/ios/launch_iphone@2x.png" width="640" height="960" />
-    <gap:splash src="res/screen/ios/launch_iphone5.png" width="640" height="1136" />
-    <gap:splash src="res/screen/ios/launch_ipad_landscape.png" width="1024" height="768" />
-    <gap:splash src="res/screen/ios/launch_ipad_portrait.png" width="768" height="1024" />
-    <gap:splash src="res/screen/ios/launch_ipad_landscape@2x.png" width="2048" height="1536" />
-    <gap:splash src="res/screen/ios/launch_ipad_portrait@2x.png" width="1536" height="2048" />
+    <gap:splash src="res/screen/ios/launch_iphone.png" gap:platform="ios" width="320" height="480" />
+    <gap:splash src="res/screen/ios/launch_iphone@2x.png" gap:platform="ios" width="640" height="960" />
+    <gap:splash src="res/screen/ios/launch_iphone5.png" gap:platform="ios" width="640" height="1136" />
+    <gap:splash src="res/screen/ios/launch_ipad_landscape.png" gap:platform="ios" width="1024" height="768" />
+    <gap:splash src="res/screen/ios/launch_ipad_portrait.png" gap:platform="ios" width="768" height="1024" />
+    <gap:splash src="res/screen/ios/launch_ipad_landscape@2x.png" gap:platform="ios" width="2048" height="1536" />
+    <gap:splash src="res/screen/ios/launch_ipad_portrait@2x.png" gap:platform="ios" width="1536" height="2048" />
 
     <!-- WinPhone splash screen -->
     <gap:splash src="res/screen/winphpne/launch_wvga.jpg" gap:platform="winphone" />
