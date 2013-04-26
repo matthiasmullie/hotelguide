@@ -28,8 +28,7 @@ holidays.map = {
 	 * Add Google maps to the page.
 	 */
 	draw: function() {
-		var loadingMessage = $( '#loadingMap' );
-		loadingMessage.show();
+		$( '#loadingMap' ).show();
 
 		var options = {
 			center: new google.maps.LatLng( 40, 0 ),
@@ -41,8 +40,6 @@ holidays.map = {
 			}]
 		};
 		holidays.map.map = new google.maps.Map( $( '#map' ).get( 0 ), options );
-
-		loadingMessage.hide();
 	},
 
 	/**
@@ -52,6 +49,8 @@ holidays.map = {
 	 */
 	bind: function() {
 		google.maps.event.addListener( holidays.map.map, 'idle', function( e ) {
+			$( '#loadingMap' ).hide();
+
 			if ( holidays.map.zoomTimer ) {
 				clearTimeout( holidays.map.zoomTimer );
 			}
@@ -69,9 +68,6 @@ holidays.map = {
 		if ( holidays.map.lastRequest ) {
 			holidays.map.lastRequest.abort();
 		}
-
-		// close open windows (sometimes, on touch devices, they're touched accidentally during pinch-zoom)
-		holidays.infowindow.close();
 
 		var center = holidays.map.map.getCenter();
 		var zoom = holidays.map.map.getZoom();
@@ -246,7 +242,7 @@ holidays.map = {
 			// add click listener
 			google.maps.event.addListener( marker, 'click', function( e ) {
 				var mobile = holidays.mobile ? 1 : 0;
-				holidays.infowindow.open( 'ajax/location.php?id=' + this.id + '&mobile=' + mobile );
+				holidays.infowindow.open( 'ajax/location.php?id=' + this.id + '&mobile=' + mobile + '&host=' + holidays.host );
 			} );
 
 			return marker;

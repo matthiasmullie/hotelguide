@@ -13,12 +13,12 @@ var holidays = {
 			holidays.priceRange();
 			holidays.css();
 
-			holidays.map.init();
-			holidays.infowindow.init();
 			holidays.history.init();
+			holidays.infowindow.init();
 			holidays.translate.init();
+			holidays.map.init();
 
-			if ( !holidays.hasConnection() ) {
+			if ( !holidays.isOnline() ) {
 				holidays.infowindow.error();
 			}
 		};
@@ -35,12 +35,12 @@ var holidays = {
 	/**
 	 * Verify that we have an internet connection
 	 */
-	hasConnection: function() {
+	isOnline: function() {
 		if ( !holidays.app ) {
 			return typeof navigator.onLine == 'undefined' || navigator.onLine;
 		}
 
-		return navigator.network.connection.type == Connection.NONE;
+		return navigator.network.connection.type != Connection.NONE;
 	},
 
 	/**

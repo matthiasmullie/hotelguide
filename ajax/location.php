@@ -4,7 +4,6 @@ require_once '../config.php';
 
 if ( isset( $_GET['id'] ) ) {
 	$id = (int) $_GET['id'];
-	$mobile = (int) isset( $_GET['mobile'] ) && $_GET['mobile'];
 
 	$db = new PDO( "mysql:host=$host;dbname=$db", $user, $pass, array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "UTF8"' ) );
 	$prepareData = $db->prepare('
@@ -25,21 +24,24 @@ if ( isset( $_GET['id'] ) ) {
 	) );
 
 	if ( $data !== false ) {
+		$mobile = (int) isset( $_GET['mobile'] ) && $_GET['mobile'];
+		$host = isset( $_GET['host'] ) ? $_GET['host'] : '';
+
 		echo '
 			<div id="infowindowData">
 				<div id="infowindowMarker">
 					<div id="infowindowTop" class="clearfix">
-						<a href="ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '">
+						<a href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '">
 							<h2>' . $data['title'] . '</h2>
 							<p>' . str_repeat('&#9733;', (int) $data['stars']) . '</p>
 						</a>
 					</div>
 					<div id="infowindowContent">
-						<a id="markerUrl" class="clearfix" href="ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '"><span class="leftSpan">Bestel</span> <span class="rightSpan">€' . $data['price'] . '</span></a>
+						<a id="markerUrl" class="clearfix" href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '"><span class="leftSpan">Bestel</span> <span class="rightSpan">€' . $data['price'] . '</span></a>
 						<p id="markerText" data-language="' . $data['text_language'] . '">' . $data['text'] . '</p>
 					</div>
 					<div id="markerImage" style="background-image: url(' . $data['image'] . ')">
-						<a href="ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '"></a>
+						<a href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '"></a>
 					</div>
 				</div>
 			</div>

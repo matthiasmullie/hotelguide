@@ -130,7 +130,7 @@ holidays.infowindow = {
 	 */
 	error: function() {
 		$.ajax( {
-			url: '/error.html',
+			url: 'error.html',
 			dataType: 'html',
 			success: holidays.infowindow.display
 		} );
