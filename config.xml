@@ -38,6 +38,12 @@
     <!-- Hi-res icon, should work for all devices/sizes; otherwise, specific icons can be added to res/icon -->
     <icon src="icon.png" />
 
+    <!-- iOs icons -->
+    <icon src="res/icon/ios/icon_iphone.png" gap:platform="ios" width="57" height="57" />
+    <icon src="res/icon/ios/icon_iphone@2x.png" gap:platform="ios" width="114" height="114" />
+    <icon src="res/icon/ios/icon_ipad.png" gap:platform="ios" width="72" height="72" />
+    <icon src="res/icon/ios/icon_ipad@2x.png" gap:platform="ios" width="144" height="144" />
+
     <!-- Apple can apply it's icon gloss -->
     <preference name="prerendered-icon" value="false" />
 
