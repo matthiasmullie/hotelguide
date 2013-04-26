@@ -46,7 +46,7 @@ Source code for http://www.last-minute-vakanties.be
 
 ## Phonegap
 
-This source should be Phonegap-compatible: the folder can just be copy-pasted into a Phonegap project.
+This source should be build.phonegap.com-compatible. The folder can pretty much just be copy-pasted into a Phonegap project.
 There's quite a few files that are useless to Phonegap, but I'd rather keep the codebase together.
 Javascript will detect if the code is running in an app and - if so - fire all requests to the production server.
 
@@ -59,7 +59,7 @@ Download & unpack: http://phonegap.com/download/ (I'll assume you place it at ~/
 
 In terminal, create the Xcode project
 
-    ~/Sites/phonegap/lib/ios/bin/create ~/Sites/phonegap-hotelgids us.envy.HotelGids HotelGids
+    ~/Sites/phonegap/lib/ios/bin/create ~/Sites/phonegap-hotelgids us.envy.HotelGuide HotelGids
 
 In terminal, copy source code into Xcode project
 

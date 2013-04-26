@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="us.envy.HotelGids" version="1.0.0" defaultlocale="nl">
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="us.envy.HotelGuide" version="1.0.0" defaultlocale="nl">
     <name xml:lang="nl">HotelGids</name>
 
     <description xml:lang="nl">

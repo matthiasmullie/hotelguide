@@ -1,10 +1,10 @@
 var holidays = {
 	// detect if running in app
-	app: ( typeof cordova == 'undefined' ) ? false : true,
+	app: ( typeof cordova == 'undefined' && document.location.host ) ? false : true,
 	// on apps, perform calls to specified remote url
-	host: ( typeof cordova == 'undefined' ) ? '/' : 'http://www.last-minute-vakanties.be/',
+	host: ( typeof cordova == 'undefined' && document.location.host ) ? '/' : 'http://www.last-minute-vakanties.be/',
 	// on mobile, we'll serve mobile destination urls
-	mobile: ( typeof cordova != 'undefined' ) || jQuery.browser.mobile,
+	mobile: ( typeof cordova != 'undefined' && document.location.host ) || jQuery.browser.mobile,
 	currency: '€',
 
 	init: function() {
