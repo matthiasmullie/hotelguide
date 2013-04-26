@@ -24,9 +24,8 @@ var holidays = {
 		};
 
 		// if in-app, wait for phonegap to complete
-		if ( holidays.app ) {
+		if ( holidays.app && typeof cordova != 'undefined' ) {
 			document.addEventListener( 'deviceready', init, false );
-			return;
 		} else {
 			init();
 		}
