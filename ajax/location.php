@@ -37,7 +37,7 @@ if ( isset( $_GET['id'] ) ) {
 						</a>
 					</div>
 					<div id="infowindowContent">
-						<a id="markerUrl" class="clearfix" href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '"><span class="leftSpan">Bestel</span> <span class="rightSpan">€' . $data['price'] . '</span></a>
+						<a id="markerUrl" class="clearfix" href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '"><span class="leftSpan" data-l10n-id="order">Order</span> <span class="rightSpan">€' . $data['price'] . '</span></a>
 						<p id="markerText" data-language="' . $data['text_language'] . '">' . $data['text'] . '</p>
 					</div>
 					<div id="markerImage" style="background-image: url(' . $data['image'] . ')">
@@ -46,7 +46,7 @@ if ( isset( $_GET['id'] ) ) {
 				</div>
 			</div>
 			<div id="infowindowBottom">
-				<p id="markerDisclaimer"><a class="infowindow" href="disclaimer.php">Disclaimer</a></p>
+				<p id="markerDisclaimer"><a class="infowindow" href="disclaimer.php" data-l10n-id="disclaimer">Disclaimer</a></p>
 			</div>';
 		exit;
 	}

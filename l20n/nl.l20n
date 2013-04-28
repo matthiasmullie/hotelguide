@@ -1,0 +1,36 @@
+/**
+ * @see http://l20n.github.io/tinker/
+ */
+<isWide($n) {
+	$n.width < 480 ? "portraitPhone" :
+	$n.width < 768 ? "landscapePhone" :
+	$n.width < 980 ? "landscapeTablet" :
+	$n.width < 1200 ? "desktop" :
+	"large"
+}>
+
+<brandName "HotelGids"
+	content: "HotelGids"
+>
+<brandDescription
+	content: "De hotelgids van last-minute-vakanties.be verzamelt de hotels van online aanbieders en laat je eenvoudig filteren op locatie of prijs. Vind in 1 oogopslag alle hotels in de buurt van je huidige of favoriete vakantiebestemming en vergelijk in prijs met een ander hotel een straat verderop!"
+>
+<brandKeywords
+	content: "hotelgids, last minute, vakantie, hotel, reis, kaart, boeken"
+>
+<locationCurrent "Huidige locatie">
+<locationPlaceholder[isWide(@screen)]
+	placeholder: {
+		*wide: "Wat is je favoriete bestemming?",
+		landscapePhone: "Bestemming?"
+	}
+>
+<linkApps "Apps">
+<linkContact "Contact">
+<loadingMap "Kaart wordt geladen…">
+<loadingLocations "Locaties worden geladen…">
+<buttonClose "×"
+	title: "Sluit"
+>
+<order "Bestel">
+<disclaimer "Disclaimer">

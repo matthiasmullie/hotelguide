@@ -1,0 +1,9 @@
+{
+	"languages": [
+		"en",
+		"nl"
+	],
+	"resources": [
+		"/l20n/{{lang}}.l20n"
+	]
+}

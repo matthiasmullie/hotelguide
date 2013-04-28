@@ -80,12 +80,15 @@ holidays.infowindow = {
 	 * @param string content
 	 */
 	output: function( content ) {
-		$( '#infowindow' )
-			.show()
-			.find( '#infowindowContainer' ).html( content );
+		var infowindow =
+			$( '#infowindow' )
+				.show()
+				.find( '#infowindowContainer' ).html( content );
 
 		$( document ).on( 'click', 'body, #infowindowClose', holidays.infowindow.events.click );
 		$( document ).on( 'keyup', null, holidays.infowindow.events.escape );
+
+		holidays.translate.l20n( infowindow.get( 0 ) );
 	},
 
 	/**

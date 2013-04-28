@@ -3,20 +3,19 @@
 <head>
 	<meta charset="utf-8" />
 
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" data-l10n-id="brandName" content="HotelGuide" />
+	<meta property="og:title" data-l10n-id="brandName" content="HotelGuide" />
+	<meta property="og:description" data-l10n-id="brandDescription" content="HotelGuide compiles all hotel deals of online travel providers and makes it easy to filter them on location or price. Find all hotels in the neighborhood of your current or your favorite travel destination and compare prices with other hotels just down the street!" />
+	<meta property="og:image" content="/apple-touch-icon.png" />
+
+	<meta name="description" data-l10n-id="brandDescription" content="HotelGuide compiles all hotel deals of online travel providers and makes it easy to filter them on location or price. Find all hotels in the neighborhood of your current or your favorite travel destination and compare prices with other hotels just down the street!" />
+	<meta name="keywords" data-l10n-id="brandKeywords" content="hotelguide, last minute, holiday, hotel, travel, map, book" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="format-detection" content="telephone=no" />
 	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-densitydpi=device-dpi" />
 
-	<meta property="og:type" content="website"/>
-	<meta property="og:site_name" content="Last-minute vakanties: hotelgids"/>
-	<meta property="og:title" content="Last-minute vakanties: hotelgids"/>
-	<meta property="og:description" content="De hotelgids van last-minute-vakanties.be verzamelt de hotels van online aanbieders en laat je eenvoudig filteren op locatie of prijs. Vind in 1 oogopslag alle hotels in de buurt van je huidige of favoriete vakantiebestemming en vergelijk in prijs met een ander hotel een straat verderop!"/>
-	<meta property="og:image" content="/apple-touch-icon.png"/>
-
-	<meta name="description" content="De hotelgids van last-minute-vakanties.be verzamelt de hotels van online aanbieders en laat je eenvoudig filteren op locatie of prijs. Vind in 1 oogopslag alle hotels in de buurt van je huidige of favoriete vakantiebestemming en vergelijk in prijs met een ander hotel een straat verderop!" />
-	<meta name="keywords" content="hotelgids, last minute, vakantie, hotel, reis, kaart, boeken" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-
-	<title>Last-minute vakanties: hotelgids</title>
+	<title data-l10n-id="brandName">HotelGuide</title>
 
 	<link rel="shortcut icon" href="/favicon.ico" />
 	<link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png">
@@ -26,6 +25,22 @@
 	<link rel="stylesheet" type="text/css" media="all" href="css/infowindow.css" />
 
 	<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+	<link rel="localization" href="l20n/l20n.json">
+	<script src="js/external/l20n.js"></script>
+
+	<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAwJr7NdvPMpLy5OPNUIJQyk0luN4_Xohs&libraries=places,geometry&sensor=false"></script>
+	<script src="js/external/jquery-1.9.1.min.js"></script>
+	<script src="js/external/jquery.browser.mobile.js"></script>
+	<script src="js/external/jquery.nouislider.min.js"></script>
+	<script src="js/external/webtoolkit.base64.js"></script>
+	<script src="js/external/modernizr.js"></script>
+	<script src="phonegap.js"></script>
+	<script src="js/holidays.js"></script>
+	<script src="js/translate.js"></script>
+	<script src="js/map.js"></script>
+	<script src="js/infowindow.js"></script>
+	<script src="js/history.js"></script>
 </head>
 <body id="home">
 	<script>
@@ -33,24 +48,25 @@
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-	
+
 		ga('create', 'UA-40027867-1', 'last-minute-vakanties.be');
 		ga('send', 'pageview');
 	</script>
+
 	<div id="topWrapper">
 		<header role="banner" id="header">
 			<div class="container">
 				<div id="logo">
 					<h1>
-						<a href="/">Last Minute Vakantie</a>
+						<a href="/" data-l10n-id="brandName" title="HotelGuide">HotelGuide</a>
 					</h1>
 				</div>
 				<div id="search">
 					<form action="#" method="get">
 						<fieldset>
 							<div class="inputHolder">
-								<input type="search" id="searchField" class="inputText" placeholder="Bestemming?" />
-								<a id="searchLocate" title="Huidige locatie">Huidige locatie</a>
+								<input type="search" id="searchField" class="inputText" data-l10n-id="locationPlaceholder" placeHolder="Location?" />
+								<a id="searchLocate" data-l10n-id="locationCurrent" title="Current location">Current location</a>
 							</div>
 						</fieldset>
 					</form>
@@ -65,8 +81,8 @@
 				</div>
 				<nav id="navigation">
 					<ul>
-						<li><a class="submenu infowindow" href="apps.php">Apps</a></li>
-						<li><a class="submenu infowindow" href="contact.php">Contact</a></li>
+						<li><a class="submenu infowindow" href="apps.php" data-l10n-id="linkApps"></a></li>
+						<li><a class="submenu infowindow" href="contact.php" data-l10n-id="linkContact">Contact</a></li>
 					</ul>
 				</nav>
 			</div>
@@ -78,28 +94,15 @@
 		</section>
 	</div>
 
-	<p id="loadingMap" class="spinner" style="display: none;">Kaart wordt geladen&hellip;</p>
-	<p id="loadingMarkers" class="spinner" style="display: none;">Locaties worden geladen&hellip;</p>
+	<p id="loadingMap" class="spinner" style="display: none;" data-l10n-id="loadingMap">Loading map…</p>
+	<p id="loadingMarkers" class="spinner" style="display: none;" data-l10n-id="loadingLocations">Loading locations…</p>
 	<div id="infowindow">
 		<div id="infowindowBounds">
-			<a id="infowindowClose" href="#">&times;</a>
+			<a id="infowindowClose" href="#" data-l10n-id="buttonClose" title="Close">×</a>
 			<div id="infowindowContainer">
 				<!-- this will contain both menu-items' content & markers content -->
 			</div>
 		</div>
 	</div>
-
-	<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAwJr7NdvPMpLy5OPNUIJQyk0luN4_Xohs&libraries=places,geometry&sensor=false"></script>
-	<script src="js/external/jquery-1.9.1.min.js"></script>
-	<script src="js/external/jquery.browser.mobile.js"></script>
-	<script src="js/external/jquery.nouislider.min.js"></script>
-	<script src="js/external/webtoolkit.base64.js"></script>
-	<script src="js/external/modernizr.js"></script>
-	<script src="phonegap.js"></script>
-	<script src="js/holidays.js"></script>
-	<script src="js/map.js"></script>
-	<script src="js/infowindow.js"></script>
-	<script src="js/history.js"></script>
-	<script src="js/translate.js"></script>
 </body>
 </html>

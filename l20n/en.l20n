@@ -1,0 +1,36 @@
+/**
+ * @see http://l20n.github.io/tinker/
+ */
+<isWide($n) {
+	$n.width < 480 ? "portraitPhone" :
+	$n.width < 768 ? "landscapePhone" :
+	$n.width < 980 ? "landscapeTablet" :
+	$n.width < 1200 ? "desktop" :
+	"large"
+}>
+
+<brandName "HotelGuide"
+	content: "HotelGuide"
+>
+<brandDescription
+	content: "HotelGuide compiles all hotel deals of online travel providers and makes it easy to filter them on location or price. Find all hotels in the neighborhood of your current or your favorite travel destination and compare prices with other hotels just down the street!"
+>
+<brandKeywords
+	content: "hotelguide, last minute, holiday, hotel, travel, map, book"
+>
+<locationCurrent "Current location">
+<locationPlaceholder[isWide(@screen)]
+	placeholder: {
+		*wide: "What's your favorite destination?",
+		landscapePhone: "Destination?"
+	}
+>
+<linkApps "Apps">
+<linkContact "Contact">
+<loadingMap "Loading map…">
+<loadingLocations "Loading locations…">
+<buttonClose "×"
+	title: "Close"
+>
+<order "Order">
+<disclaimer "Disclaimer">
