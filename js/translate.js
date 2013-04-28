@@ -1,5 +1,5 @@
 holidays.translate = {
-	default: 'nl',
+	default: navigator.language || navigator.userLanguage,
 
 	init: function() {
 		holidays.translate.bind();
@@ -90,7 +90,7 @@ holidays.translate = {
 	 * @param string to
 	 */
 	translate: function( $element, from, to ) {
-		if ( from == to ) {
+		if ( from == to || !to ) {
 			return;
 		}
 
