@@ -132,7 +132,7 @@ holidays.map = {
 					lat: crossBoundsLat ? 1 : 0,
 					lng: crossBoundsLng ? 1 : 0
 				},
-				minPts: holidays.map.map.getZoom() > 15 ? 99999999 : 15, // zoomed in much = don't cluster
+				minPts: holidays.map.map.getZoom() > 13 ? 999999 : 15, // zoomed in much = don't cluster
 				nbrClusters: Math.round( $( '#map' ).width() * $( '#map' ).height() / 15000 ) // smaller screen = less clusters
 			},
 			type: 'GET',
@@ -219,7 +219,7 @@ holidays.map = {
 			var svg =
 				'<svg width="46" height="54" xmlns="http://www.w3.org/2000/svg">' +
 					// balloon shape
-					'<path stroke="'+ color +'" stroke-width="2" fill="#fcfcfc" style="opacity: 0.9" d=" M 7.81 8.31 C 11.74 4.27 17.35 1.87 23 2 C 28.65 1.88 34.27 4.27 38.19 8.31 C 42.01 12.15 44.21 17.59 44 23.02 C 44.04 28.86 41.15 34.49 36.78 38.28 C 32.15 42.35 27.72 46.65 23 50.62 C 18.28 46.66 13.86 42.34 9.23 38.28 C 4.85 34.49 1.96 28.85 2 23.01 C 1.8 17.59 3.99 12.15 7.81 8.31 Z" />' +
+					'<path stroke="'+ color +'" stroke-width="2" fill="#fcfcfc" style="stroke-opacity: 1; opacity: 0.9" d=" M 7.81 8.31 C 11.74 4.27 17.35 1.87 23 2 C 28.65 1.88 34.27 4.27 38.19 8.31 C 42.01 12.15 44.21 17.59 44 23.02 C 44.04 28.86 41.15 34.49 36.78 38.28 C 32.15 42.35 27.72 46.65 23 50.62 C 18.28 46.66 13.86 42.34 9.23 38.28 C 4.85 34.49 1.96 28.85 2 23.01 C 1.8 17.59 3.99 12.15 7.81 8.31 Z" />' +
 					// bottom balloon shadow
 					'<path fill="#7f7f7f" d=" M 18.18 52.59 C 19 52.19 19.83 51.81 20.64 51.41 C 21.36 51.99 22.05 52.79 23.01 52.91 C 23.96 52.79 24.64 51.99 25.36 51.42 C 26.2 51.82 27.05 52.21 27.9 52.6 C 27.79 53.07 27.67 53.53 27.55 54 L 18.33 54 C 18.28 53.53 18.24 53.06 18.18 52.59 Z" />' +
 					// text
@@ -233,7 +233,7 @@ holidays.map = {
 					url: 'data:image/svg+xml;base64,' + Base64.encode( svg ),
 					anchor: new google.maps.Point( 28, 54 )
 				},
-				zIndex: 2,
+				zIndex: 1000 - price, // surface cheaper hotels
 				flat: true,
 				title: holidays.currency + price,
 				id: id
