@@ -96,16 +96,29 @@ holidays.translate = {
 	 * @param string to
 	 */
 	translate: function( $element, from, to ) {
-		if ( from == to || !to ) {
+		// ISO 639-1
+		from = from.substr( 0, 2 );
+		to = to.substr( 0, 2 );
+
+		if ( !from || !to || from == to ) {
 			return;
+		}
+
+		// trim to 500 chars
+		var text = $element.text();
+		if ( text.length > 500 ) {
+			text = text.substr( 0, 500 );
+			text = text.substr( 0, text.lastIndexOf( ' ' ) ) + '…';
 		}
 
 		$.ajax( {
 			url: 'http://mymemory.translated.net/api/get',
 			data: {
-				q: $element.html(),
+				q: text,
 				langpair: from + '|' + to,
-				of: 'json'
+				of: 'json',
+				mt: 1, // machine translation
+				de: 'mymemory@last-minute-vakanties.be' // point of contact
 			},
 			type: 'GET',
 			dataType: 'json',
