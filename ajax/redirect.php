@@ -17,12 +17,13 @@ if ( isset( $_GET['id'] ) ) {
 
 	if ( $data !== false && $data['url'] ) {
 		// track click
-		$prepareTrack = $db->prepare( 'INSERT INTO track (action, feed_id, location_id, data) VALUES (:action, :feed_id, :location_id, :data)' );
+		$prepareTrack = $db->prepare( 'INSERT INTO track (action, feed_id, location_id, data, time) VALUES (:action, :feed_id, :location_id, :data, :time)' );
 		$prepareTrack->execute( array(
 			':action' => 'clickthrough',
 			':feed_id' => $data['feed_id'],
 			':location_id' => $data['id'],
 			':data' => serialize( $_SERVER ),
+			':time' => date( 'Y-m-d H:i:s' ),
 		) );
 
 		// redirect to location url

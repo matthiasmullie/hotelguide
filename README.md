@@ -41,6 +41,7 @@ Source code for http://www.last-minute-vakanties.be
           `feed_id` int(11) NOT NULL,
           `location_id` int(11) NOT NULL,
           `data` text COLLATE utf8_unicode_ci NOT NULL,
+          `time` DATETIME NULL,
           PRIMARY KEY (`id`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
