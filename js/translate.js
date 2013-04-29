@@ -63,8 +63,10 @@ holidays.translate = {
 			ctx.localize( ids, retranslate.bind( this, node ) );
 		}
 
-		var ctx = document.l10n;
-		localizeNode( element );
+		if ( typeof document.l10n != 'undefined' ) {
+			var ctx = document.l10n;
+			localizeNode( element );
+		}
 	},
 
 	/**
