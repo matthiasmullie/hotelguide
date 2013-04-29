@@ -12,7 +12,7 @@ holidays.map = {
 	init: function() {
 		var init = function() {
 			// only load if Maps is initialized (app may have no internet connection)
-			if ( typeof google.maps != 'undefined' ) {
+			if ( typeof google != 'undefined' && typeof google.maps != 'undefined' ) {
 				holidays.map.draw();
 				holidays.map.bind();
 				holidays.map.locate();

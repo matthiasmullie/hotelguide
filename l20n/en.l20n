@@ -34,3 +34,24 @@
 >
 <order "Order">
 <disclaimer "Disclaimer">
+<back "Back">
+<infowindowError "
+	<h2>Error!</h2>
+	<p>We could not fetch the requested data. The most common reasons for this error are:</p>
+	<p>
+		<strong>There's a problem with your internet connection.</strong><br />
+		Could you verify your internet connection?
+	</p>
+	<p>
+		<strong>We're updating our hotel database with the latest promotions.</strong><br />
+		In this case, you should soon be able to access the requested information. We advise you to retry later.
+	</p>
+	<p>If you keep encountering problens, please contact us via the <a class="infowindow" href="contact.php">contactform</a>.</p>
+	<p>Our sincere apologies!</p>
+">
+<infowindowApps "
+	<h2>Apps</h2>
+	<p>We're in the middle op developing mobile apps and we hope to launch an iOs, Android and Windows app soon.</p>
+	<p>Meanwhile you can browse the website that has been optimized for your mobile device, tested on each of these platforms.</p>
+	<p>Stay tuned!</p>
+">

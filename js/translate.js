@@ -2,6 +2,7 @@ holidays.translate = {
 	default: navigator.language || navigator.userLanguage,
 
 	init: function() {
+		holidays.translate.l20n( document );
 		holidays.translate.bind();
 	},
 
@@ -15,21 +16,24 @@ holidays.translate = {
 		 * Code stolen from l20n.js
 		 * @see l20n.js
 		 *
+		 * l20n.js originally replaces node.textContent, but we prefer
+		 * node.innerHTML ;)
+		 *
 		 * @param node
 		 * @param l10n
 		 */
-		function retranslate(node, l10n) {
-			var nodes = node.querySelectorAll('[data-l10n-id]');
+		function retranslate( node, l10n ) {
+			var nodes = node.querySelectorAll( '[data-l10n-id]' );
 			var entity;
-			for (var i = 0; i < nodes.length; i++) {
-				var id = nodes[i].getAttribute('data-l10n-id');
+			for ( var i = 0; i < nodes.length; i++ ) {
+				var id = nodes[i].getAttribute( 'data-l10n-id' );
 				var entity = l10n.entities[id];
 				var node = nodes[i];
-				if (entity.value) {
-					node.textContent = entity.value;
+				if ( entity.value ) {
+					node.innerHTML = entity.value;
 				}
-				for (var key in entity.attributes) {
-					node.setAttribute(key, entity.attributes[key]);
+				for ( var key in entity.attributes ) {
+					node.setAttribute( key, entity.attributes[key] );
 				}
 			}
 			// readd data-l10n-attrs
@@ -43,15 +47,17 @@ holidays.translate = {
 		 *
 		 * @param node
 		 */
-		function localizeNode(node) {
-			var nodes = node.querySelectorAll('[data-l10n-id]');
+		function localizeNode( node ) {
+			var nodes = node.querySelectorAll( '[data-l10n-id]' );
 			var ids = [];
-			for (var i = 0; i < nodes.length; i++) {
-				if (nodes[i].hasAttribute('data-l10n-args')) {
-					ids.push([nodes[i].getAttribute('data-l10n-id'),
-						JSON.parse(nodes[i].getAttribute('data-l10n-args'))]);
+			for ( var i = 0; i < nodes.length; i++ ) {
+				if ( nodes[i].hasAttribute( 'data-l10n-args' ) ) {
+					ids.push( [
+						nodes[i].getAttribute( 'data-l10n-id' ),
+						JSON.parse( nodes[i].getAttribute( 'data-l10n-args' ) )
+					] );
 				} else {
-					ids.push(nodes[i].getAttribute('data-l10n-id'));
+					ids.push( nodes[i].getAttribute( 'data-l10n-id' ) );
 				}
 			}
 			ctx.localize( ids, retranslate.bind( this, node ) );
