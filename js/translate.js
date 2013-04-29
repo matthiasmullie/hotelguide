@@ -110,7 +110,9 @@ holidays.translate = {
 			type: 'GET',
 			dataType: 'json',
 			success: function( json ) {
-				$element.html( json.responseData.translatedText );
+				if ( typeof json.responseStatus != 'undefined' && json.responseStatus == 200 ) {
+					$element.html( json.responseData.translatedText );
+				}
 			}
 		} );
 	}
