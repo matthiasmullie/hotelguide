@@ -1,62 +1,3134 @@
-'use strict';(function(){function g(a,c){function f(a){if(a)return s.source?(a=new k.Promise,a.fulfill(),a):k.IO.loadAsync(s.id).then(function(a){s.source=a});s.source||(s.source=k.IO.loadSync(s.id))}function n(){s.ast=c.parse(s.source)}function q(a,d){s.ast.body.filter(function(a,d){return"ImportStatement"==a.type?(p.push(d),!0):!1}).forEach(function(a){a=a.uri.content;if(!(null===s.id||"/"==a[0])){var d=s.id.split("/").slice(0,-1).join("/");d?("/"==d[d.length-1]&&(d=d.slice(0,d.length-1)),a=d+"/"+
-a):a="./"+a}a=new g(a,c);s.resources.push(a)});var f=[];s.resources.forEach(function(c){f.push(c.build(a,d))});if(d)return k.Promise.all(f)}function B(){for(var a=s.resources.length-1;0<=a;a--)Array.prototype.splice.apply(s.ast.body,[p[a]||0,1].concat(s.resources[a].ast.body));s.isReady=!0}var s=this;this.id=a;this.resources=[];this.source=null;this.isReady=!1;this.ast={type:"LOL",body:[]};this.build=function(a,c){if(7<=a)throw new d("Too many nested imports.");if(c)return f(c).then(n).then(q.bind(this,
-a+1,c)).then(B);f(c);n();q(a+1,c);B()};var p=[]}function c(a,d,c){function f(a){var d=[];s.resources.forEach(function(c){d.push(c.build(0,a))});if(a)return k.Promise.all(d)}function g(){s.ast.body=s.resources.reduce(function(a,d){return a.concat(d.ast.body)},s.ast.body)}function n(){s.entries=c.compile(s.ast);s.isReady=!0}this.id=a;this.resources=[];this.entries=null;this.ast={type:"LOL",body:[]};this.isReady=!1;this.build=function(a){return!a?(f(a),g(),n(),this):f(a).then(g).then(n)};this.getEntry=
-function(a){if(this.entries.hasOwnProperty(a))return this.entries[a]};var s=this}function f(a){function f(a,b){if(!z)throw new d("Context not ready");return w(0,a,b)}function m(a,b){for(var e={},d={},c,k=0,g;g=a[k];k++){Array.isArray(g)?(c=g[0],e[c]=f(g[0],g[1])):(c=g,e[c]=f(g));for(var l in e[c].globals)e[c].globals.hasOwnProperty(l)&&(d[l]=!0)}e={entities:e};b&&(b(e),j.bindGet({id:b,callback:m.bind(this,a,b),globals:Object.keys(d)}));return{}}function w(b,a,e,j){var d;d=0==r.length-b?t:A[r[b]];
-if(!d)return b=new n("Entity couldn't be retrieved",a,r),D.emit("error",b),{value:j?j:a,attributes:{},globals:{}};d.isReady||d.build(!1);var c=d.getEntry(a);if(void 0===c)return D.emit("error",new q("Not found",a,d.id)),w(b+1,a,e,j);try{return c.get(E.bind(this,e))}catch(f){if(f instanceof k.Compiler.RuntimeError)return D.emit("error",new q(f.message,a,d.id)),w(b+1,a,e,j||f.source);throw f;}}function E(a){if(!a)return this.data;var b={},e;for(e in this.data)this.data.hasOwnProperty(e)&&(b[e]=this.data[e]);
-if(a)for(e in a)a.hasOwnProperty(e)&&(b[e]=a[e]);return b}function B(){y=!0;for(var a=0;a<H.length;a++){var j=H[a];if("function"===typeof j){var d=void 0;for(d in A){var f=new g(j(d),b);A[d].resources.push(f)}}else{j=new g(j,b);if(0!==r.length)for(d in d=void 0,A)A[d].resources.push(j);void 0===t&&(t=new c(null,b,e));t.resources.push(j)}}return(0<r.length?A[r[0]]:t).build(!0).then(s)}function s(){z=!0;D.emit("ready");j.retranslate()}function p(a){D.emit("error",a)}this.id=a;this.data={};this.addResource=
-function(a){void 0===t&&(t=new c(null,b,e));var j=new g(null,b);j.source=a;t.resources.push(j)};this.linkResource=function(a){H.push(a)};this.registerLocales=function(){if(y&&!z)throw new d("Context not ready");r=[];for(var a in arguments){var j=arguments[a];r.push(j);A[j]=new c(j,b,e)}y&&B()};this.freeze=B;this.get=function(a,b){if(!z)throw new d("Context not ready");return w(0,a,b).value};this.getEntity=f;this.localize=function(a,b){if(!z){if(!b)throw new d("Context not ready");j.bindGet({id:b,
-callback:m.bind(this,a,b),globals:[]});return{}}return m(a,b)};this.addEventListener=function(a,b){D.addEventListener(a,b)};this.removeEventListener=function(a,b){D.removeEventListener(a,b)};var r=[],A={},t,H=[],y=!1,z=!1,D=new k.EventEmitter,b=new k.Parser(k.EventEmitter),e=new k.Compiler(k.EventEmitter,k.Parser),j=new k.RetranslationManager;b.addEventListener("error",p);e.addEventListener("error",p);e.setGlobals(j.globals)}function d(a){this.name="ContextError";this.message=a}function q(a,c,f){d.call(this,
-a);this.name="EntityError";this.id=c;this.lang=f;this.message="["+f+"] "+c+": "+a}function n(a,c,f){d.call(this,a);this.name="GetError";this.id=c;this.tried=f;this.message=f.length?c+": "+a+"; tried "+f.join(", "):c+": "+a}var k={Context:f,getContext:function(a){return new f(a)}};f.Error=d;f.EntityError=q;d.prototype=Object.create(Error.prototype);d.prototype.constructor=d;q.prototype=Object.create(d.prototype);q.prototype.constructor=q;n.prototype=Object.create(d.prototype);n.prototype.constructor=
-n;this.L20n=k}).call(this);
-(function(){var g=function(){this._state=0;this._value=null;this._cb={fulfilled:[],rejected:[]};this._thenPromises=[]};g.all=function(c){function f(){q--;0==q&&d.fulfill()}var d=new g,q=c.length;if(0==q)return d.fulfill(),d;for(var n in c)c[n].then(f,f);return d};g.prototype.then=function(c,f){this._cb.fulfilled.push(c);this._cb.rejected.push(f);var d=new g;this._thenPromises.push(d);0<this._state&&setTimeout(this._processQueue.bind(this),0);return d};g.prototype.fulfill=function(c){if(0!=this._state)return this;
-this._state=1;this._value=c;this._processQueue();return this};g.prototype.reject=function(c){if(0!=this._state)return this;this._state=2;this._value=c;this._processQueue();return this};g.prototype._processQueue=function(){for(;this._thenPromises.length;){var c=this._cb.fulfilled.shift(),f=this._cb.rejected.shift();this._executeCallback(1==this._state?c:f)}};g.prototype._executeCallback=function(c){var f=this._thenPromises.shift();if("function"!=typeof c)1==this._state?f.fulfill(this._value):f.reject(this._value);
-else try{var d=c(this._value);d&&"function"==typeof d.then?d.then(function(d){f.fulfill(d)},function(d){f.reject(d)}):f.fulfill(d)}catch(g){f.reject(g)}};this.L20n.Promise=g}).call(this);
-(function(){this.L20n.IO={load:function(g,c){return c?this.loadAsync(g):this.loadSync(g)},loadAsync:function(g){var c=new L20n.Promise,f=new XMLHttpRequest;f.overrideMimeType("text/plain");f.addEventListener("load",function(){200==f.status?c.fulfill(f.responseText):c.reject()});f.addEventListener("abort",function(d){return c.reject(d)});f.open("GET",g,!0);f.send("");return c},loadSync:function(g){new L20n.Promise;var c=new XMLHttpRequest;c.overrideMimeType("text/plain");c.open("GET",g,!1);c.send("");
-return 200==c.status?c.responseText:""}}}).call(this);
-(function(){function g(f){function d(){for(var b=[],e,j;;){e=m();j=[];"["===l.charAt(h)&&(++h,a(),j=x(p,"]"));a();if(":"!==l.charAt(h))throw u('Expected ":"');++h;a();e={type:void 0,key:e,value:n(),index:j};e.local="_"===e.key.name.charAt(0);b.push(e);e=k();j=l.charAt(h);if(">"===j)break;else if(!e)throw u('Expected ">"');}return b}function g(a){for(var b=a.length,e=h+b,j=l.indexOf(a,e);-1!==j&&92===l.charCodeAt(j-1)&&92!==l.charCodeAt(j-2);)j=l.indexOf(a,j+b);if(-1===j)throw u("Unclosed string literal");
-a=l.slice(e,j);h=j+b;return{type:"String",content:a}}function n(b,e){void 0===e&&(e=l.charAt(h));if("'"===e||'"'===e)return e===l.charAt(h+1)&&e===l.charAt(h+2)?g(e+e+e):g(e);if("{"===e){var j;++h;a();if("}"===l.charAt(h))++h,j={type:"Hash",content:[]};else{var d,c;for(j=[];;){d=!1;if("*"===l.charAt(h)){++h;if(d)throw u("Default item redefinition forbidden");d=!0}c=m();a();if(":"!==l.charAt(h))throw u('Expected ":"');++h;a();c={type:"HashItem",key:c,value:n()};c["default"]=d;j.push(c);a();if(d=","===
-l.charAt(h))++h,a();if("}"===l.charAt(h)){++h;break}if(!d)throw u('Expected "}"');}j={type:"Hash",content:j}}return j}if(!b)throw u("Unknown value type");return null}function k(){for(var a=h,b=l.charCodeAt(a);32===b||10===b||9===b||13===b;)b=l.charCodeAt(++h);return h!==a}function a(){for(var a=l.charCodeAt(h);32===a||10===a||9===a||13===a;)a=l.charCodeAt(++h)}function v(){++h;return{type:"VariableExpression",id:m()}}function m(){var a=h,b=a,e=l,j=e.charCodeAt(b);if((97>j||122<j)&&(65>j||90<j)&&95!==
-j)throw u("Identifier has to start with [a-zA-Z]");for(j=e.charCodeAt(++a);95<=j&&122>=j||65<=j&&90>=j||48<=j&&57>=j||95===j;)j=e.charCodeAt(++a);h+=a-b;return{type:"Identifier",name:e.slice(b,a)}}function w(b,j){if(!k())throw u("Expected white space");var e=l.charAt(h),c=n(!0,e),f=[];if(null===c)if(">"!==e)f=d();else throw u('Expected ">"');else if(e=k(),">"!==l.charAt(h)){if(!e)throw u('Expected ">"');f=d()}a();++h;return{type:"Entity",id:b,value:c,index:j,attrs:f,local:95===b.name.charCodeAt(0)}}
-function E(){var b=l.charCodeAt(h);if(60===b){++h;var e=m(),b=l.charCodeAt(h);if(40===b){if("_"===e.name.charAt(0))throw u('Macro ID cannot start with "_"');++h;b=x(v,")");k();if("{"!==l.charAt(h))throw u('Expected "{"');++h;a();var j=t();a();if("}"!==l.charAt(h))throw u('Expected "}"');++h;a();if(62!==l.charCodeAt(h))throw u('Expected ">"');++h;return{type:"Macro",id:e,args:b,expression:j}}return 91===b?(++h,w(e,x(p,"]"))):w(e,[])}if(47===l.charCodeAt(h)&&42===l.charCodeAt(h+1)){e=h+=2;b=l.indexOf("*/",
-e);if(-1===b)throw u("Comment without closing tag");h=b+2;return{type:"Comment",content:l.slice(e,b)}}if("import"===l.slice(h,h+6)){h+=6;if("("!==l.charAt(h))throw u('Expected "("');++h;a();e=g(l.charAt(h));a();if(")"!==l.charAt(h))throw u('Expected ")"');++h;return{type:"ImportStatement",uri:e}}throw u("Invalid entry");}function B(){var b=[];for(a();h<G;){try{b.push(E())}catch(e){if(e instanceof c)I.emit("error",e),b.push(M());else throw e;}h<G&&a()}return{type:"LOL",body:b}}function s(){var b=[];
-for(a();h<G;)b.push(E()),h<G&&a();return{type:"LOL",body:b}}function p(){return t()}function r(b,e,j,d){for(var c=d(),f,C;;){f="";a();C=l.charAt(h);if(-1===b[0].indexOf(C))break;f+=C;++h;if(1<b.length)if(C=l.charAt(h),b[1]==C)++h,f+=C;else if(b[2]){--h;break}a();c={type:e,operator:{type:j,token:f},left:c,right:d()}}return c}function A(b,e,j,d){var c=l.charCodeAt(h);if(-1===b.indexOf(c))return d();++h;a();return{type:e,operator:{type:j,token:String.fromCharCode(c)},argument:A(b,e,j,d)}}function t(){var b=
-r([["|"],"|",!0],"LogicalExpression","LogicalOperator",H);a();if(63!==l.charCodeAt(h))return b;++h;a();var e=t();a();if(58!==l.charCodeAt(h))throw u('Expected ":"');++h;a();return{type:"ConditionalExpression",test:b,consequent:e,alternate:t()}}function H(){return r([["&"],"&",!0],"LogicalExpression","Logicalperator",y)}function y(){return r([["="],"=",!0],"BinaryExpression","BinaryOperator",z)}function z(){return r([["<",">"],"=",!1],"BinaryExpression","BinaryOperator",D)}function D(){return r([["+",
-"-"]],"BinaryExpression","BinaryOperator",b)}function b(){return r([["%"]],"BinaryExpression","BinaryOperator",e)}function e(){return r([["*"]],"BinaryExpression","BinaryOperator",j)}function j(){return r([["/"]],"BinaryExpression","BinaryOperator",C)}function C(){return A([43,45,33],"UnaryExpression","UnaryOperator",L)}function K(b,e){if("ParenthesisExpression"!==b.type&&"CallExpression"!==b.type&&"Identifier"!==b.type&&"ThisExpression"!==b.type)throw u("AttributeExpression must have Identifier, This, Call or Parenthesis as left node");
-var j;if(e){a();j=t();a();if("]"!==l.charAt(h))throw u('Expected "]"');++h;return{type:"AttributeExpression",expression:b,attribute:j,computed:!0}}j=m();return{type:"AttributeExpression",expression:b,attribute:j,computed:!1}}function L(){var b;if(40===l.charCodeAt(h)){++h;a();var e={type:"ParenthesisExpression",expression:t()};a();if(41!==l.charCodeAt(h))throw u('Expected ")"');++h;b=e}else b=F();for(;;)if(e=l.charCodeAt(h),46===e||91===e){++h;var j=void 0;if(91===e){a();j=t();a();if("]"!==l.charAt(h))throw u('Expected "]"');
-++h;b={type:"PropertyExpression",expression:b,property:j,computed:!0}}else j=m(),b={type:"PropertyExpression",expression:b,property:j,computed:!1}}else if(58===e&&58===l.charCodeAt(h+1))h+=2,91===l.charCodeAt(h)?(++h,b=K(b,!0)):b=K(b,!1);else if(40===e)++h,e=b,a(),b={type:"CallExpression",callee:e,arguments:x(p,")")};else break;return b}function F(){for(var b=h,e=l.charCodeAt(b);47<e&&58>e;)e=l.charCodeAt(++b);if(b>h)return e=h,h=b,{type:"Number",value:parseInt(l.slice(e,b),10)};switch(e){case 39:case 34:case 123:case 91:return n();
-case 36:return v();case 64:return++h,{type:"GlobalsExpression",id:m()};case 126:return++h,{type:"ThisExpression"};default:return m()}}function x(b,e){var j;a();if(l.charAt(h)===e)return++h,[];for(var d=[];;)if(d.push(b()),a(),j=l.charAt(h),","===j)++h,a();else if(j===e){++h;break}else throw u('Expected "," or "'+e+'"');return d}function u(b,e){void 0===e&&(e=h);var a=l.lastIndexOf("<",e-1),j=l.lastIndexOf(">",e-1),a=l.slice(j>a?j+1:a,e+10);return new c(b+" at pos "+e+': "'+a+'"',e,a)}function M(){var b=
-l.indexOf("<",h),e;if(-1===b)return e={type:"JunkEntry",content:l.slice(h)},h=G,e;e={type:"JunkEntry",content:l.slice(h,b)};h=b;return e}this.parse=function(b){l=b;h=0;G=l.length;return J()};this.parseString=function(b){l=b;h=0;G=l.length;try{var e;var j,d;b=h;for(var C=!1,g=l.indexOf("\\");-1!==g;){j=l.charAt(g+1);if('"'==j||"'"==j||"\\"==j)l=l.substr(0,g)+l.substr(g+1);g=l.indexOf("\\",g+1)}for(g=l.indexOf("{{");-1!==g;)if(92===l.charCodeAt(g-1))l=l.substr(0,g-1)+l.substr(g),g=l.indexOf("{{",g+
-2);else{C||(d=[],C=!0);b<g&&d.push({type:"String",content:l.slice(b,g)});h=g+2;a();d.push(t());a();if(125!==l.charCodeAt(h)||125!==l.charCodeAt(h+1))throw u('Expected "}}"');b=g=h+2;g=l.indexOf("{{",g)}C?(b<G&&d.push({type:"String",content:l.slice(b)}),e={type:"ComplexString",content:d}):e={type:"String",content:l};return e}catch(k){throw f&&k instanceof c&&I.emit("error",k),k;}};this.addEventListener=function(b,e){if(!I)throw Error("Emitter not available");return I.addEventListener(b,e)};this.removeEventListener=
-function(b,e){if(!I)throw Error("Emitter not available");return I.removeEventListener(b,e)};var l,h,G,I,J;f?(I=new f,J=B):J=s}function c(c,d,g){this.name="ParserError";this.message=c;this.pos=d;this.context=g}g.Error=c;c.prototype=Object.create(Error.prototype);c.prototype.constructor=c;"undefined"!==typeof exports?exports.Parser=g:this.L20n?this.L20n.Parser=g:this.L20nParser=g}).call(this);
-(function(){function g(){function d(f){f=new f;this.globals[f.id]=f;a[f.id]=0;f.addEventListener("change",function(a){for(var d=0;d<c.length;d++)c[d]&&-1!==c[d].globals.indexOf(a)&&c[d].callback()})}var c=[],a={},f=[];this.bindGet=function(d){for(var g,n=0;n<f.length;n++)if(f[n].id===d.id){g=!0;break}g||f.push(d);var m=null;for(g=0;g<c.length;g++)if(c[g]&&c[g].id===d.id){m=c[g];break}m?0==d.globals.length?delete c[g]:(d.globals.filter(function(a){return-1===m.globals.indexOf(a)}).forEach(function(d){a[d]++;
-this.globals[d].activate()},this),m.globals.filter(function(a){return-1===d.globals.indexOf(a)}).forEach(function(d){a[d]--;0==a[d]&&this.globals[d].deactivate()}),m.globals=d.globals):0!=d.globals.length&&(c.push(d),d.globals.forEach(function(d){a[d]++;this.globals[d].activate()},this))};this.retranslate=function(){for(var a=0;a<f.length;a++)f[a].callback()};this.globals={};for(var m in g._constructors)d.call(this,g._constructors[m])}function c(){this.id=null;this._emitter=new L20n.EventEmitter}
-function f(){function d(){f=document.body.clientWidth;a._emitter.emit("change",a.id)}c.call(this);this.id="screen";this.get=function(){f||(f=document.body.clientWidth);return{width:f}};this.activate=function(){this.isActive||(window.addEventListener("resize",d),this.isActive=!0)};this.isActive=!1;var f=null,a=this}function d(){c.call(this);this.id="os";this.get=function(){return/^MacIntel/.test(navigator.platform)?"mac":/^Linux/.test(navigator.platform)?"linux":/^Win/.test(navigatgor.platform)?"win":
-"unknown"}}function q(){function d(){var c=new Date;c.getHours()!==a&&(a=c.getHours(),f._emitter.emit("change",f.id))}c.call(this);this.id="hour";this.get=function(){a||(a=(new Date).getHours());return a};this.activate=function(){this.isActive||(m=setTimeout(function(){d();m=setInterval(d,g)},g-(new Date).getTime()%g),this.isActive=!0)};this.deactivate=function(){a=null;clearInterval(m);this.isActive=!1};this.isActive=!1;var f=this,a=null,g=36E5,m=null}g._constructors=[];g.registerGlobal=function(d){g._constructors.push(d)};
-c.prototype.addEventListener=function(d,c){if("change"!==d)throw"Unknown event type";this._emitter.addEventListener(d,c)};c.prototype.activate=function(){};c.prototype.deactivate=function(){};g.Global=c;f.prototype=Object.create(c.prototype);f.prototype.constructor=f;d.prototype=Object.create(c.prototype);d.prototype.constructor=d;q.prototype=Object.create(c.prototype);q.prototype.constructor=q;g.registerGlobal(f);g.registerGlobal(d);g.registerGlobal(q);this.L20n.RetranslationManager=g}).call(this);
-(function(){function g(){this._listeners={}}g.prototype.emit=function(){var c=Array.prototype.slice.call(arguments),f=c.shift(),f=this._listeners[f];if(!f||!f.length)return!1;f.forEach(function(d){d.apply(this,c)},this);return!0};g.prototype.addEventListener=function(c,f){this._listeners[c]||(this._listeners[c]=[]);this._listeners[c].push(f);return this};g.prototype.removeEventListener=function(c,f){var d=this._listeners[c].indexOf(f);if(-1===d)return this;listeners.splice(d,1);return this};"undefined"!==
-typeof exports?exports.EventEmitter=g:this.L20n?this.L20n.EventEmitter=g:this.L20nEventEmitter=g}).call(this);
-(function(){function g(a,c){var g;function w(b,e,a,d){b=new b(e,a,d);t&&t.emit("error",b);return b}function E(b){this.id=b.id.name;this.local=b.local||!1;this.index=[];this.attributes={};this.publicAttributes=[];var e;for(e=0;e<b.index.length;e++)this.index.push(p(b.index[e],this));for(e=0;e<b.attrs.length;e++){var a=b.attrs[e];this.attributes[a.key.name]=new B(a,this);a.local||this.publicAttributes.push(a.key.name)}this.value=p(b.value,this,this.index)}function B(b,e){this.key=b.key.name;this.local=
-b.local||!1;this.index=[];for(var a=0;a<b.index.length;a++)this.index.push(p(b.index[a],this));this.value=p(b.value,e,this.index);this.entity=e}function s(b){this.id=b.id.name;this.local=b.local||!1;this.expression=p(b.expression,this);this.args=b.args}function p(b,e,a){if(!b)return null;if(!D[b.type])throw w("CompilationError","Unknown expression type"+b.type);a&&(a=a.slice());return D[b.type](b,e,a)}function r(b,e,a){if(!b||"string"===typeof b||"boolean"===typeof b||"number"===typeof b)return b;
-if(b._resolve)return b._resolve(a);b=b(e,a);e=b[0];b=b[1];return r(b,e,a)}function A(b,e){if("=="==b)return function(b,a){if(("number"!==typeof b||"number"!==typeof a)&&("string"!==typeof b||"string"!==typeof a))throw new d("The == operator takes two numbers or two strings",e);return b==a};if("!="==b)return function(b,a){if(("number"!==typeof b||"number"!==typeof a)&&("string"!==typeof b||"string"!==typeof a))throw new d("The != operator takes two numbers or two strings",e);return b!=a};if("<"==b)return function(b,
-a){if("number"!==typeof b||"number"!==typeof a)throw new d("The < operator takes two numbers",e);return b<a};if("<="==b)return function(b,a){if("number"!==typeof b||"number"!==typeof a)throw new d("The <= operator takes two numbers",e);return b<=a};if(">"==b)return function(b,a){if("number"!==typeof b||"number"!==typeof a)throw new d("The > operator takes two numbers",e);return b>a};if(">="==b)return function(b,a){if("number"!==typeof b||"number"!==typeof a)throw new d("The >= operator takes two numbers",
-e);return b>=a};if("+"==b)return function(b,a){if(("number"!==typeof b||"number"!==typeof a)&&("string"!==typeof b||"string"!==typeof a))throw new d("The + operator takes two numbers or two strings",e);return b+a};if("-"==b)return function(b,a){if("number"!==typeof b||"number"!==typeof a)throw new d("The - operator takes numbers",e);return b-a};if("*"==b)return function(b,a){if("number"!==typeof b||"number"!==typeof a)throw new d("The * operator takes numbers",e);return b*a};if("/"==b)return function(b,
-a){if("number"!==typeof b||"number"!==typeof a)throw new d("The / operator takes two numbers",e);if(0==a)throw new d("Division by zero not allowed.",e);return b/a};if("%"==b)return function(b,a){if("number"!==typeof b||"number"!==typeof a)throw new d("The % operator takes two numbers",e);return b%a};throw w(f,"Unknown token: "+b,e);}this.compile=function(b){y={};for(var a={Entity:E,Macro:s},d=0,c;c=b.body[d];d++){var f=a[c.type];if(f)try{y[c.id.name]=new f(c)}catch(g){k(g)}}return y};this.setGlobals=
-function(b){z=b;return!0};this.addEventListener=function(b,a){if(!t)throw Error("Emitter not available");return t.addEventListener(b,a)};this.removeEventListener=function(b,a){if(!t)throw Error("Emitter not available");return t.removeEventListener(b,a)};this.reset=function(){y={};z={};g={};return this};var t=a?new a:null,H=c?new c:null,y={},z={};g={};E.prototype._yield=function(b,a){return this.value({__this__:this},b,a)};E.prototype._resolve=function(b){return r(this.value,{__this__:this},b)};E.prototype.getString=
-function(b){try{return this._resolve(b)}catch(a){throw k(a),a instanceof q&&t&&t.emit("error",a),a;}};E.prototype.get=function(b){g={};for(var a={value:this.getString(b),attributes:{}},d=0,c;c=this.publicAttributes[d];d++)a.attributes[c]=this.attributes[c].getString(b);a.globals=g;return a};B.prototype._yield=function(b,a){return this.value({__this__:this.entity},b,a)};B.prototype._resolve=function(b){return r(this.value,{__this__:this.entity},b)};B.prototype.getString=function(b){try{return this._resolve(b)}catch(a){throw k(a),
-a instanceof q&&t&&t.emit("error",a),a;}};s.prototype._call=function(b,a){for(var d={__this__:this},c=0;c<this.args.length;c++)d[this.args[c].id.name]=a[c];return this.expression(d,b)};var D={Identifier:function(b,a){var c=b.name;return function(b){if(!y.hasOwnProperty(c))throw new d("Reference to an unknown entry: "+c,a);b.__this__=y[c];return[b,y[c]]}},ThisExpression:function(){return function(b){return[b,b.__this__]}},VariableExpression:function(b,a){var c=b.id.name;return function(b,f){if(b.hasOwnProperty(c))return b[c];
-if(!f||!f.hasOwnProperty(c))throw new d("Reference to an unknown variable: "+c,a);return[b,f[c]]}},GlobalsExpression:function(b,a){var c=b.id.name;return function(b){if(!z)throw new d("Globals missing (tried @"+c+").",a);if(!z.hasOwnProperty(c))throw new d("Reference to an unknown global: "+c,a);g[c]=!0;return[b,z[c].get()]}},Number:function(b){return function(a){return[a,b.value]}},String:function(b,a){var d,c;return function(f,g){if(!c){try{d=H.parseString(b.content)}catch(m){throw new q("Malformed string. "+
-m.message,a,b.content);}if("String"==d.type)return[f,d.content];c=p(d,a)}try{return[f,r(c,f,g)]}catch(n){throw k(n),new q(n.message,a,b.content);}}},Hash:function(a,d,c){for(var f=[],g,m=c.length?c.shift():void 0,F=0;F<a.content.length;F++){var x=a.content[F];f[x.key.name]=p(x.value,d,c);x.default&&(g=x.key.name)}return function(a,b,c){c=[c,m,g];for(var h=[],j=0;j<c.length;j++){try{var x=c[j]=r(c[j],a,b)}catch(F){throw k(F),w(n,F.message,d);}if(void 0!==x){if("string"!==typeof x)throw w(n,"Index must be a string",
-d);h.push(x);if(f.hasOwnProperty(x))return[a,f[x]]}}throw w(n,h.length?'Hash key lookup failed (tried "'+h.join('", "')+'").':"Hash key lookup failed.",d);}},HashItem:p,ComplexString:function(a,e){for(var c=[],f=0;f<a.content.length;f++)c.push(p(a.content[f],e));var g=!1;return function(a,b){if(g)throw new d("Cyclic reference detected",e);g=!0;var f=[];try{for(var m=0;m<c.length;m++){var k=r(c[m],a,b);if("string"!==typeof k&&"number"!==typeof k)throw new d("Placeables must be strings or numbers",
-e);f.push(k)}}finally{g=!1}return[a,f.join("")]}},UnaryExpression:function(a,e){var c;var g=a.operator.token;if("-"==g)c=function(a){if("number"!==typeof a)throw new d("The unary - operator takes a number",e);return-a};else if("+"==g)c=function(a){if("number"!==typeof a)throw new d("The unary + operator takes a number",e);return+a};else if("!"==g)c=function(a){if("boolean"!==typeof a)throw new d("The ! operator takes a boolean",e);return!a};else throw w(f,"Unknown token: "+g,e);var m=p(a.argument,
-e);return function(a,b){return[a,c(r(m,a,b))]}},BinaryExpression:function(a,d){var c=p(a.left,d),f=A(a.operator.token,d),g=p(a.right,d);return function(a,b){return[a,f(r(c,a,b),r(g,a,b))]}},LogicalExpression:function(a,c){var g=p(a.left,c),m;var k=a.operator.token;if("&&"==k)m=function(a,b){if("boolean"!==typeof a||"boolean"!==typeof b)throw new d("The && operator takes two booleans",c);return a&&b};else if("||"==k)m=function(a,b){if("boolean"!==typeof a||"boolean"!==typeof b)throw new d("The || operator takes two booleans",
-c);return a||b};else throw w(f,"Unknown token: "+k,c);var n=p(a.right,c);return function(a,b){return[a,m(r(g,a,b),r(n,a,b))]}},ConditionalExpression:function(a,c){var f=p(a.test,c),g=p(a.consequent,c),m=p(a.alternate,c);return function(a,b){var k=r(f,a,b);if("boolean"!==typeof k)throw new d("Conditional expressions must test a boolean",c);return!0===k?g(a,b):m(a,b)}},CallExpression:function(a,c){for(var f=p(a.callee,c),g=[],m=0;m<a.arguments.length;m++)g.push(p(a.arguments[m],c));return function(a,
-b){for(var m=[],k=0;k<g.length;k++)m.push(g[k](a,b));k=f(a,b);k=k[1];if(!k._call)throw new d("Expected a macro, got a non-callable.",c);return k._call(b,m)}},PropertyExpression:function(a,c){var f=p(a.expression,c),g=a.computed?p(a.property,c):a.property.name;return function(a,b){var m=r(g,a,b),k=f(a,b);a=k[0];k=k[1];if(k._yield)return k._yield(b,m);if("function"!==typeof k){if(!k.hasOwnProperty(m))throw new d(m+" is not defined in the context data",c);return[null,k[m]]}return k(a,b,m)}},AttributeExpression:function(a,
-c){var d=p(a.expression,c),f=a.computed?p(a.attribute,c):a.attribute.name;return function(a,b){var c=r(f,a,b),e=d(a,b);a=e[0];e=e[1];return[a,e.attributes[c]]}},ParenthesisExpression:function(a,c){return p(a.expression,c)}}}function c(a,c){this.name="CompilerError";this.message=a;this.entry=c.id}function f(a,d){c.call(this,a,d);this.name="CompilationError"}function d(a,d){c.call(this,a,d);this.name="RuntimeError"}function q(a,c,f){d.call(this,a,c);this.name="ValueError";this.source=f}function n(a,
-c){d.call(this,a,c);this.name="IndexError"}function k(a){if(!(a instanceof c))throw a;}g.Error=c;g.CompilationError=f;g.RuntimeError=d;g.ValueError=q;g.IndexError=n;c.prototype=Object.create(Error.prototype);c.prototype.constructor=c;f.prototype=Object.create(c.prototype);f.prototype.constructor=f;d.prototype=Object.create(c.prototype);d.prototype.constructor=d;q.prototype=Object.create(d.prototype);q.prototype.constructor=q;n.prototype=Object.create(d.prototype);n.prototype.constructor=n;"undefined"!==
-typeof exports?exports.Compiler=g:this.L20n?this.L20n.Compiler=g:this.L20nCompiler=g}).call(this);
-(function(){this.L20n.Intl={prioritizeLocales:function(g){for(var c={localeMatcher:"lookup"},f=[navigator.language||navigator.userLanguage],d=0,q=f.length,n=void 0;d<q&&void 0===n;){var k=f[d],a=k;a:{for(var n=g,v=a;;){if(-1!==n.indexOf(v)){n=v;break a}var m=v.lastIndexOf("-");if(-1===m){n=void 0;break a}2<=m&&"-"==v[m-2]&&(m-=2);v=v.substr(0,m)}n=void 0}d+=1}f={};if(void 0!==n){if(f.locale=n,k!==a)throw"NotImplemented";}else f.locale="en-US";k=f.locale;if(f.hasOwnProperty("extension"))throw"NotImplemented";
-a="-u";for(f=0;0>f;){d=(void 0)(k)[k];q=d[0];n="";if(void 0!==extensionSubtags)throw"NotImplemented";c.hasOwnProperty("key")&&(v=c.key,-1!==d.indexOf(v)&&v!==q&&(n=""),a+=n,f+=1)}2<a.length&&(c=k.substr(0,extensionIndex),k=k.substr(extensionIndex+1),k=c+a+k);c=k;k=g.indexOf(c);if(-1===k)return g;g.splice(k,1);g.unshift(c);return g}}}).call(this);
-(function(){function g(){document.body?(q(document),c()):document.addEventListener("readystatechange",f);HTMLDocument.prototype.__defineGetter__("l10n",function(){return n});n.addEventListener("ready",function(){var a=document.createEvent("Event");a.initEvent("LocalizationReady",!1,!1);document.dispatchEvent(a)});n.addEventListener("error",function(a){a.code&L20n.NOVALIDLOCALE_ERROR&&(a=document.createEvent("Event"),a.initEvent("LocalizationFailed",!1,!1),document.dispatchEvent(a))});n.freeze()}function c(){document.body.style.visibility=
-"visible";var a=document.createEvent("Event");a.initEvent("DocumentLocalized",!1,!1);document.dispatchEvent(a)}function f(){"interactive"===document.readyState&&(q(document),c(),document.removeEventListener("readystatechange",f))}function d(a,c){for(var d=a.querySelectorAll("[data-l10n-id]"),f,g=0;g<d.length;g++){f=d[g].getAttribute("data-l10n-id");f=c.entities[f];a=d[g];f.value&&(a.textContent=f.value);for(var k in f.attributes)a.setAttribute(k,f.attributes[k])}}function q(a){for(var c=a.querySelectorAll("[data-l10n-id]"),
-f=[],g=0;g<c.length;g++)c[g].hasAttribute("data-l10n-args")?f.push([c[g].getAttribute("data-l10n-id"),JSON.parse(c[g].getAttribute("data-l10n-args"))]):f.push(c[g].getAttribute("data-l10n-id"));n.localize(f,d.bind(this,a))}var n=this.L20n.getContext(document.location.host),k;document.body&&(document.body.style.visibility="hidden");k=document.head;var a=k.querySelector('script[type="application/l10n-data+json"]');a&&(n.data=JSON.parse(a.textContent));if(a=k.querySelector('script[type="application/l20n"]'))a.hasAttribute("src")?
-n.linkResource(a.getAttribute("src")):n.addResource(a.textContent),g();else if(k=k.querySelector('link[rel="localization"]')){k=k.getAttribute("href");var v=new L20n.Promise;L20n.IO.load(k,!0).then(function(a){var c=JSON.parse(a);a=L20n.Intl.prioritizeLocales(c.languages);n.registerLocales.apply(this,a);n.linkResource(function(a){return c.resources[0].replace("{{lang}}",a)});v.fulfill()});v.then(g)}}).call(this);
+(function() {
+	'use strict';
+
+	var L20n = {
+		Context: Context,
+		getContext: function L20n_getContext(id) {
+			return new Context(id);
+		}
+	};
+
+	function Resource(id, parser) {
+		var self = this;
+
+		this.id = id;
+		this.resources = [];
+		this.source = null;
+		this.isReady = false;
+		this.ast = {
+			type: 'LOL',
+			body: []
+		};
+
+		this.build = build;
+
+		var _imports_positions = [];
+
+		function build(nesting, async) {
+			if (nesting >= 7) {
+				throw new ContextError("Too many nested imports.");
+			}
+			if (!async) {
+				fetch(async);
+				parse();
+				buildImports(nesting + 1, async);
+				flatten();
+				return;
+			}
+			return fetch(async)
+				.then(parse)
+				.then(buildImports.bind(this, nesting + 1, async))
+				.then(flatten);
+		}
+
+		function fetch(async) {
+			if (!async) {
+				if (!self.source) {
+					self.source = L20n.IO.loadSync(self.id);
+				}
+				return;
+			}
+			if (self.source) {
+				var source = new L20n.Promise();
+				source.fulfill();
+				return source;
+			}
+			return L20n.IO.loadAsync(self.id).then(function load_success(text) {
+				self.source = text;
+			});
+		}
+
+		function parse() {
+			self.ast = parser.parse(self.source);
+		}
+
+		function buildImports(nesting, async) {
+			var imports = self.ast.body.filter(function(elem, i) {
+				if (elem.type == 'ImportStatement') {
+					_imports_positions.push(i);
+					return true;
+				}
+				return false;
+			});
+
+			imports.forEach(function(imp) {
+				var uri = relativeToSelf(imp.uri.content);
+				var res = new Resource(uri, parser);
+				self.resources.push(res);
+			});
+
+			var imports_built = [];
+			self.resources.forEach(function(res) {
+				imports_built.push(res.build(nesting, async));
+			});
+
+			if (async) {
+				return L20n.Promise.all(imports_built);
+			}
+		}
+
+		function flatten() {
+			for (var i = self.resources.length-1; i >= 0; i--) {
+				var pos = _imports_positions[i] || 0;
+				Array.prototype.splice.apply(self.ast.body,
+					[pos, 1].concat(self.resources[i].ast.body));
+			}
+			self.isReady = true;
+		}
+
+		function relativeToSelf(url) {
+			if (self.id === null || url[0] == '/') {
+				return url;
+			}
+			var dirname = self.id.split('/').slice(0, -1).join('/');
+			if (dirname) {
+				// strip the trailing slash if present
+				if (dirname[dirname.length - 1] == '/') {
+					dirname = dirname.slice(0, dirname.length - 1);
+				}
+				return dirname + '/' + url;
+			} else {
+				return './' + url;
+			}
+		}
+
+	}
+
+	function Locale(id, parser, compiler) {
+		this.id = id;
+		this.resources = [];
+		this.entries = null;
+		this.ast = {
+			type: 'LOL',
+			body: []
+		};
+		this.isReady = false;
+
+		this.build = build;
+		this.getEntry = getEntry;
+
+		var self = this;
+
+		function build(async) {
+			if (!async) {
+				buildResources(async);
+				flatten();
+				compile();
+				return this;
+			}
+			return buildResources(async)
+				.then(flatten)
+				.then(compile);
+		}
+
+		function buildResources(async) {
+			var resources_built = [];
+			self.resources.forEach(function(res) {
+				resources_built.push(res.build(0, async));
+			});
+			if (async) {
+				return L20n.Promise.all(resources_built);
+			}
+		}
+
+		function flatten() {
+			self.ast.body = self.resources.reduce(function(prev, curr) {
+				return prev.concat(curr.ast.body);
+			}, self.ast.body);
+		}
+
+		function compile() {
+			self.entries = compiler.compile(self.ast);
+			self.isReady = true;
+		}
+
+		function getEntry(id) {
+			if (this.entries.hasOwnProperty(id)) {
+				return this.entries[id];
+			}
+			return undefined;
+		}
+	}
+
+	function Context(id) {
+
+		this.id = id;
+		this.data = {};
+
+		this.addResource = addResource;
+		this.linkResource = linkResource;
+		this.registerLocales = registerLocales;
+		this.freeze = freeze;
+
+		this.get = get;
+		this.getEntity = getEntity;
+		this.localize = localize;
+
+		this.addEventListener = addEventListener;
+		this.removeEventListener = removeEventListener;
+
+		// all languages registered as available (list of codes)
+		var _available = [];
+		var _locales = {};
+		// a special Locale for resources not associated with any other
+		var _none;
+
+		var _reslinks = [];
+
+		var _isFrozen = false;
+		var _isReady = false;
+		var _emitter = new L20n.EventEmitter();
+		var _parser = new L20n.Parser(L20n.EventEmitter);
+		var _compiler = new L20n.Compiler(L20n.EventEmitter, L20n.Parser);
+
+		var _retr = new L20n.RetranslationManager();
+
+		var _listeners = [];
+
+		_parser.addEventListener('error', echo);
+		_compiler.addEventListener('error', echo);
+		_compiler.setGlobals(_retr.globals);
+
+		function get(id, data) {
+			if (!_isReady) {
+				throw new ContextError("Context not ready");
+			}
+			return getFromLocale(0, id, data).value;
+		}
+
+		function getEntity(id, data) {
+			if (!_isReady) {
+				throw new ContextError("Context not ready");
+			}
+			return getFromLocale(0, id, data);
+		}
+
+		function localize(idsOrTuples, callback) {
+			if (!_isReady) {
+				if (!callback) {
+					throw new ContextError("Context not ready");
+				}
+				_retr.bindGet({
+					id: callback,
+					callback: getMany.bind(this, idsOrTuples, callback),
+					globals: []
+				});
+				// XXX: add stop and retranslate to the returned object
+				return {};
+			}
+			return getMany(idsOrTuples, callback);
+		}
+
+		function getMany(idsOrTuples, callback) {
+			var vals = {};
+			var globalsUsed = {};
+			var id;
+			for (var i = 0, iot; iot = idsOrTuples[i]; i++) {
+				if (Array.isArray(iot)) {
+					id = iot[0];
+					vals[id] = getEntity(iot[0], iot[1]);
+				} else {
+					id = iot;
+					vals[id] = getEntity(iot);
+				}
+				for (var global in vals[id].globals) {
+					if (vals[id].globals.hasOwnProperty(global)) {
+						globalsUsed[global] = true;
+					}
+				}
+			}
+			var l10n = {
+				entities: vals
+				//stop: fn
+			};
+			if (callback) {
+				callback(l10n);
+				_retr.bindGet({
+					id: callback,
+					callback: getMany.bind(this, idsOrTuples, callback),
+					globals: Object.keys(globalsUsed)
+				});
+			}
+			// XXX: add stop and retranslate to the returned object
+			return {};
+		}
+
+		function getLocale(i) {
+			// if we're out of locales from `_available`, resort to `_none`
+			if (_available.length - i == 0) {
+				return _none;
+			}
+			return  _locales[_available[i]];
+		}
+
+		function getFromLocale(cur, id, data, sourceString) {
+			var locale = getLocale(cur);
+
+			if (!locale) {
+				var ex = new GetError("Entity couldn't be retrieved", id, _available);
+				_emitter.emit('error', ex);
+				// imitate the return value of Compiler.Entity.get
+				return {
+					value: sourceString ? sourceString : id,
+					attributes: {},
+					globals: {}
+				};
+			}
+
+			if (!locale.isReady) {
+				locale.build(false);
+			}
+
+			var entry = locale.getEntry(id);
+
+			// if the entry is missing, just go to the next locale immediately
+			if (entry === undefined) {
+				_emitter.emit('error', new EntityError("Not found", id, locale.id));
+				return getFromLocale(cur + 1, id, data, sourceString);
+			}
+
+			// otherwise, try to get the value of the entry
+			try {
+				return entry.get(getArgs.bind(this, data));
+			} catch(e) {
+				if (e instanceof L20n.Compiler.RuntimeError) {
+					_emitter.emit('error', new EntityError(e.message, id, locale.id));
+					return getFromLocale(cur + 1, id, data, sourceString || e.source);
+				} else {
+					throw e;
+				}
+			}
+		}
+
+		function getArgs(data) {
+			if (!data) {
+				return this.data;
+			}
+			var args = {};
+			for (var i in this.data) {
+				if (this.data.hasOwnProperty(i)) {
+					args[i] = this.data[i];
+				}
+			}
+			if (data) {
+				for (i in data) {
+					if (data.hasOwnProperty(i)) {
+						args[i] = data[i];
+					}
+				}
+			}
+			return args;
+		}
+
+		function addResource(text) {
+			if (_none === undefined) {
+				_none = new Locale(null, _parser, _compiler);
+			}
+			var res = new Resource(null, _parser);
+			res.source = text;
+			_none.resources.push(res);
+		}
+
+		function linkResource(uri) {
+			_reslinks.push(uri);
+		}
+
+		function link(uri) {
+			if (typeof uri === 'function') {
+				return linkTemplate(uri);
+			} else {
+				return linkURI(uri);
+			}
+		}
+
+		function linkTemplate(uriTemplate) {
+			for (var lang in _locales) {
+				var res = new Resource(uriTemplate(lang), _parser);
+				// XXX detect if the resource has been already added?
+				_locales[lang].resources.push(res);
+			}
+			return true;
+		}
+
+		function linkURI(uri) {
+			var res = new Resource(uri, _parser);
+			if (_available.length !== 0) {
+				for (var lang in _locales) {
+					_locales[lang].resources.push(res);
+				}
+			}
+			if (_none === undefined) {
+				_none = new Locale(null, _parser, _compiler);
+			}
+			_none.resources.push(res);
+			return true;
+		}
+
+		function registerLocales() {
+			if (_isFrozen && !_isReady) {
+				throw new ContextError("Context not ready");
+			}
+			_available = [];
+			for (var i in arguments) {
+				var lang = arguments[i];
+				_available.push(lang);
+				_locales[lang] = new Locale(lang, _parser, _compiler);
+			}
+			if (_isFrozen) {
+				freeze();
+			}
+		}
+
+		function freeze() {
+			_isFrozen = true;
+			for (var i = 0; i < _reslinks.length; i++) {
+				link(_reslinks[i]);
+			}
+			var locale = _available.length > 0 ? _locales[_available[0]] : _none;
+			return locale.build(true).then(setReady);
+		}
+
+		function setReady() {
+			_isReady = true;
+			_emitter.emit('ready');
+			_retr.retranslate();
+		}
+
+		function addEventListener(type, listener) {
+			_emitter.addEventListener(type, listener);
+		}
+
+		function removeEventListener(type, listener) {
+			_emitter.removeEventListener(type, listener);
+		}
+
+		function echo(e) {
+			_emitter.emit('error', e);
+		}
+	}
+
+	Context.Error = ContextError;
+	Context.EntityError = EntityError;
+
+	function ContextError(message) {
+		this.name = 'ContextError';
+		this.message = message;
+	}
+	ContextError.prototype = Object.create(Error.prototype);
+	ContextError.prototype.constructor = ContextError;
+
+	function EntityError(message, id, lang) {
+		ContextError.call(this, message);
+		this.name = 'EntityError';
+		this.id = id;
+		this.lang = lang;
+		this.message = '[' + lang + '] ' + id + ': ' + message;
+	}
+	EntityError.prototype = Object.create(ContextError.prototype);
+	EntityError.prototype.constructor = EntityError;
+
+	function GetError(message, id, langs) {
+		ContextError.call(this, message);
+		this.name = 'GetError';
+		this.id = id;
+		this.tried = langs;
+		if (langs.length) {
+			this.message = id + ': ' + message + '; tried ' + langs.join(', ');
+		} else {
+			this.message = id + ': ' + message;
+		}
+	}
+	GetError.prototype = Object.create(ContextError.prototype);
+	GetError.prototype.constructor = GetError;
+
+	this.L20n = L20n;
+
+}).call(this);
+/**
+ * @class A promise - value to be resolved in the future.
+ * Implements the "Promises/A+" specification.
+ */
+(function() {
+	'use strict';
+	var Promise = function() {
+		this._state = 0; /* 0 = pending, 1 = fulfilled, 2 = rejected */
+		this._value = null; /* fulfillment / rejection value */
+
+		this._cb = {
+			fulfilled: [],
+			rejected: []
+		}
+
+		this._thenPromises = []; /* promises returned by then() */
+	}
+
+	Promise.all = function(list) {
+		var pr = new Promise();
+		var toResolve = list.length;
+		if (toResolve == 0) {
+			pr.fulfill();
+			return pr;
+		}
+		function onResolve() {
+			toResolve--;
+			if (toResolve == 0) {
+				pr.fulfill();
+			}
+		}
+		for (var idx in list) {
+			// XXX should there be a different callback for promises errorring out?
+			// with two onResolve callbacks, all() is more like some().
+			list[idx].then(onResolve, onResolve);
+		}
+		return pr;
+	}
+
+	/**
+	 * @param {function} onFulfilled To be called once this promise gets fulfilled
+	 * @param {function} onRejected To be called once this promise gets rejected
+	 * @returns {Promise}
+	 */
+	Promise.prototype.then = function(onFulfilled, onRejected) {
+		this._cb.fulfilled.push(onFulfilled);
+		this._cb.rejected.push(onRejected);
+
+		var thenPromise = new Promise();
+
+		this._thenPromises.push(thenPromise);
+
+		if (this._state > 0) {
+			setTimeout(this._processQueue.bind(this), 0);
+		}
+
+		/* 3.2.6. then must return a promise. */
+		return thenPromise;
+	}
+
+	/**
+	 * Fulfill this promise with a given value
+	 * @param {any} value
+	 */
+	Promise.prototype.fulfill = function(value) {
+		if (this._state != 0) { return this; }
+
+		this._state = 1;
+		this._value = value;
+
+		this._processQueue();
+
+		return this;
+	}
+
+	/**
+	 * Reject this promise with a given value
+	 * @param {any} value
+	 */
+	Promise.prototype.reject = function(value) {
+		if (this._state != 0) { return this; }
+
+		this._state = 2;
+		this._value = value;
+
+		this._processQueue();
+
+		return this;
+	}
+
+	Promise.prototype._processQueue = function() {
+		while (this._thenPromises.length) {
+			var onFulfilled = this._cb.fulfilled.shift();
+			var onRejected = this._cb.rejected.shift();
+			this._executeCallback(this._state == 1 ? onFulfilled : onRejected);
+		}
+	}
+
+	Promise.prototype._executeCallback = function(cb) {
+		var thenPromise = this._thenPromises.shift();
+
+		if (typeof(cb) != "function") {
+			if (this._state == 1) {
+				/* 3.2.6.4. If onFulfilled is not a function and promise1 is fulfilled, promise2 must be fulfilled with the same value. */
+				thenPromise.fulfill(this._value);
+			} else {
+				/* 3.2.6.5. If onRejected is not a function and promise1 is rejected, promise2 must be rejected with the same reason. */
+				thenPromise.reject(this._value);
+			}
+			return;
+		}
+
+		try {
+			var returned = cb(this._value);
+
+			if (returned && typeof(returned.then) == "function") {
+				/* 3.2.6.3. If either onFulfilled or onRejected returns a promise (call it returnedPromise), promise2 must assume the state of returnedPromise */
+				var fulfillThenPromise = function(value) { thenPromise.fulfill(value); }
+				var rejectThenPromise = function(value) { thenPromise.reject(value); }
+				returned.then(fulfillThenPromise, rejectThenPromise);
+			} else {
+				/* 3.2.6.1. If either onFulfilled or onRejected returns a value that is not a promise, promise2 must be fulfilled with that value. */
+				thenPromise.fulfill(returned);
+			}
+
+		} catch (e) {
+
+			/* 3.2.6.2. If either onFulfilled or onRejected throws an exception, promise2 must be rejected with the thrown exception as the reason. */
+			thenPromise.reject(e);
+
+		}
+	}
+
+	this.L20n.Promise = Promise;
+}).call(this);
+(function() {
+	'use strict';
+
+	var IO = {
+		load: function load(url, async) {
+			if (async) {
+				return this.loadAsync(url);
+			}
+			return this.loadSync(url);
+		},
+		loadAsync: function(url) {
+			var deferred = new L20n.Promise();
+			var xhr = new XMLHttpRequest();
+			if (typeof xhr.overrideMimeType != 'undefined') {
+				xhr.overrideMimeType('text/plain');
+			}
+			xhr.addEventListener('load', function() {
+				if (xhr.status == 200) {
+					deferred.fulfill(xhr.responseText);
+				} else {
+					deferred.reject();
+				}
+			});
+			xhr.addEventListener('abort', function(e) {
+				return deferred.reject(e);
+			});
+			xhr.open('GET', url, true);
+			xhr.send('');
+			return deferred;
+		},
+
+		loadSync: function(url) {
+			var deferred = new L20n.Promise();
+			var xhr = new XMLHttpRequest();
+			if (typeof xhr.overrideMimeType != 'undefined') {
+				xhr.overrideMimeType('text/plain');
+			}
+			xhr.open('GET', url, false);
+			xhr.send('');
+			if (xhr.status == 200) {
+				return xhr.responseText;
+			} else {
+				// XXX should this fail more horribly?
+				return '';
+			}
+		}
+	}
+
+	this.L20n.IO = IO;
+
+}).call(this);
+(function() {
+	'use strict';
+
+	function Parser(Emitter) {
+
+		/* Public */
+
+		this.parse = parse;
+		this.parseString = parseString;
+		this.addEventListener = addEventListener;
+		this.removeEventListener = removeEventListener;
+
+		/* Private */
+
+		var _source, _index, _length, _emitter;
+
+		/* Depending on if we have emitter choose prop getLOL method */
+		var getLOL;
+		if (Emitter) {
+			_emitter = new Emitter();
+			getLOL = getLOLWithRecover;
+		} else {
+			getLOL = getLOLPlain;
+		}
+
+		function getComment() {
+			_index += 2;
+			var start = _index;
+			var end = _source.indexOf('*/', start);
+			if (end === -1) {
+				throw error('Comment without closing tag');
+			}
+			_index = end + 2;
+			return {
+				type: 'Comment',
+				content: _source.slice(start, end)
+			};
+		}
+
+		function getAttributes() {
+			var attrs = [];
+			var attr, ws1, ch;
+
+			while (true) {
+				attr = getKVPWithIndex();
+				attr.local = attr.key.name.charAt(0) === '_';
+				attrs.push(attr);
+				ws1 = getRequiredWS();
+				ch = _source.charAt(_index);
+				if (ch === '>') {
+					break;
+				} else if (!ws1) {
+					throw error('Expected ">"');
+				}
+			}
+			return attrs;
+		}
+
+		function getKVP(type) {
+			var key = getIdentifier();
+			getWS();
+			if (_source.charAt(_index) !== ':') {
+				throw error('Expected ":"');
+			}
+			++_index;
+			getWS();
+			return {
+				type: type,
+				key: key,
+				value: getValue()
+			};
+		}
+
+		function getKVPWithIndex(type) {
+			var key = getIdentifier();
+			var index = [];
+
+			if (_source.charAt(_index) === '[') {
+				++_index;
+				getWS();
+				index = getItemList(getExpression, ']');
+			}
+			getWS();
+			if (_source.charAt(_index) !== ':') {
+				throw error('Expected ":"');
+			}
+			++_index;
+			getWS();
+			return {
+				type: type,
+				key: key,
+				value: getValue(),
+				index: index
+			};
+		}
+
+		function getHash() {
+			++_index;
+			getWS();
+			if (_source.charAt(_index) === '}') {
+				++_index;
+				return {
+					type: 'Hash',
+					content: []
+				};
+			}
+
+			var defItem, hi, comma, hash = [];
+			while (true) {
+				defItem = false;
+				if (_source.charAt(_index) === '*') {
+					++_index;
+					if (defItem) {
+						throw error('Default item redefinition forbidden');
+					}
+					defItem = true;
+				}
+				hi = getKVP('HashItem');
+				hi['default'] = defItem;
+				hash.push(hi);
+				getWS();
+
+				comma = _source.charAt(_index) === ',';
+				if (comma) {
+					++_index;
+					getWS();
+				}
+				if (_source.charAt(_index) === '}') {
+					++_index;
+					break;
+				}
+				if (!comma) {
+					throw error('Expected "}"');
+				}
+			}
+			return {
+				type: 'Hash',
+				content: hash
+			};
+		}
+
+		function getString(opchar) {
+			var len = opchar.length;
+			var start = _index + len;
+
+			var close = _source.indexOf(opchar, start);
+			// we look for a closing of the string here
+			// and then we check if it's preceeded by '\'
+			// 92 == '\'
+			while (close !== -1 &&
+				_source.charCodeAt(close - 1) === 92 &&
+				_source.charCodeAt(close - 2) !== 92) {
+				close = _source.indexOf(opchar, close + len);
+			}
+			if (close === -1) {
+				throw error('Unclosed string literal');
+			}
+			var str = _source.slice(start, close);
+
+			_index = close + len;
+			return {
+				type: 'String',
+				content: str
+			};
+		}
+
+		function getValue(optional, ch) {
+			if (ch === undefined) {
+				ch = _source.charAt(_index);
+			}
+			if (ch === "'" || ch === '"') {
+				if (ch === _source.charAt(_index + 1) && ch === _source.charAt(_index + 2)) {
+					return getString(ch + ch + ch);
+				}
+				return getString(ch);
+			}
+			if (ch === '{') {
+				return getHash();
+			}
+			if (!optional) {
+				throw error('Unknown value type');
+			}
+			return null;
+		}
+
+
+		function getRequiredWS() {
+			var pos = _index;
+			var cc = _source.charCodeAt(pos);
+			// space, \n, \t, \r
+			while (cc === 32 || cc === 10 || cc === 9 || cc === 13) {
+				cc = _source.charCodeAt(++_index);
+			}
+			return _index !== pos;
+		}
+
+		function getWS() {
+			var cc = _source.charCodeAt(_index);
+			// space, \n, \t, \r
+			while (cc === 32 || cc === 10 || cc === 9 || cc === 13) {
+				cc = _source.charCodeAt(++_index);
+			}
+		}
+
+		function getVariable() {
+			++_index;
+			return {
+				type: 'VariableExpression',
+				id: getIdentifier()
+			};
+		}
+
+		function getIdentifier() {
+			var index = _index;
+			var start = index;
+			var source = _source;
+			var cc = source.charCodeAt(start);
+
+			// a-zA-Z_
+			if ((cc < 97 || cc > 122) && (cc < 65 || cc > 90) && cc !== 95) {
+				throw error('Identifier has to start with [a-zA-Z]');
+			}
+
+			cc = source.charCodeAt(++index);
+			while ((cc >= 95 && cc <= 122) || // a-z
+				(cc >= 65 && cc <= 90) ||  // A-Z
+				(cc >= 48 && cc <= 57) ||  // 0-9
+				cc === 95) {               // _
+				cc = source.charCodeAt(++index);
+			}
+			_index += index - start;
+			return {
+				type: 'Identifier',
+				name: source.slice(start, index)
+			};
+		}
+
+		function getImportStatement() {
+			_index += 6;
+			if (_source.charAt(_index) !== '(') {
+				throw error('Expected "("');
+			}
+			++_index;
+			getWS();
+			var uri = getString(_source.charAt(_index));
+			getWS();
+			if (_source.charAt(_index) !== ')') {
+				throw error('Expected ")"');
+			}
+			++_index;
+			return {
+				type: 'ImportStatement',
+				uri: uri
+			};
+		}
+
+		function getMacro(id) {
+			if (id.name.charAt(0) === '_') {
+				throw error('Macro ID cannot start with "_"');
+			}
+			++_index;
+			var idlist = getItemList(getVariable, ')');
+			getRequiredWS();
+
+			if (_source.charAt(_index) !== '{') {
+				throw error('Expected "{"');
+			}
+			++_index;
+			getWS();
+			var exp = getExpression();
+			getWS();
+			if (_source.charAt(_index) !== '}') {
+				throw error('Expected "}"');
+			}
+			++_index;
+			getWS();
+			if (_source.charCodeAt(_index) !== 62) {
+				throw error('Expected ">"');
+			}
+			++_index;
+			return {
+				type: 'Macro',
+				id: id,
+				args: idlist,
+				expression: exp
+			};
+		}
+
+		function getEntity(id, index) {
+			if (!getRequiredWS()) {
+				throw error('Expected white space');
+			}
+
+			var ch = _source.charAt(_index);
+			var value = getValue(true, ch);
+			var attrs = [];
+			if (value === null) {
+				if (ch !== '>') {
+					attrs = getAttributes();
+				} else {
+					throw error('Expected ">"');
+				}
+			} else {
+				var ws1 = getRequiredWS();
+				if (_source.charAt(_index) !== '>') {
+					if (!ws1) {
+						throw error('Expected ">"');
+					}
+					attrs = getAttributes();
+				}
+			}
+			getWS();
+
+			// skip '>'
+			++_index;
+			return {
+				type: 'Entity',
+				id: id,
+				value: value,
+				index: index,
+				attrs: attrs,
+				local: (id.name.charCodeAt(0) === 95) // _
+			};
+		}
+
+		function getEntry() {
+			var cc = _source.charCodeAt(_index);
+
+			// 60 == '<'
+			if (cc === 60) {
+				++_index;
+				var id = getIdentifier();
+				cc = _source.charCodeAt(_index);
+				// 40 == '('
+				if (cc === 40) {
+					return getMacro(id);
+				}
+				// 91 == '['
+				if (cc === 91) {
+					++_index;
+					return getEntity(id,
+						getItemList(getExpression, ']'));
+				}
+				return getEntity(id, []);
+			}
+			// 47, 42 == '/*'
+			if (_source.charCodeAt(_index) === 47 &&
+				_source.charCodeAt(_index + 1) === 42) {
+				return getComment();
+			}
+			if (_source.slice(_index, _index + 6) === 'import') {
+				return getImportStatement();
+			}
+			throw error('Invalid entry');
+		}
+
+		function getComplexString() {
+			/*
+			   * This is a very complex function, sorry for that
+			   *
+			   * It basically parses a string looking for:
+			   *   - expression openings: {{
+			   *   - escape chars: \
+			   *
+			   * And if it finds any it deals with them.
+			   * The result is quite fast, except for getExpression which as
+			   * of writing does a poor job at nesting many functions in order
+			   * to get to the most common type - Identifier.
+			   *
+			   * We can fast path that, we can rewrite expression engine to minimize
+			   * function nesting or we can wait for engines to become faster.
+			   *
+			   * For now, it's fast enough :)
+			   */
+			var nxt;                    // next char in backslash case
+			var body;                   // body of a complex string
+			var bstart = _index;        // buffer start index
+			var complex = false;
+
+			// unescape \\ \' \" \{{
+			var pos = _source.indexOf('\\');
+			while (pos !== -1) {
+				nxt = _source.charAt(pos + 1);
+				if (nxt == '"' ||
+					nxt == "'" ||
+					nxt == '\\') {
+					_source = _source.substr(0, pos) + _source.substr(pos + 1);
+				}
+				pos = _source.indexOf('\\', pos + 1);
+			}
+
+			// parse expressions
+			pos = _source.indexOf('{{');
+			while (pos !== -1) {
+				// except if the expression is prefixed with \
+				// in that case skip it
+				if (_source.charCodeAt(pos - 1) === 92) {
+					_source = _source.substr(0, pos - 1) + _source.substr(pos);
+					pos = _source.indexOf('{{', pos + 2);
+					continue;
+				}
+				if (!complex) {
+					body = [];
+					complex = true;
+				}
+				if (bstart < pos) {
+					body.push({
+						type: 'String',
+						content: _source.slice(bstart, pos)
+					});
+				}
+				_index = pos + 2;
+				getWS();
+				body.push(getExpression());
+				getWS();
+				if (_source.charCodeAt(_index) !== 125 ||
+					_source.charCodeAt(_index+1) !== 125) {
+					throw error('Expected "}}"');
+				}
+				pos = _index + 2;
+				bstart = pos;
+				pos = _source.indexOf('{{', pos);
+			}
+
+			// if complexstring is just one string, return it instead
+			if (!complex) {
+				return {
+					type: 'String',
+					content: _source
+				};
+			}
+
+			// if there's leftover string we pick it
+			if (bstart < _length) {
+				body.push({
+					type: 'String',
+					content: _source.slice(bstart)
+				});
+			}
+			return {
+				type: 'ComplexString',
+				content: body
+			};
+		}
+
+		function getLOLWithRecover() {
+			var entries = [];
+
+			getWS();
+			while (_index < _length) {
+				try {
+					entries.push(getEntry());
+				} catch (e) {
+					if (e instanceof ParserError) {
+						_emitter.emit('error', e);
+						entries.push(recover());
+					} else {
+						throw e;
+					}
+				}
+				if (_index < _length) {
+					getWS();
+				}
+			}
+
+			return {
+				type: 'LOL',
+				body: entries
+			};
+		}
+
+		function getLOLPlain() {
+			var entries = [];
+
+			getWS();
+			while (_index < _length) {
+				entries.push(getEntry());
+				if (_index < _length) {
+					getWS();
+				}
+			}
+
+			return {
+				type: 'LOL',
+				body: entries
+			};
+		}
+
+		/* Public API functions */
+
+		function parseString(string) {
+			_source = string;
+			_index = 0;
+			_length = _source.length;
+			try {
+				return getComplexString();
+			} catch (e) {
+				if (Emitter && e instanceof ParserError) {
+					_emitter.emit('error', e);
+				}
+				throw e;
+			}
+		}
+
+		function parse(string) {
+			_source = string;
+			_index = 0;
+			_length = _source.length;
+
+			return getLOL();
+		}
+
+		function addEventListener(type, listener) {
+			if (!_emitter) {
+				throw Error("Emitter not available");
+			}
+			return _emitter.addEventListener(type, listener);
+		}
+
+		function removeEventListener(type, listener) {
+			if (!_emitter) {
+				throw Error("Emitter not available");
+			}
+			return _emitter.removeEventListener(type, listener);
+		}
+
+		/* Expressions */
+
+		function getExpression() {
+			return getConditionalExpression();
+		}
+
+		function getPrefixExpression(token, cl, op, nxt) {
+			var exp = nxt();
+			var t, ch;
+			while (true) {
+				t = '';
+				getWS();
+				ch = _source.charAt(_index);
+				if (token[0].indexOf(ch) === -1) {
+					break;
+				}
+				t += ch;
+				++_index;
+				if (token.length > 1) {
+					ch = _source.charAt(_index);
+					if (token[1] == ch) {
+						++_index;
+						t += ch;
+					} else if (token[2]) {
+						--_index;
+						return exp;
+					}
+				}
+				getWS();
+				exp = {
+					type: cl,
+					operator: {
+						type: op,
+						token: t
+					},
+					left: exp,
+					right: nxt()
+				};
+			}
+			return exp;
+		}
+
+		function getPostfixExpression(token, cl, op, nxt) {
+			var cc = _source.charCodeAt(_index);
+			if (token.indexOf(cc) === -1) {
+				return nxt();
+			}
+			++_index;
+			getWS();
+			return {
+				type: cl,
+				operator: {
+					type: op,
+					token: String.fromCharCode(cc)
+				},
+				argument: getPostfixExpression(token, cl, op, nxt)
+			};
+		}
+
+		function getConditionalExpression() {
+			var exp = getOrExpression();
+			getWS();
+			if (_source.charCodeAt(_index) !== 63) { // ?
+				return exp;
+			}
+			++_index;
+			getWS();
+			var consequent = getExpression();
+			getWS();
+			if (_source.charCodeAt(_index) !== 58) { // :
+				throw error('Expected ":"');
+			}
+			++_index;
+			getWS();
+			return {
+				type: 'ConditionalExpression',
+				test: exp,
+				consequent: consequent,
+				alternate: getExpression()
+			};
+		}
+
+		function getOrExpression() {
+			return getPrefixExpression([['|'], '|', true],
+				'LogicalExpression',
+				'LogicalOperator',
+				getAndExpression);
+		}
+
+		function getAndExpression() {
+			return getPrefixExpression([['&'], '&', true],
+				'LogicalExpression',
+				'Logicalperator',
+				getEqualityExpression);
+		}
+
+		function getEqualityExpression() {
+			return getPrefixExpression([['='], '=', true],
+				'BinaryExpression',
+				'BinaryOperator',
+				getRelationalExpression);
+		}
+
+		function getRelationalExpression() {
+			return getPrefixExpression([['<', '>'], '=', false],
+				'BinaryExpression',
+				'BinaryOperator',
+				getAdditiveExpression);
+		}
+
+		function getAdditiveExpression() {
+			return getPrefixExpression([['+', '-']],
+				'BinaryExpression',
+				'BinaryOperator',
+				getModuloExpression);
+		}
+
+		function getModuloExpression() {
+			return getPrefixExpression([['%']],
+				'BinaryExpression',
+				'BinaryOperator',
+				getMultiplicativeExpression);
+		}
+
+		function getMultiplicativeExpression() {
+			return getPrefixExpression([['*']],
+				'BinaryExpression',
+				'BinaryOperator',
+				getDividiveExpression);
+		}
+
+		function getDividiveExpression() {
+			return getPrefixExpression([['/']],
+				'BinaryExpression',
+				'BinaryOperator',
+				getUnaryExpression);
+		}
+
+		function getUnaryExpression() {
+			return getPostfixExpression([43, 45, 33], // + - !
+				'UnaryExpression',
+				'UnaryOperator',
+				getMemberExpression);
+		}
+
+		function getCallExpression(callee) {
+			getWS();
+			return {
+				type: 'CallExpression',
+				callee: callee,
+				arguments: getItemList(getExpression, ')')
+			};
+		}
+
+		function getAttributeExpression(idref, computed) {
+			if (idref.type !== 'ParenthesisExpression' &&
+				idref.type !== 'CallExpression' &&
+				idref.type !== 'Identifier' &&
+				idref.type !== 'ThisExpression') {
+				throw error('AttributeExpression must have Identifier, This, Call or Parenthesis as left node');
+			}
+			var exp;
+			if (computed) {
+				getWS();
+				exp = getExpression();
+				getWS();
+				if (_source.charAt(_index) !== ']') {
+					throw error('Expected "]"');
+				}
+				++_index;
+				return {
+					type: 'AttributeExpression',
+					expression: idref,
+					attribute: exp,
+					computed: true
+				};
+			}
+			exp = getIdentifier();
+			return {
+				type: 'AttributeExpression',
+				expression: idref,
+				attribute: exp,
+				computed: false
+			};
+		}
+
+		function getPropertyExpression(idref, computed) {
+			var exp;
+			if (computed) {
+				getWS();
+				exp = getExpression();
+				getWS();
+				if (_source.charAt(_index) !== ']') {
+					throw error('Expected "]"');
+				}
+				++_index;
+				return {
+					type: 'PropertyExpression',
+					expression: idref,
+					property: exp,
+					computed: true
+				};
+			}
+			exp = getIdentifier();
+			return {
+				type: 'PropertyExpression',
+				expression: idref,
+				property: exp,
+				computed: false
+			};
+		}
+
+		function getMemberExpression() {
+			var exp = getParenthesisExpression();
+			var cc;
+
+			// 46: '.'
+			// 40: '('
+			// 58: ':'
+			// 91: '['
+			while (true) {
+				cc = _source.charCodeAt(_index);
+				if (cc === 46 || cc === 91) { // . or [
+					++_index;
+					exp = getPropertyExpression(exp, cc === 91);
+				} else if (cc === 58 &&
+					_source.charCodeAt(_index + 1) === 58) { // ::
+					_index += 2;
+					if (_source.charCodeAt(_index) === 91) { // [
+						++_index;
+						exp = getAttributeExpression(exp, true);
+					} else {
+						exp = getAttributeExpression(exp, false);
+					}
+				} else if (cc === 40) { // (
+					++_index;
+					exp = getCallExpression(exp);
+				} else {
+					break;
+				}
+			}
+			return exp;
+		}
+
+		function getParenthesisExpression() {
+			// 40 == (
+			if (_source.charCodeAt(_index) === 40) {
+				++_index;
+				getWS();
+				var pexp = {
+					type: 'ParenthesisExpression',
+					expression: getExpression()
+				};
+				getWS();
+				if (_source.charCodeAt(_index) !== 41) {
+					throw error('Expected ")"');
+				}
+				++_index;
+				return pexp;
+			}
+			return getPrimaryExpression();
+		}
+
+		function getPrimaryExpression() {
+			var pos = _index;
+			var cc = _source.charCodeAt(pos);
+			// number
+			while (cc > 47 && cc < 58) {
+				cc = _source.charCodeAt(++pos);
+			}
+			if (pos > _index) {
+				var start = _index;
+				_index = pos;
+				return {
+					type: 'Number',
+					value: parseInt(_source.slice(start, pos), 10)
+				};
+			}
+
+			switch (cc) {
+				// value: '"{[
+				case 39:
+				case 34:
+				case 123:
+				case 91:
+					return getValue();
+
+				// variable: $
+				case 36:
+					return getVariable();
+
+				// globals: @
+				case 64:
+					++_index;
+					return {
+						type: 'GlobalsExpression',
+						id: getIdentifier()
+					};
+
+				// this: ~
+				case 126:
+					++_index;
+					return {
+						type: 'ThisExpression'
+					};
+
+				default:
+					return getIdentifier();
+			}
+		}
+
+		/* helper functions */
+
+		function getItemList(callback, closeChar) {
+			var ch;
+			getWS();
+			if (_source.charAt(_index) === closeChar) {
+				++_index;
+				return [];
+			}
+
+			var items = [];
+
+			while (true) {
+				items.push(callback());
+				getWS();
+				ch = _source.charAt(_index);
+				if (ch === ',') {
+					++_index;
+					getWS();
+				} else if (ch === closeChar) {
+					++_index;
+					break;
+				} else {
+					throw error('Expected "," or "' + closeChar + '"');
+				}
+			}
+			return items;
+		}
+
+		function error(message, pos) {
+			if (pos === undefined) {
+				pos = _index;
+			}
+			var start = _source.lastIndexOf('<', pos - 1);
+			var lastClose = _source.lastIndexOf('>', pos - 1);
+			start = lastClose > start ? lastClose + 1 : start;
+			var context = _source.slice(start, pos + 10);
+
+			var msg = message + ' at pos ' + pos + ': "' + context + '"';
+			return new ParserError(msg, pos, context);
+		}
+
+		// This code is being called whenever we
+		// hit ParserError.
+		//
+		// The strategy here is to find the closest entry opening
+		// and skip forward to it.
+		//
+		// It may happen that the entry opening is in fact part of expression,
+		// but this should just trigger another ParserError on the next char
+		// and we'll have to scan for entry opening again until we're successful
+		// or we run out of entry openings in the code.
+		function recover() {
+			var opening = _source.indexOf('<', _index);
+			var junk;
+			if (opening === -1) {
+				junk = {
+					'type': 'JunkEntry',
+					'content': _source.slice(_index)
+				};
+				_index = _length;
+				return junk;
+			}
+			junk = {
+				'type': 'JunkEntry',
+				'content': _source.slice(_index, opening)
+			};
+			_index = opening;
+			return junk;
+		}
+	}
+
+	/* ParserError class */
+
+	Parser.Error = ParserError;
+
+	function ParserError(message, pos, context) {
+		this.name = 'ParserError';
+		this.message = message;
+		this.pos = pos;
+		this.context = context;
+	}
+	ParserError.prototype = Object.create(Error.prototype);
+	ParserError.prototype.constructor = ParserError;
+
+	/* Expose the Parser constructor */
+
+	if (typeof exports !== 'undefined') {
+		exports.Parser = Parser;
+	} else if (this.L20n) {
+		this.L20n.Parser = Parser;
+	} else {
+		this.L20nParser = Parser;
+	}
+}).call(this);
+(function(){
+	'use strict';
+
+	function RetranslationManager() {
+		var _usage = [];
+		var _counter = {};
+		var _callbacks = [];
+
+		this.bindGet = bindGet;
+		this.retranslate = retranslate;
+		this.globals = {};
+
+		for (var i in RetranslationManager._constructors) {
+			initGlobal.call(this, RetranslationManager._constructors[i]);
+		}
+
+		function initGlobal(globalCtor) {
+			var global = new globalCtor();
+			this.globals[global.id] = global;
+			_counter[global.id] = 0;
+			global.addEventListener('change', function(id) {
+				for (var i = 0; i < _usage.length; i++) {
+					if (_usage[i] && _usage[i].globals.indexOf(id) !== -1) {
+						_usage[i].callback();
+					}
+				}
+			});
+		};
+
+		function bindGet(get) {
+			// store the callback in case we want to retranslate the whole context
+			var inCallbacks;
+			for (var i = 0; i < _callbacks.length; i++) {
+				if (_callbacks[i].id === get.id) {
+					inCallbacks = true;
+					break;
+				}
+			}
+			if (!inCallbacks) {
+				_callbacks.push(get);
+			}
+
+			// handle the global usage
+			var inUsage = null;
+			for (var usageInc = 0; usageInc < _usage.length; usageInc++) {
+				if (_usage[usageInc] && _usage[usageInc].id === get.id) {
+					inUsage = _usage[usageInc];
+					break;
+				}
+			}
+			if (!inUsage) {
+				if (get.globals.length != 0) {
+					_usage.push(get);
+					get.globals.forEach(function(id) {
+						_counter[id]++;
+						this.globals[id].activate();
+					}, this);
+				}
+			} else {
+				if (get.globals.length == 0) {
+					delete(_usage[usageInc]);
+				} else {
+					var added = get.globals.filter(function(id) {
+						return inUsage.globals.indexOf(id) === -1;
+					});
+					added.forEach(function(id) {
+						_counter[id]++;
+						this.globals[id].activate();
+					}, this);
+					var removed = inUsage.globals.filter(function(id) {
+						return get.globals.indexOf(id) === -1;
+					});
+					removed.forEach(function(id) {
+						_counter[id]--;
+						if (_counter[id] == 0) {
+							this.globals[id].deactivate();
+						}
+					});
+					inUsage.globals = get.globals;
+				}
+			}
+		}
+
+		function retranslate() {
+			for (var i = 0; i < _callbacks.length; i++) {
+				_callbacks[i].callback();
+			}
+		}
+	}
+
+	RetranslationManager._constructors = [];
+
+	RetranslationManager.registerGlobal = function(ctor) {
+		RetranslationManager._constructors.push(ctor);
+	}
+
+	function Global() {
+		this.id = null;
+		this._emitter = new L20n.EventEmitter();
+	}
+
+	Global.prototype.addEventListener = function(type, listener) {
+		if (type !== 'change') {
+			throw "Unknown event type";
+		}
+		this._emitter.addEventListener(type, listener);
+	}
+
+	Global.prototype.activate = function() {}
+	Global.prototype.deactivate = function() {}
+
+	RetranslationManager.Global = Global;
+
+
+	// XXX: Warning, we're cheating here for now. We want to have @screen.width,
+	// but since we can't get it from compiler, we call it @screen and in order to
+	// keep API forward-compatible with 1.0 we return an object with key width to
+	// make it callable as @screen.width
+	function ScreenGlobal() {
+		Global.call(this);
+		this.id = 'screen';
+		this.get = get;
+		this.activate = activate;
+		this.isActive = false;
+
+		var value = null;
+		var self = this;
+
+		function get() {
+			if (!value) {
+				value = document.body.clientWidth;
+			}
+			return {'width': value};
+		}
+
+		function activate() {
+			if (!this.isActive) {
+				window.addEventListener('resize', onchange);
+				this.isActive = true;
+			}
+		}
+
+		function deactivate() {
+			window.removeEventListener('resize', onchange);
+		}
+
+		function onchange() {
+			value = document.body.clientWidth;
+			self._emitter.emit('change', self.id);
+		}
+	}
+
+	ScreenGlobal.prototype = Object.create(Global.prototype);
+	ScreenGlobal.prototype.constructor = ScreenGlobal;
+
+
+	function OSGlobal() {
+		Global.call(this);
+		this.id = 'os';
+		this.get = get;
+
+		function get() {
+			if (/^MacIntel/.test(navigator.platform)) {
+				return 'mac';
+			}
+			if (/^Linux/.test(navigator.platform)) {
+				return 'linux';
+			}
+			if (/^Win/.test(navigatgor.platform)) {
+				return 'win';
+			}
+			return 'unknown';
+		}
+
+	}
+
+	OSGlobal.prototype = Object.create(Global.prototype);
+	OSGlobal.prototype.constructor = OSGlobal;
+
+	function HourGlobal() {
+		Global.call(this);
+		this.id = 'hour';
+		this.get = get;
+		this.activate = activate;
+		this.deactivate = deactivate;
+		this.isActive = false;
+
+		var self = this;
+		var value = null;
+		var interval = 60 * 60 * 1000;
+		var I = null;
+
+		function get() {
+			if (!value) {
+				var time = new Date();
+				value = time.getHours();
+			}
+			return value;
+		}
+
+		function onchange() {
+			var time = new Date();
+			if (time.getHours() !== value) {
+				value = time.getHours();
+				self._emitter.emit('change', self.id);
+			}
+		}
+
+		function activate() {
+			if (!this.isActive) {
+				var time = new Date();
+				I = setTimeout(function() {
+					onchange();
+					I = setInterval(onchange, interval);
+				}, interval - (time.getTime() % interval));
+				this.isActive = true;
+			}
+		}
+
+		function deactivate() {
+			value = null;
+			clearInterval(I);
+			this.isActive = false;
+		}
+
+	}
+
+	HourGlobal.prototype = Object.create(Global.prototype);
+	HourGlobal.prototype.constructor = HourGlobal;
+
+	RetranslationManager.registerGlobal(ScreenGlobal);
+	RetranslationManager.registerGlobal(OSGlobal);
+	RetranslationManager.registerGlobal(HourGlobal);
+
+	this.L20n.RetranslationManager = RetranslationManager;
+
+}).call(this);
+(function() {
+	'use strict';
+
+	function EventEmitter() {
+		this._listeners = {};
+	}
+
+	EventEmitter.prototype.emit = function ee_emit() {
+		var args = Array.prototype.slice.call(arguments);
+		var type = args.shift();
+		var typeListeners = this._listeners[type];
+		if (!typeListeners || !typeListeners.length) {
+			return false;
+		}
+		typeListeners.forEach(function(listener) {
+			listener.apply(this, args);
+		}, this);
+		return true;
+	}
+
+	EventEmitter.prototype.addEventListener = function ee_add(type, listener) {
+		if (!this._listeners[type]) {
+			this._listeners[type] = [];
+		}
+		this._listeners[type].push(listener);
+		return this;
+	}
+
+	EventEmitter.prototype.removeEventListener = function ee_remove(type, listener) {
+		var typeListeners = this._listeners[type];
+		var pos = typeListeners.indexOf(listener);
+		if (pos === -1) {
+			return this;
+		}
+		listeners.splice(pos, 1);
+		return this;
+	}
+
+	if (typeof exports !== 'undefined') {
+		exports.EventEmitter = EventEmitter;
+	} else if (this.L20n) {
+		this.L20n.EventEmitter = EventEmitter;
+	} else {
+		this.L20nEventEmitter = EventEmitter;
+	}
+}).call(this);
+// This is L20n's on-the-fly compiler.  It takes the AST produced by the parser
+// and uses it to create a set of JavaScript objects and functions representing
+// entities and macros and other expressions.
+//
+// The module defines a `Compiler` singleton with a single method: `compile`.
+// The result of the compilation is stored on the `entries` object passed as
+// the second argument to the `compile` function.  The third argument is
+// `globals`, an object whose properties provide information about the runtime
+// environment, e.g., the current hour, operating system etc.
+//
+// Main concepts
+// -------------
+//
+// **Entities** and **attributes** are objects which are publicly available.
+// Their `toString` method is designed to be used by the L20n context to get
+// a string value of the entity, given the context data passed to the method.
+//
+// All other symbols defined by the grammar are implemented as expression
+// functions.  The naming convention is:
+//
+//   - capitalized first letters denote **expressions constructors**, e.g.
+//   `PropertyExpression`.
+//   - camel-case denotes **expression functions** returned by the
+//   constructors, e.g. `propertyExpression`.
+//
+// ### Constructors
+//
+// The constructor is called for every node in the AST.  It stores the
+// components of the expression which are constant and do not depend on the
+// calling context (an example of the latter would be the data passed by the
+// developer to the `toString` method).
+//
+// ### Expression functions
+//
+// The constructor, when called, returns an expression function, which, in
+// turn, is called every time the expression needs to be evaluated.  The
+// evaluation call is context-dependend.  Every expression function takes two
+// mandatory arguments and one optional one:
+//
+// - `locals`, which stores the information about the currently evaluated
+// entity (`locals.__this__`).  It also stores the arguments passed to macros.
+// - `ctxdata`, which is an object with data passed to the context by the
+// developer.  The developer can define data on the context, or pass it on
+// a per-call basis.
+// - `key` (optional), which is a number or a string passed to a `HashLiteral`
+// expression denoting the member of the hash to return.  The member will be
+// another expression function which can then be evaluated further.
+//
+//
+// Bubbling up the new _current_ entity
+// ------------------------------------
+//
+// Every expression function returns an array [`newLocals`, `evaluatedValue`].
+// The reason for this, and in particular for returning `newLocals`, is
+// important for understanding how the compiler works.
+//
+// In most of the cases. `newLocals` will be the same as the original `locals`
+// passed to the expression function during the evaluation call.  In some
+// cases, however, `newLocals.__this__` will reference a different entity than
+// `locals.__this__` did.  On runtime, as the compiler traverses the AST and
+// goes deeper into individual branches, when it hits an `identifier` and
+// evaluates it to an entity, it needs to **bubble up** this find back to the
+// top expressions in the chain.  This is so that the evaluation of the
+// top-most expressions in the branch (root being at the very top of the tree)
+// takes into account the new value of `__this__`.
+//
+// To illustrate this point, consider the following example.
+//
+// Two entities, `brandName` and `about` are defined as such:
+//
+//     <brandName {
+//       short: "Firefox",
+//       long: "Mozilla {{ ~ }}"
+//     }>
+//     <about "About {{ brandName.long }}">
+//
+// Notice two `complexString`s: `about` references `brandName.long`, and
+// `brandName.long` references its own entity via `~`.  This `~` (meaning, the
+// current entity) must always reference `brandName`, even when called from
+// `about`.
+//
+// The AST for the `about` entity looks like this:
+//
+//     [Entity]
+//       .id[Identifier]
+//         .name[unicode "about"]
+//       .index
+//       .value[ComplexString]                      <1>
+//         .content
+//           [String]                               <2>
+//             .content[unicode "About "]
+//           [PropertyExpression]                   <3>
+//             .expression[Identifier]              <4>
+//               .name[unicode "brandName"]
+//             .property[Identifier]
+//               .name[unicode "long"]
+//             .computed[bool=False]
+//       .attrs
+//       .local[bool=False]
+//
+// During the compilation the compiler will walk the AST top-down to the
+// deepest terminal leaves and will use expression constructors to create
+// expression functions for the components.  For instance, for `about`'s value,
+// the compiler will call `ComplexString()` to create an expression function
+// `complexString` <1> which will be assigned to the entity's value. The
+// `ComplexString` construtor, before it returns the `complexString` <1>, will
+// in turn call other expression constructors to create `content`:
+// a `stringLiteral` and a `propertyExpression`.  The `PropertyExpression`
+// contructor will do the same, etc...
+//
+// When `entity.toString(ctxdata)` is called by a third-party code, we need to
+// resolve the whole `complexString` <1> to return a single string value.  This
+// is what **resolving** means and it involves some recursion.  On the other
+// hand, **evaluating** means _to call the expression once and use what it
+// returns_.
+//
+// `toString` sets `locals.__this__` to the current entity, `about` and tells
+// the `complexString` <1> to _resolve_ itself.
+//
+// In order to resolve the `complexString` <1>, we start by resolving its first
+// member <2> to a string.  As we resolve deeper down, we bubble down `locals`
+// set by `toString`.  The first member of `content` turns out to simply be
+// a string that reads `About `.
+//
+// On to the second member, the propertyExpression <3>.  We bubble down
+// `locals` again and proceed to evaluate the `expression` field, which is an
+// `identifier`.  Note that we don't _resolve_ it to a string; we _evaluate_ it
+// to something that can be further used in other expressions, in this case, an
+// **entity** called `brandName`.
+//
+// Had we _resolved_ the `propertyExpression`, it would have resolve to
+// a string, and it would have been impossible to access the `long` member.
+// This leads us to an important concept:  the compiler _resolves_ expressions
+// when it expects a primitive value (a string, a number, a bool).  On the
+// other hand, it _evaluates_ expressions (calls them only once) when it needs
+// to work with them further, e.g. in order to access a member of the hash.
+//
+// This also explains why in the above example, once the compiler hits the
+// `brandName` identifier and changes the value of `locals.__this__` to the
+// `brandName` entity, this value doesn't bubble up all the way up to the
+// `about` entity.  All components of any `complexString` are _resolved_ by the
+// compiler until a primitive value is returned.  This logic lives in the
+// `_resolve` function.
+
+//
+// Inline comments
+// ---------------
+//
+// Isolate the code by using an immediately-invoked function expression.
+// Invoke it via `(function(){ ... }).call(this)` so that inside of the IIFE,
+// `this` references the global object.
+(function() {
+	'use strict';
+
+	function Compiler(Emitter, Parser) {
+
+		// Public
+
+		this.compile = compile;
+		this.setGlobals = setGlobals;
+		this.addEventListener = addEventListener;
+		this.removeEventListener = removeEventListener;
+		this.reset = reset;
+
+		// Private
+
+		var _emitter = Emitter ? new Emitter() : null;
+		var _parser = Parser ? new Parser() : null;
+		var _env = {};
+		var _globals = {};
+		var _references = {
+			globals: {}
+		};
+
+		// Public API functions
+
+		function compile(ast) {
+			_env = {};
+			var types = {
+				Entity: Entity,
+				Macro: Macro
+			};
+			for (var i = 0, entry; entry = ast.body[i]; i++) {
+				var constructor = types[entry.type];
+				if (constructor) {
+					try {
+						_env[entry.id.name] = new constructor(entry);
+					} catch (e) {
+						// rethrow non-compiler errors;
+						requireCompilerError(e);
+						// or, just ignore the error;  it's been already emitted
+					}
+				}
+			}
+			return _env;
+		}
+
+		function setGlobals(globals) {
+			_globals = globals;
+			return true;
+		}
+
+		function addEventListener(type, listener) {
+			if (!_emitter) {
+				throw Error("Emitter not available");
+			}
+			return _emitter.addEventListener(type, listener);
+		}
+
+		function removeEventListener(type, listener) {
+			if (!_emitter) {
+				throw Error("Emitter not available");
+			}
+			return _emitter.removeEventListener(type, listener);
+		}
+
+		// reset the state of a compiler instance; used in tests
+		function reset() {
+			_env = {};
+			_globals = {};
+			_references.globals = {};
+			return this;
+		}
+
+		// utils
+
+		function emit(ctor, message, entry, source) {
+			var e = new ctor(message, entry, source);
+			if (_emitter) {
+				_emitter.emit('error', e);
+			}
+			return e;
+		}
+
+
+		// The Entity object.
+		function Entity(node) {
+			this.id = node.id.name;
+			this.local = node.local || false;
+			this.index = [];
+			this.attributes = {};
+			this.publicAttributes = [];
+			var i;
+			for (i = 0; i < node.index.length; i++) {
+				this.index.push(Expression(node.index[i], this));
+			}
+			for (i = 0; i < node.attrs.length; i++) {
+				var attr = node.attrs[i];
+				this.attributes[attr.key.name] = new Attribute(attr, this);
+				if (!attr.local) {
+					this.publicAttributes.push(attr.key.name);
+				}
+			}
+			this.value = Expression(node.value, this, this.index);
+		}
+		// Entities are wrappers around their value expression.  _Yielding_ from
+		// the entity is identical to _evaluating_ its value with the appropriate
+		// value of `locals.__this__`.  See `PropertyExpression` for an example
+		// usage.
+		Entity.prototype._yield = function E_yield(ctxdata, key) {
+			var locals = {
+				__this__: this
+			};
+			return this.value(locals, ctxdata, key);
+		};
+		// Calling `entity._resolve` will _resolve_ its value to a primitive value.
+		// See `ComplexString` for an example usage.
+		Entity.prototype._resolve = function E_resolve(ctxdata) {
+			var locals = {
+				__this__: this
+			};
+			return _resolve(this.value, locals, ctxdata);
+		};
+		Entity.prototype.getString = function E_getString(ctxdata) {
+			try {
+				return this._resolve(ctxdata);
+			} catch (e) {
+				requireCompilerError(e);
+				// `ValueErrors` are not emitted in `StringLiteral` where they are
+				// created, because if the string in question is being evaluated in an
+				// index, we'll emit an `IndexError` instead.  To avoid duplication,
+				// the `ValueErrors` will only be emitted if it actually made it to
+				// here.  See `HashLiteral` for an example of why it wouldn't make it.
+				if (e instanceof ValueError && _emitter) {
+					_emitter.emit('error', e);
+				}
+				throw e;
+			}
+		};
+		Entity.prototype.get = function E_get(ctxdata) {
+			// reset `_references` to an empty state
+			_references.globals = {};
+			// evaluate the entity and its attributes;  if any globals are used in
+			// the process, `toString` will populate `_references.globals`
+			// accordingly.
+			var entity = {
+				value: this.getString(ctxdata),
+				attributes: {}
+			};
+			for (var i = 0, attr; attr = this.publicAttributes[i]; i++) {
+				entity.attributes[attr] = this.attributes[attr].getString(ctxdata);
+			}
+			entity.globals = _references.globals;
+			return entity;
+		}
+
+		function Attribute(node, entity) {
+			this.key = node.key.name;
+			this.local = node.local || false;
+			this.index = [];
+			for (var i = 0; i < node.index.length; i++) {
+				this.index.push(Expression(node.index[i], this));
+			}
+			this.value = Expression(node.value, entity, this.index);
+			this.entity = entity;
+		}
+		Attribute.prototype._yield = function A_yield(ctxdata, key) {
+			var locals = {
+				__this__: this.entity
+			};
+			return this.value(locals, ctxdata, key);
+		};
+		Attribute.prototype._resolve = function A_resolve(ctxdata) {
+			var locals = {
+				__this__: this.entity
+			};
+			return _resolve(this.value, locals, ctxdata);
+		};
+		Attribute.prototype.getString = function A_getString(ctxdata) {
+			try {
+				return this._resolve(ctxdata);
+			} catch (e) {
+				requireCompilerError(e);
+				if (e instanceof ValueError && _emitter) {
+					_emitter.emit('error', e);
+				}
+				throw e;
+			}
+		};
+
+		function Macro(node) {
+			this.id = node.id.name;
+			this.local = node.local || false;
+			this.expression = Expression(node.expression, this);
+			this.args = node.args;
+		}
+		Macro.prototype._call = function M_call(ctxdata, args) {
+			var locals = {
+				__this__: this
+			};
+			for (var i = 0; i < this.args.length; i++) {
+				locals[this.args[i].id.name] = args[i];
+			}
+			return this.expression(locals, ctxdata);
+		}
+
+
+		var EXPRESSION_TYPES = {
+			// Primary expressions.
+			'Identifier': Identifier,
+			'ThisExpression': ThisExpression,
+			'VariableExpression': VariableExpression,
+			'GlobalsExpression': GlobalsExpression,
+
+			// Value expressions.
+			'Number': NumberLiteral,
+			'String': StringLiteral,
+			'Hash': HashLiteral,
+			'HashItem': Expression,
+			'ComplexString': ComplexString,
+
+			// Logical expressions.
+			'UnaryExpression': UnaryExpression,
+			'BinaryExpression': BinaryExpression,
+			'LogicalExpression': LogicalExpression,
+			'ConditionalExpression': ConditionalExpression,
+
+			// Member expressions.
+			'CallExpression': CallExpression,
+			'PropertyExpression': PropertyExpression,
+			'AttributeExpression': AttributeExpression,
+			'ParenthesisExpression': ParenthesisExpression
+		};
+
+		// The 'dispatcher' expression constructor.  Other expression constructors
+		// call this to create expression functions for their components.  For
+		// instance, `ConditionalExpression` calls `Expression` to create expression
+		// functions for its `test`, `consequent` and `alternate` symbols.
+		function Expression(node, entry, index) {
+			// An entity can have no value.  It will be resolved to `null`.
+			if (!node) {
+				return null;
+			}
+			if (!EXPRESSION_TYPES[node.type]) {
+				throw emit('CompilationError', 'Unknown expression type' + node.type);
+			}
+			if (index) {
+				index = index.slice();
+			}
+			return EXPRESSION_TYPES[node.type](node, entry, index);
+		}
+
+		function _resolve(expr, locals, ctxdata, index) {
+			// Bail out early if it's a primitive value or `null`.  This is exactly
+			// what we want.
+			if (!expr ||
+				typeof expr === 'string' ||
+				typeof expr === 'boolean' ||
+				typeof expr === 'number') {
+				return expr;
+			}
+			// Check if `expr` knows how to resolve itself (if it's an Entity or an
+			// Attribute).
+			if (expr._resolve) {
+				return expr._resolve(ctxdata);
+			}
+			var current = expr(locals, ctxdata);
+			locals = current[0], current = current[1];
+			return _resolve(current, locals, ctxdata);
+		}
+
+		function Identifier(node, entry) {
+			var name = node.name;
+			return function identifier(locals, ctxdata) {
+				if (!_env.hasOwnProperty(name)) {
+					throw new RuntimeError('Reference to an unknown entry: ' + name,
+						entry);
+				}
+				locals.__this__ = _env[name];
+				return [locals, _env[name]];
+			};
+		}
+		function ThisExpression(node, entry) {
+			return function thisExpression(locals, ctxdata) {
+				return [locals, locals.__this__];
+			};
+		}
+		function VariableExpression(node, entry) {
+			var name = node.id.name;
+			return function variableExpression(locals, ctxdata) {
+				if (locals.hasOwnProperty(name)) {
+					return locals[name];
+				}
+				if (!ctxdata || !ctxdata.hasOwnProperty(name)) {
+					throw new RuntimeError('Reference to an unknown variable: ' + name,
+						entry);
+				}
+				return [locals, ctxdata[name]];
+			};
+		}
+		function GlobalsExpression(node, entry) {
+			var name = node.id.name;
+			return function globalsExpression(locals, ctxdata) {
+				if (!_globals) {
+					throw new RuntimeError('Globals missing (tried @' + name + ').',
+						entry);
+				}
+				if (!_globals.hasOwnProperty(name)) {
+					throw new RuntimeError('Reference to an unknown global: ' + name,
+						entry);
+				}
+				_references.globals[name] = true;
+				return [locals, _globals[name].get()];
+			};
+		}
+		function NumberLiteral(node, entry) {
+			return function numberLiteral(locals, ctxdata) {
+				return [locals, node.value];
+			};
+		}
+		function StringLiteral(node, entry) {
+			var parsed, complex;
+			return function stringLiteral(locals, ctxdata) {
+				if (!complex) {
+					try {
+						parsed = _parser.parseString(node.content);
+					} catch (e) {
+						throw new ValueError("Malformed string. " + e.message, entry,
+							node.content);
+					}
+					if (parsed.type == 'String') {
+						return [locals, parsed.content];
+					}
+					complex = Expression(parsed, entry);
+				}
+				try {
+					return [locals, _resolve(complex, locals, ctxdata)];
+				} catch (e) {
+					requireCompilerError(e);
+					// only throw, don't emit yet.  If the `ValueError` makes it to
+					// `toString()` it will be emitted there.  It might, however, be
+					// cought by `HashLiteral` and changed into a `IndexError`.  See
+					// those Expressions for more docs.
+					throw new ValueError(e.message, entry, node.content);
+				}
+			};
+		}
+		function HashLiteral(node, entry, index) {
+			var content = [];
+			// if absent, `defaultKey` and `defaultIndex` are undefined
+			var defaultKey;
+			var defaultIndex = index.length ? index.shift() : undefined;
+			for (var i = 0; i < node.content.length; i++) {
+				var elem = node.content[i];
+				// use `elem.value` to skip `HashItem` and create the value right away
+				content[elem.key.name] = Expression(elem.value, entry, index);
+				if (elem.default) {
+					defaultKey = elem.key.name;
+				}
+			}
+			return function hashLiteral(locals, ctxdata, prop) {
+				var keysToTry = [prop, defaultIndex, defaultKey];
+				var keysTried = [];
+				for (var i = 0; i < keysToTry.length; i++) {
+					try {
+						// only defaultIndex needs to be resolved
+						var key = keysToTry[i] = _resolve(keysToTry[i], locals, ctxdata);
+					} catch (e) {
+						requireCompilerError(e);
+
+						// Throw and emit an IndexError so that ValueErrors from the index
+						// don't make their way to the context.  The context only cares
+						// about ValueErrors thrown by the value of the entity it has
+						// requested, not entities used in the index.
+						//
+						// To illustrate this point with an example, consider the following
+						// two strings, where `foo` is a missing entity.
+						//
+						//     <prompt1["remove"] {
+						//       remove: "Remove {{ foo }}?",
+						//       keep: "Keep {{ foo }}?"
+						//     }>
+						//
+						// `prompt1` will throw a `ValueError`.  The context can use it to
+						// display the source of the entity, i.e. `Remove {{ foo }}?`.  The
+						// index resolved properly, so at least we know that we're showing
+						// the right variant of the entity.
+						//
+						//     <prompt2["{{ foo }}"] {
+						//       remove: "Remove file?",
+						//       keep: "Keep file?"
+						//     }>
+						//
+						// On the other hand, `prompt2` will throw an `IndexError`.  This
+						// is a more serious scenatio for the context.  We should not
+						// assume that we know which variant to show to the user.  In fact,
+						// in the above (much contrived, but still) example, showing the
+						// incorrect variant will likely lead to data loss.  The context
+						// should be more strict in this case and should not try to recover
+						// from this error too hard.
+						throw emit(IndexError, e.message, entry);
+					}
+					if (key === undefined) {
+						continue;
+					}
+					if (typeof key !== 'string') {
+						throw emit(IndexError, 'Index must be a string', entry);
+					}
+					keysTried.push(key);
+					if (content.hasOwnProperty(key)) {
+						return [locals, content[key]];
+					}
+				}
+
+				throw emit(IndexError,
+					keysTried.length ?
+						'Hash key lookup failed (tried "' + keysTried.join('", "') + '").' :
+						'Hash key lookup failed.',
+					entry);
+			};
+		}
+		function ComplexString(node, entry) {
+			var content = [];
+			for (var i = 0; i < node.content.length; i++) {
+				content.push(Expression(node.content[i], entry));
+			}
+			// Every complexString needs to have its own `dirty` flag whose state
+			// persists across multiple calls to the given complexString.  On the other
+			// hand, `dirty` must not be shared by all complexStrings.  Hence the need
+			// to define `dirty` as a variable available in the closure.  Note that the
+			// anonymous function is a self-invoked one and it returns the closure
+			// immediately.
+			return function() {
+				var dirty = false;
+				return function complexString(locals, ctxdata) {
+					if (dirty) {
+						throw new RuntimeError("Cyclic reference detected", entry);
+					}
+					dirty = true;
+					var parts = [];
+					try {
+						for (var i = 0; i < content.length; i++) {
+							var part = _resolve(content[i], locals, ctxdata);
+							if (typeof part !== 'string' && typeof part !== 'number') {
+								throw new RuntimeError('Placeables must be strings or numbers',
+									entry);
+							}
+							parts.push(part);
+						}
+					} finally {
+						dirty = false;
+					}
+					return [locals, parts.join('')];
+				}
+			}();
+		}
+
+		function UnaryOperator(token, entry) {
+			if (token == '-') return function negativeOperator(argument) {
+				if (typeof argument !== 'number') {
+					throw new RuntimeError('The unary - operator takes a number', entry);
+				}
+				return -argument;
+			};
+			if (token == '+') return function positiveOperator(argument) {
+				if (typeof argument !== 'number') {
+					throw new RuntimeError('The unary + operator takes a number', entry);
+				}
+				return +argument;
+			};
+			if (token == '!') return function notOperator(argument) {
+				if (typeof argument !== 'boolean') {
+					throw new RuntimeError('The ! operator takes a boolean', entry);
+				}
+				return !argument;
+			};
+			throw emit(CompilationError, "Unknown token: " + token, entry);
+		}
+		function BinaryOperator(token, entry) {
+			if (token == '==') return function equalOperator(left, right) {
+				if ((typeof left !== 'number' || typeof right !== 'number') &&
+					(typeof left !== 'string' || typeof right !== 'string')) {
+					throw new RuntimeError('The == operator takes two numbers or '+
+						'two strings', entry);
+				}
+				return left == right;
+			};
+			if (token == '!=') return function notEqualOperator(left, right) {
+				if ((typeof left !== 'number' || typeof right !== 'number') &&
+					(typeof left !== 'string' || typeof right !== 'string')) {
+					throw new RuntimeError('The != operator takes two numbers or '+
+						'two strings', entry);
+				}
+				return left != right;
+			};
+			if (token == '<') return function lessThanOperator(left, right) {
+				if (typeof left !== 'number' || typeof right !== 'number') {
+					throw new RuntimeError('The < operator takes two numbers', entry);
+				}
+				return left < right;
+			};
+			if (token == '<=') return function lessThanEqualOperator(left, right) {
+				if (typeof left !== 'number' || typeof right !== 'number') {
+					throw new RuntimeError('The <= operator takes two numbers', entry);
+				}
+				return left <= right;
+			};
+			if (token == '>') return function greaterThanOperator(left, right) {
+				if (typeof left !== 'number' || typeof right !== 'number') {
+					throw new RuntimeError('The > operator takes two numbers', entry);
+				}
+				return left > right;
+			};
+			if (token == '>=') return function greaterThanEqualOperator(left, right) {
+				if (typeof left !== 'number' || typeof right !== 'number') {
+					throw new RuntimeError('The >= operator takes two numbers', entry);
+				}
+				return left >= right;
+			};
+			if (token == '+') return function addOperator(left, right) {
+				if ((typeof left !== 'number' || typeof right !== 'number') &&
+					(typeof left !== 'string' || typeof right !== 'string')) {
+					throw new RuntimeError('The + operator takes two numbers or '+
+						'two strings', entry);
+				}
+				return left + right;
+			};
+			if (token == '-') return function substractOperator(left, right) {
+				if (typeof left !== 'number' || typeof right !== 'number') {
+					throw new RuntimeError('The - operator takes numbers', entry);
+				}
+				return left - right;
+			};
+			if (token == '*') return function multiplyOperator(left, right) {
+				if (typeof left !== 'number' || typeof right !== 'number') {
+					throw new RuntimeError('The * operator takes numbers', entry);
+				}
+				return left * right;
+			};
+			if (token == '/') return function devideOperator(left, right) {
+				if (typeof left !== 'number' || typeof right !== 'number') {
+					throw new RuntimeError('The / operator takes two numbers', entry);
+				}
+				if (right == 0) {
+					throw new RuntimeError('Division by zero not allowed.', entry);
+				}
+				return left / right;
+			};
+			if (token == '%') return function moduloOperator(left, right) {
+				if (typeof left !== 'number' || typeof right !== 'number') {
+					throw new RuntimeError('The % operator takes two numbers', entry);
+				}
+				return left % right;
+			};
+			throw emit(CompilationError, "Unknown token: " + token, entry);
+		}
+		function LogicalOperator(token, entry) {
+			if (token == '&&') return function andOperator(left, right) {
+				if (typeof left !== 'boolean' || typeof right !== 'boolean') {
+					throw new RuntimeError('The && operator takes two booleans', entry);
+				}
+				return left && right;
+			};
+			if (token == '||') return function orOperator(left, right) {
+				if (typeof left !== 'boolean' || typeof right !== 'boolean') {
+					throw new RuntimeError('The || operator takes two booleans', entry);
+				}
+				return left || right;
+			};
+			throw emit(CompilationError, "Unknown token: " + token, entry);
+		}
+		function UnaryExpression(node, entry) {
+			var operator = UnaryOperator(node.operator.token, entry);
+			var argument = Expression(node.argument, entry);
+			return function unaryExpression(locals, ctxdata) {
+				return [locals, operator(_resolve(argument, locals, ctxdata))];
+			};
+		}
+		function BinaryExpression(node, entry) {
+			var left = Expression(node.left, entry);
+			var operator = BinaryOperator(node.operator.token, entry);
+			var right = Expression(node.right, entry);
+			return function binaryExpression(locals, ctxdata) {
+				return [locals, operator(
+					_resolve(left, locals, ctxdata),
+					_resolve(right, locals, ctxdata)
+				)];
+			};
+		}
+		function LogicalExpression(node, entry) {
+			var left = Expression(node.left, entry);
+			var operator = LogicalOperator(node.operator.token, entry);
+			var right = Expression(node.right, entry);
+			return function logicalExpression(locals, ctxdata) {
+				return [locals, operator(
+					_resolve(left, locals, ctxdata),
+					_resolve(right, locals, ctxdata)
+				)];
+			}
+		}
+		function ConditionalExpression(node, entry) {
+			var test = Expression(node.test, entry);
+			var consequent = Expression(node.consequent, entry);
+			var alternate = Expression(node.alternate, entry);
+			return function conditionalExpression(locals, ctxdata) {
+				var tested = _resolve(test, locals, ctxdata);
+				if (typeof tested !== 'boolean') {
+					throw new RuntimeError('Conditional expressions must test a boolean',
+						entry);
+				}
+				if (tested === true) {
+					return consequent(locals, ctxdata);
+				}
+				return alternate(locals, ctxdata);
+			};
+		}
+
+		function CallExpression(node, entry) {
+			var callee = Expression(node.callee, entry);
+			var args = [];
+			for (var i = 0; i < node.arguments.length; i++) {
+				args.push(Expression(node.arguments[i], entry));
+			}
+			return function callExpression(locals, ctxdata) {
+				var evaluated_args = [];
+				for (var i = 0; i < args.length; i++) {
+					evaluated_args.push(args[i](locals, ctxdata));
+				}
+				// callee is an expression pointing to a macro, e.g. an identifier
+				var macro = callee(locals, ctxdata);
+				locals = macro[0], macro = macro[1];
+				if (!macro._call) {
+					throw new RuntimeError('Expected a macro, got a non-callable.',
+						entry);
+				}
+				// rely entirely on the platform implementation to detect recursion
+				return macro._call(ctxdata, evaluated_args);
+			};
+		}
+		function PropertyExpression(node, entry) {
+			var expression = Expression(node.expression, entry);
+			var property = node.computed ?
+				Expression(node.property, entry) :
+				node.property.name;
+			return function propertyExpression(locals, ctxdata) {
+				var prop = _resolve(property, locals, ctxdata);
+				var parent = expression(locals, ctxdata);
+				locals = parent[0], parent = parent[1];
+				// If `parent` is an Entity or an Attribute, evaluate its value via the
+				// `_yield` method.  This will ensure the correct value of
+				// `locals.__this__`.
+				if (parent._yield) {
+					return parent._yield(ctxdata, prop);
+				}
+				// If `parent` is an object passed by the developer to the context
+				// (i.e., `expression` was a `VariableExpression`), simply return the
+				// member of the object corresponding to `prop`.  We don't really care
+				// about `locals` here.
+				if (typeof parent !== 'function') {
+					if (!parent.hasOwnProperty(prop)) {
+						throw new RuntimeError(prop +
+							' is not defined in the context data',
+							entry);
+					}
+					return [null, parent[prop]];
+				}
+				return parent(locals, ctxdata, prop);
+			}
+		}
+		function AttributeExpression(node, entry) {
+			// XXX looks similar to PropertyExpression, but it's actually closer to
+			// Identifier
+			var expression = Expression(node.expression, entry);
+			var attribute = node.computed ?
+				Expression(node.attribute, entry) :
+				node.attribute.name;
+			return function attributeExpression(locals, ctxdata) {
+				var attr = _resolve(attribute, locals, ctxdata);
+				var entity = expression(locals, ctxdata);
+				locals = entity[0], entity = entity[1];
+				// XXX what if it's not an entity?
+				return [locals, entity.attributes[attr]];
+			}
+		}
+		function ParenthesisExpression(node, entry) {
+			return Expression(node.expression, entry);
+		}
+
+	}
+
+	Compiler.Error = CompilerError;
+	Compiler.CompilationError = CompilationError;
+	Compiler.RuntimeError = RuntimeError;
+	Compiler.ValueError = ValueError;
+	Compiler.IndexError = IndexError;
+
+
+	// `CompilerError` is a general class of errors emitted by the Compiler.
+	function CompilerError(message, entry) {
+		this.name = 'CompilerError';
+		this.message = message;
+		this.entry = entry.id;
+	}
+	CompilerError.prototype = Object.create(Error.prototype);
+	CompilerError.prototype.constructor = CompilerError;
+
+	// `CompilationError` extends `CompilerError`.  It's a class of errors
+	// which happen during compilation of the AST.
+	function CompilationError(message, entry) {
+		CompilerError.call(this, message, entry);
+		this.name = 'CompilationError';
+	}
+	CompilationError.prototype = Object.create(CompilerError.prototype);
+	CompilationError.prototype.constructor = CompilationError;
+
+	// `RuntimeError` extends `CompilerError`.  It's a class of errors which
+	// happen during the evaluation of entries, i.e. when you call
+	// `entity.toString()`.
+	function RuntimeError(message, entry) {
+		CompilerError.call(this, message, entry);
+		this.name = 'RuntimeError';
+	};
+	RuntimeError.prototype = Object.create(CompilerError.prototype);
+	RuntimeError.prototype.constructor = RuntimeError;;
+
+	// `ValueError` extends `RuntimeError`.  It's a class of errors which
+	// happen during the composition of a ComplexString value.  It's easier to
+	// recover from than an `IndexError` because at least we know that we're
+	// showing the correct member of the hash.
+	function ValueError(message, entry, source) {
+		RuntimeError.call(this, message, entry);
+		this.name = 'ValueError';
+		this.source = source;
+	}
+	ValueError.prototype = Object.create(RuntimeError.prototype);
+	ValueError.prototype.constructor = ValueError;;
+
+	// `IndexError` extends `RuntimeError`.  It's a class of errors which
+	// happen during the lookup of a hash member.  It's harder to recover
+	// from than `ValueError` because we en dup not knowing which variant of the
+	// entity value to show and in case the meanings are divergent, the
+	// consequences for the user can be serious.
+	function IndexError(message, entry) {
+		RuntimeError.call(this, message, entry);
+		this.name = 'IndexError';
+	};
+	IndexError.prototype = Object.create(RuntimeError.prototype);
+	IndexError.prototype.constructor = IndexError;;
+
+	function requireCompilerError(e) {
+		if (!(e instanceof CompilerError)) {
+			throw e;
+		}
+	}
+
+
+	// Expose the Compiler constructor
+
+	// Depending on the environment the script is run in, define `Compiler` as
+	// the exports object which can be `required` as a module, or as a member of
+	// the L20n object defined on the global object in the browser, i.e.
+	// `window`.
+
+	if (typeof exports !== 'undefined') {
+		exports.Compiler = Compiler;
+	} else if (this.L20n) {
+		this.L20n.Compiler = Compiler;
+	} else {
+		this.L20nCompiler = Compiler;
+	}
+}).call(this);
+(function() {
+	'use strict';
+
+	var data = {
+		'defaultLocale': 'en-US',
+		'systemLocales': ['en-US']
+	}
+
+	/* I18n API TC39 6.2.2 */
+	function isStructurallyValidLanguageTag(locale) {
+		return true;
+	}
+
+
+	/* I18n API TC39 6.2.3 */
+	function canonicalizeLanguageTag(locale) {
+		return locale;
+	}
+
+	/* I18n API TC39 6.2.4 */
+	function defaultLocale() {
+		return data.defaultLocale;
+	}
+
+	/* I18n API TC39 9.2.1 */
+	function canonicalizeLocaleList(locales) {
+		if (locales === undefined) {
+			return [];
+		}
+
+		var seen = [];
+
+		if (typeof(locales) == 'string') {
+			locales = new Array(locales);
+		}
+
+		var len = locales.length;
+		var k = 0;
+
+		while (k < len) {
+			var Pk = k.toString();
+			var kPresent = locales.hasOwnProperty(Pk);
+			if (kPresent) {
+				var kValue = locales[Pk];
+
+				if (typeof(kValue) !== 'string' &&
+					typeof(kValue) !== 'object') {
+					throw new TypeError();
+				}
+
+				var tag = kValue.toString();
+				if (!isStructurallyValidLanguageTag(tag)) {
+					throw new RangeError();
+				}
+				var tag = canonicalizeLanguageTag(tag);
+				if (seen.indexOf(tag) === -1) {
+					seen.push(tag);
+				}
+			}
+			k += 1;
+		}
+		return seen;
+	}
+
+	/* I18n API TC39 9.2.2 */
+	function bestAvailableLocale(availableLocales, locale) {
+		var candidate = locale;
+		while (1) {
+			if (availableLocales.indexOf(candidate) !== -1) {
+				return candidate;
+			}
+
+			var pos = candidate.lastIndexOf('-');
+
+			if (pos === -1) {
+				return undefined;
+			}
+
+			if (pos >= 2 && candidate[pos-2] == '-') {
+				pos -= 2;
+			}
+			candidate = candidate.substr(0, pos)
+		}
+	}
+
+	/* I18n API TC39 9.2.3 */
+	function lookupMatcher(availableLocales, requestedLocales) {
+		var i = 0;
+		var len = requestedLocales.length;
+		var availableLocale = undefined;
+
+		while (i < len && availableLocale === undefined) {
+			var locale = requestedLocales[i];
+			var noExtensionsLocale = locale;
+			var availableLocale = bestAvailableLocale(availableLocales,
+				noExtensionsLocale);
+			i += 1;
+		}
+
+		var result = {};
+
+		if (availableLocale !== undefined) {
+			result.locale = availableLocale;
+			if (locale !== noExtensionsLocale) {
+				throw "NotImplemented";
+			}
+		} else {
+			result.locale = defaultLocale();
+		}
+		return result;
+	}
+
+	/* I18n API TC39 9.2.4 */
+	var bestFitMatcher = lookupMatcher;
+
+	/* I18n API TC39 9.2.5 */
+	function resolveLocale(availableLocales,
+						   requestedLocales,
+						   options,
+						   relevantExtensionKeys,
+						   localeData) {
+
+		var matcher = options.localeMatcher;
+		if (matcher == 'lookup') {
+			var r = lookupMatcher(availableLocales, requestedLocales);
+		} else {
+			var r = bestFitMatcher(availableLocales, requestedLocales);
+		}
+		var foundLocale = r.locale;
+
+		if (r.hasOwnProperty('extension')) {
+			throw "NotImplemented";
+		}
+
+		var result = {};
+		result.dataLocale = foundLocale;
+
+		var supportedExtension = "-u";
+
+		var i = 0;
+		var len = 0;
+
+		if (relevantExtensionKeys !== undefined) {
+			len = relevantExtensionKeys.length;
+		}
+
+		while (i < len) {
+			var key = relevantExtensionKeys[i.toString()];
+			var foundLocaleData = localeData(foundLocale);
+			var keyLocaleData = foundLocaleData[foundLocale];
+			var value = keyLocaleData[0];
+			var supportedExtensionAddition = "";
+			if (extensionSubtags !== undefined) {
+				throw "NotImplemented";
+			}
+
+			if (options.hasOwnProperty('key')) {
+				var optionsValue = options.key;
+				if (keyLocaleData.indexOf(optionsValue) !== -1) {
+					if (optionsValue !== value) {
+						value = optionsValue;
+						supportedExtensionAddition = "";
+					}
+				}
+				result.key = value;
+				supportedExtension += supportedExtensionAddition;
+				i += 1;
+			}
+		}
+
+		if (supportedExtension.length > 2) {
+			var preExtension = foundLocale.substr(0, extensionIndex);
+			var postExtension = foundLocale.substr(extensionIndex+1);
+			var foundLocale = preExtension + supportedExtension + postExtension;
+		}
+		result.locale = foundLocale;
+		return result;
+	}
+
+	/**
+	 * availableLocales - The list of locales that the system offers
+	 *
+	 * returns the list of availableLocales sorted by user preferred locales
+	 **/
+	function prioritizeLocales(availableLocales) {
+		/**
+		 * For now we just take nav.language, but we'd prefer to get
+		 * a list of locales that the user can read sorted by user's preference
+		 **/
+		var requestedLocales = [navigator.language || navigator.userLanguage];
+		var options = {'localeMatcher': 'lookup'};
+		var tag = resolveLocale(availableLocales,
+			requestedLocales, options);
+		var pos = availableLocales.indexOf(tag.locale)
+
+		if (pos === -1) {
+			// not sure why resolveLocale can return a locale that is not available
+			return availableLocales;
+		}
+		availableLocales.splice(pos, 1);
+		availableLocales.unshift(tag.locale)
+		return availableLocales;
+	}
+
+	this.L20n.Intl = {
+		prioritizeLocales: prioritizeLocales
+	};
+}).call(this);
+(function(){
+	'use strict';
+	var ctx = this.L20n.getContext(document.location.host);
+	var headNode;
+	if (document.body) {
+		document.body.style.visibility = 'hidden';
+	}
+
+	function bootstrap() {
+		headNode = document.head;
+		var data = headNode.querySelector('script[type="application/l10n-data+json"]');
+
+		if (data) {
+			ctx.data = JSON.parse(data.textContent);
+		}
+
+		var script = headNode.querySelector('script[type="application/l20n"]');
+		if (script) {
+			if (script.hasAttribute('src')) {
+				ctx.linkResource(script.getAttribute('src'));
+			} else {
+				ctx.addResource(script.textContent);
+			}
+			initializeDocumentContext();
+		} else {
+			var link = headNode.querySelector('link[rel="localization"]');
+			if (link) {
+				loadManifest(link.getAttribute('href')).then(
+					initializeDocumentContext
+				);
+			}
+		}
+		return true;
+	}
+
+	bootstrap();
+
+	function initializeDocumentContext() {
+		localizeDocument();
+
+		ctx.addEventListener('ready', function() {
+			var event = document.createEvent('Event');
+			event.initEvent('LocalizationReady', false, false);
+			document.dispatchEvent(event);
+		});
+
+		ctx.addEventListener('error', function(e) {
+			if (e.code & L20n.NOVALIDLOCALE_ERROR) {
+				var event = document.createEvent('Event');
+				event.initEvent('LocalizationFailed', false, false);
+				document.dispatchEvent(event);
+			}
+		});
+
+		ctx.freeze();
+	}
+
+	function loadManifest(url) {
+		var deferred = new L20n.Promise();
+		L20n.IO.load(url, true).then(
+			function(text) {
+				var manifest = JSON.parse(text);
+				var langList = L20n.Intl.prioritizeLocales(manifest.languages);
+				ctx.registerLocales.apply(this, langList);
+				ctx.linkResource(function(lang) {
+					return manifest.resources[0].replace("{{lang}}", lang);
+				});
+				deferred.fulfill();
+			}
+		);
+		return deferred;
+	}
+
+	function fireLocalizedEvent() {
+		document.body.style.visibility = 'visible';
+		var event = document.createEvent('Event');
+		event.initEvent('DocumentLocalized', false, false);
+		document.dispatchEvent(event);
+	}
+
+	function onDocumentBodyReady() {
+		if (document.readyState === 'interactive') {
+			localizeNode(document);
+			fireLocalizedEvent();
+			document.removeEventListener('readystatechange', onDocumentBodyReady);
+		}
+	}
+
+	function localizeDocument() {
+		if (document.body) {
+			localizeNode(document);
+			fireLocalizedEvent();
+		} else {
+			document.addEventListener('readystatechange', onDocumentBodyReady);
+		}
+		if (typeof HTMLDocument != 'undefined') {
+			HTMLDocument.prototype.__defineGetter__('l10n', function() {
+				return ctx;
+			});
+		} else {
+			document.l10n = ctx;
+		}
+	}
+
+	function retranslate(node, l10n) {
+		var nodes = node.querySelectorAll('[data-l10n-id]');
+		var entity;
+		for (var i = 0; i < nodes.length; i++) {
+			var id = nodes[i].getAttribute('data-l10n-id');
+			var entity = l10n.entities[id];
+			var node = nodes[i];
+			if (entity.value) {
+				node.textContent = entity.value;
+			}
+			for (var key in entity.attributes) {
+				node.setAttribute(key, entity.attributes[key]);
+			}
+		}
+		// readd data-l10n-attrs
+		// readd data-l10n-overlay
+		// secure attribute access
+	}
+
+	function localizeNode(node) {
+		var nodes = node.querySelectorAll('[data-l10n-id]');
+		var ids = [];
+		for (var i = 0; i < nodes.length; i++) {
+			if (nodes[i].hasAttribute('data-l10n-args')) {
+				ids.push([nodes[i].getAttribute('data-l10n-id'),
+					JSON.parse(nodes[i].getAttribute('data-l10n-args'))]);
+			} else {
+				ids.push(nodes[i].getAttribute('data-l10n-id'));
+			}
+		}
+		ctx.localize(ids, retranslate.bind(this, node));
+	}
+
+}).call(this);
