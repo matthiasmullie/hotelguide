@@ -240,6 +240,11 @@ holidays.map = {
 
 			// add click listener
 			google.maps.event.addListener( marker, 'click', function( e ) {
+				var loadingMessage = $( '#loadingDetails' ).show();
+				$( '#infowindow' ).on( 'DOMSubtreeModified', function() {
+					loadingMessage.hide();
+				} );
+
 				var mobile = holidays.mobile ? 1 : 0;
 				holidays.infowindow.open( 'ajax/location.php?id=' + this.id + '&mobile=' + mobile + '&host=' + holidays.host + '&locale=' + holidays.language.browserLanguage );
 			} );

@@ -29,6 +29,7 @@
 <linkContact "Contact">
 <loadingMap "Kaart wordt geladen…">
 <loadingLocations "Locaties worden geladen…">
+<loadingDetails "Details worden geladen…">
 <buttonClose "×"
 	title: "Sluit"
 >

@@ -29,6 +29,7 @@
 <linkContact "Contact">
 <loadingMap "Loading map…">
 <loadingLocations "Loading locations…">
+<loadingDetails "Loading details…">
 <buttonClose "×"
 	title: "Close"
 >
