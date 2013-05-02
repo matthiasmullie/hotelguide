@@ -35,8 +35,8 @@
 	<feature name="http://api.phonegap.com/1.0/geolocation" />
 	<feature name="http://api.phonegap.com/1.0/network" />
 
-	<!-- Suspending app exits it for real -->
-	<preference name="exit-on-suspend" value="true" />
+	<!-- Suspending app does not exists for real -->
+	<preference name="exit-on-suspend" value="false" />
 
 	<!-- Allow external resources: LMV, Google (Maps, Analytics) services, hotel providers, ... -->
 	<access origin="*" />
