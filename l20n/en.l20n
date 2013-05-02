@@ -38,7 +38,7 @@
 <disclaimer "Disclaimer">
 <back "Back">
 <formError "Please fill out the entire form.">
-<infowindowError "
+<infowindowError """
 	<h2>Error!</h2>
 	<p>We could not fetch the requested data. The most common reasons for this error are:</p>
 	<p>
@@ -51,8 +51,8 @@
 	</p>
 	<p>If you keep encountering problems, please contact us via the <a class="infowindow" href="contact.php">contactform</a>.</p>
 	<p>Our sincere apologies!</p>
-">
-<infowindowApps "
+""">
+<infowindowApps """
 	<h2>Apps</h2>
 	<p>Download HotelGuide to your pocket:</p>
 	<a href="https://itunes.apple.com/us/app/hotelgids/id641534155?ls=1" class="noBorder" title="HotelGuide on iOS" style="float: left;">
@@ -62,7 +62,7 @@
 	<p style="clear: both; padding-top: 20px;">We're working hard to bring an application for other operating systems (Android, Windows).</p>
 	<p>Meanwhile, this website has been optimized for mobile usage!</p>
 	<p>Stay tuned!</p>
-">
+""">
 <infowindowContact """
 	<h2>Contact form</h2>
 	<p>Questions? Remarks? Let us know!</p>
