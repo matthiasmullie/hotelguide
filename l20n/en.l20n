@@ -52,8 +52,13 @@
 ">
 <infowindowApps "
 	<h2>Apps</h2>
-	<p>We're in the middle op developing mobile apps and we hope to launch an iOs, Android and Windows app soon.</p>
-	<p>Meanwhile you can browse the website that has been optimized for your mobile device, tested on each of these platforms.</p>
+	<p>Download HotelGuide to your pocket:</p>
+	<a href="https://itunes.apple.com/us/app/hotelgids/id641534155?ls=1" class="noBorder" title="HotelGuide on iOS" style="float: left;">
+		<img src="/img/download/ios_en.svg" width="125" height="37" alt="HotelGuide on iOS" />
+	</a>
+
+	<p style="clear: both; padding-top: 20px;">We're working hard to bring an application for other operating systems (Android, Windows).</p>
+	<p>Meanwhile, this website has been optimized for mobile usage!</p>
 	<p>Stay tuned!</p>
 ">
 <infowindowContact """

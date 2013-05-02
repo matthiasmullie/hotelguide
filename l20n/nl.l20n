@@ -52,8 +52,13 @@
 """>
 <infowindowApps """
 	<h2>Apps</h2>
-	<p>We zijn nog druk bezig met de ontwikkeling van mobiele apps en hopen binnenkort met een app voor iOS, Android en Windows op de proppen te komen.</p>
-	<p>Ondertussen is de website wel geoptimaliseerd voor mobiel gebruik, getest op elk van deze platformen!</p>
+	<p>Download HotelGids naar je broekzak:</p>
+	<a href="https://itunes.apple.com/be/app/hotelgids/id641534155?ls=1" class="noBorder" title="HotelGids op iOS" style="float: left;">
+		<img src="/img/download/ios_nl.svg" width="125" height="37" alt="HotelGids op iOS" />
+	</a>
+
+	<p style="clear: both; padding-top: 20px;">We werken hard aan een applicatie voor andere besturingssystemen (Android, Windows).</p>
+	<p>Ondertussen is deze website ook alvast geoptimaliseerd voor mobiel gebruik!</p>
 	<p>Stay tuned!</p>
 """>
 <infowindowContact """

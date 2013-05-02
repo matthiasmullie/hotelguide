@@ -94,6 +94,10 @@ body {
 		color: #0097f5;
 	}
 
+	a.noBorder {
+		border-bottom: none;
+	}
+
 	a:link {
 		border-color: rgba(0, 151, 96, .33);
 		color: #0097f5;
