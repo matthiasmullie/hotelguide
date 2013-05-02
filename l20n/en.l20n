@@ -33,6 +33,7 @@
 	title: "Close"
 >
 <order "Order">
+<pricePerNight "{{price}}/night">
 <disclaimer "Disclaimer">
 <back "Back">
 <formError "Please fill out the entire form.">

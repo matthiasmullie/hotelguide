@@ -32,17 +32,20 @@ if ( isset( $_GET['id'] ) ) {
 			<div id="infowindowData">
 				<div id="infowindowMarker">
 					<div id="infowindowTop" class="clearfix">
-						<a href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '">
+						<a href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '" target="_blank">
 							<h2>' . $data['title'] . '</h2>
 							<p>' . str_repeat('&#9733;', (int) $data['stars']) . '</p>
 						</a>
 					</div>
 					<div id="infowindowContent">
-						<a id="markerUrl" class="clearfix" href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '"><span class="leftSpan" data-l10n-id="order">Order</span> <span class="rightSpan">€' . $data['price'] . '</span></a>
+						<a id="markerUrl" class="clearfix" href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '" target="_blank">
+							<span class="leftSpan" data-l10n-id="order">Order</span>
+							<span class="rightSpan" data-l10n-id="pricePerNight" data-l10n-args=\'' . json_encode( array( 'price' => '€' . $data['price'] ) ) . '\'>€' . $data['price'] . '/night</span>
+						</a>
 						<p id="markerText" data-language="' . $data['text_language'] . '">' . $data['text'] . '</p>
 					</div>
 					<div id="markerImage" style="background-image: url(' . $data['image'] . ')">
-						<a href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '"></a>
+						<a href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '" target="_blank"></a>
 					</div>
 				</div>
 			</div>

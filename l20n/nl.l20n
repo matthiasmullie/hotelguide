@@ -33,6 +33,7 @@
 	title: "Sluit"
 >
 <order "Bestel">
+<pricePerNight "{{price}}/night">
 <disclaimer "Disclaimer">
 <back "Terug">
 <formError "Gelieve het formulier volledig in te vullen.">
