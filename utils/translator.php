@@ -103,14 +103,15 @@ class Translator {
 			) ),
 			CURLOPT_HEADER => false,
 			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_RETURNTRANSFER => true
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_TIMEOUT => 700 // don't wait forever
 		) );
 		$response = curl_exec( $curl );
 		curl_close( $curl );
 
 		$response = json_decode( $response );
+		// failure
 		if ( !$response || !isset( $response->responseStatus ) || $response->responseStatus != 200 ) {
-			// failure
 			return false;
 		}
 
