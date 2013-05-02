@@ -85,7 +85,7 @@ class Translator {
 		}
 
 		// check if already-translated result is in cache
-		$key = $this->cache->getKey( 'translate', md5( $text ) );
+		$key = $this->cache->getKey( 'translate', md5( $text ), $this->from, $this->to );
 		$cache = $this->cache->get( $key );
 		if ( $cache !== false ) {
 			return $cache;
