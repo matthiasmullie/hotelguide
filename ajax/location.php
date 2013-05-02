@@ -28,7 +28,7 @@ if ( isset( $_GET['id'] ) ) {
 	if ( $data !== false ) {
 		$mobile = (int) isset( $_GET['mobile'] ) && $_GET['mobile'];
 		$host = isset( $_GET['host'] ) ? $_GET['host'] : '';
-		$locale = isset( $_GET['locale'] ) ? $_GET['locale'] : 'be_NL';
+		$locale = isset( $_GET['locale'] ) ? $_GET['locale'] : 'nl-BE';
 
 		// format currency
 		$formatter = new NumberFormatter( $locale, NumberFormatter::CURRENCY );

@@ -27,7 +27,7 @@ $clustered = cluster(
 	isset( $_GET['crossBounds']['lng'] ) ? (bool) $_GET['crossBounds']['lng'] : false
 );
 
-$locale = isset( $_GET['locale'] ) ? $_GET['locale'] : 'be_NL';
+$locale = isset( $_GET['locale'] ) ? $_GET['locale'] : 'nl-BE';
 foreach ( $clustered['locations'] as &$data ) {
 	// format currency
 	$formatter = new NumberFormatter( $locale, NumberFormatter::CURRENCY );
