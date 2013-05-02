@@ -31,13 +31,7 @@ foreach ( $xml->xpath( '/products/product' ) as $node ) {
 	$location[':lng'] = (float) $node->properties->longitude->value;
 	$location[':title'] = (string) $node->name;
 	$location[':text'] = (string) $node->description;
-	/*
-	 * @todo: temp hack, this should be 'en'; translate-service is spitting
-	 * errors. Issue has been "fixed" already, but not in iPhone app coming out
-	 * soon. So until new version is released, let's just not translate for now,
-	 * pretend we have nl already ;)
-	 */
-	$location[':text_language'] = 'nl';
+	$location[':text_language'] = 'en';
 	$location[':image'] = (string) $node->images->image;
 	$location[':stars'] = (float) $node->properties->stars->value;
 	$location[':price'] = (float) $node->price->amount;
