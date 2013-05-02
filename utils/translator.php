@@ -37,7 +37,12 @@ class Translator {
 	 */
 	public function setFrom( $from ) {
 		// ISO 639-1
-		$this->from = substr( $from, 0, 2 );
+		if ( strpos( $from, '-' ) !== false ) {
+			$from = substr( $from, 0, 2 );
+		} elseif ( strpos( $from, '_' ) !== false ) {
+			$from = substr( $from, -2 );
+		}
+		$this->from = strtolower( substr( $from, -2 ) );
 	}
 
 	/**
@@ -47,7 +52,12 @@ class Translator {
 	 */
 	public function setTo( $to ) {
 		// ISO 639-1
-		$this->to = substr( $to, 0, 2 );
+		if ( strpos( $to, '-' ) !== false ) {
+			$to = substr( $to, 0, 2 );
+		} elseif ( strpos( $to, '_' ) !== false ) {
+			$to = substr( $to, -2 );
+		}
+		$this->to = strtolower( substr( $to, -2 ) );
 	}
 
 	/**
