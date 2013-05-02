@@ -1,5 +1,5 @@
 holidays.translate = {
-	default: navigator.language || navigator.userLanguage,
+	browserLanguage: navigator.language || navigator.userLanguage,
 
 	init: function() {
 		holidays.translate.l20n( document );
@@ -90,9 +90,9 @@ holidays.translate = {
 				 * DOMSubtreeModified will be fired again when we replace the
 				 * text with the translated content.
 				 */
-				$( this ).data( 'language', holidays.translate.default );
+				$( this ).data( 'language', holidays.translate.browserLanguage );
 
-				holidays.translate.translate( $( this ), from, holidays.translate.default );
+				holidays.translate.translate( $( this ), from, holidays.translate.browserLanguage );
 			} );
 		} );
 	},

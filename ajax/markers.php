@@ -26,6 +26,23 @@ $clustered = cluster(
 	isset( $_GET['crossBounds']['lat'] ) ? (bool) $_GET['crossBounds']['lat'] : false,
 	isset( $_GET['crossBounds']['lng'] ) ? (bool) $_GET['crossBounds']['lng'] : false
 );
+
+$locale = isset( $_GET['locale'] ) ? $_GET['locale'] : 'be_NL';
+foreach ( $clustered['locations'] as &$data ) {
+	// format currency
+	$formatter = new NumberFormatter( $locale, NumberFormatter::CURRENCY );
+	$formatter->setAttribute( NumberFormatter::FRACTION_DIGITS, 0 );
+	$data['text'] = $formatter->formatCurrency( $data['price'], $data['price_currency'] );
+
+	/*
+	 * Due to some bug in ICU, rounding in currency does not always happen.
+	 * Just cut remaining decimals (don't care too much about rounding up
+	 * accurately in this bugged case)
+	 */
+	$separator = $formatter->getSymbol( NumberFormatter::DECIMAL_SEPARATOR_SYMBOL );
+	$data['text'] = preg_replace( '/'. preg_quote( $separator ) .'[0-9]+/', '', $data['text'] );
+}
+
 header( 'Content-type: application/json' );
 echo json_encode( $clustered );
 
@@ -66,7 +83,7 @@ function cluster( $bounds, $minPrice, $maxPrice, $minPts, $nbrClusters, $crossBo
 		$clusterer->setNumberOfClusters( $nbrClusters );
 
 		foreach ( $markers as $marker ) {
-			$clusterer->addLocation( $marker['lat'], $marker['lng'], array( 'id' => $marker['id'], 'price' => $marker['price'] ) );
+			$clusterer->addLocation( $marker['lat'], $marker['lng'], array( 'id' => $marker['id'], 'price' => $marker['price'], 'price_currency' => $marker['price_currency'] ) );
 		}
 
 		$clustered = array(
@@ -109,7 +126,7 @@ function getMarkers( $bounds, $minPrice, $maxPrice, $crossBoundsLat = false, $cr
 	$where[] = $crossBoundsLng ? 'l.lng > :swlng OR l.lng < :nelng' : 'l.lng > :swlng AND l.lng < :nelng';
 
 	$prepareMarkers = $db->prepare('
-		SELECT l.id, l.lat, l.lng, l.price
+		SELECT l.id, l.lat, l.lng, l.price, l.price_currency
 		FROM locations AS l
 		WHERE ('.implode( ') AND (', $where ).')
 	');

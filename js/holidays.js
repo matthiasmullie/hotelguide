@@ -5,12 +5,13 @@ var holidays = {
 	host: ( typeof cordova == 'undefined' && document.location.host ) ? '/' : 'http://www.last-minute-vakanties.be/',
 	// on mobile, we'll serve mobile destination urls
 	mobile: ( typeof cordova != 'undefined' && document.location.host ) || jQuery.browser.mobile,
-	currency: '€',
+	priceRange: [50, 300],
+	currency: '€', // @todo: remove
 
 	init: function() {
 		var init = function() {
 			holidays.hideAddressBar();
-			holidays.priceRange();
+			holidays.priceRangeSlider();
 			holidays.css();
 
 			holidays.history.init();
@@ -81,7 +82,7 @@ var holidays = {
 	 * noUiSlider has been picked over jQuery UI Slider, because the latter is not
 	 * terribly compatible with touch devices.
 	 */
-	priceRange: function() {
+	priceRangeSlider: function() {
 		var updatePrices = function() {
 			var prices = $( '.noUiSlider' ).val();
 
@@ -90,8 +91,8 @@ var holidays = {
 		};
 
 		$( '.noUiSlider' ).noUiSlider( {
-			range: [50, 300],
-			start: [50, 300],
+			range: holidays.priceRange,
+			start: holidays.priceRange,
 			handles: 2,
 			step: 1,
 			slide: updatePrices

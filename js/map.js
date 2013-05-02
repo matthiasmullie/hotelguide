@@ -132,6 +132,7 @@ holidays.map = {
 					lat: crossBoundsLat ? 1 : 0,
 					lng: crossBoundsLng ? 1 : 0
 				},
+				locale: holidays.translate.browserLanguage,
 				minPts: holidays.map.map.getZoom() > 13 ? 999999 : 15, // zoomed in much = don't cluster
 				nbrClusters: Math.round( $( '#map' ).width() * $( '#map' ).height() / 15000 ) // smaller screen = less clusters
 			},
@@ -175,7 +176,7 @@ holidays.map = {
 		for ( var i = 0; i < json.locations.length; i++ ) {
 			var coordinate = new google.maps.LatLng( json.locations[i].lat, json.locations[i].lng );
 
-			var marker = holidays.map.marker.location( coordinate,  json.locations[i].id, json.locations[i].price );
+			var marker = holidays.map.marker.location( coordinate,  json.locations[i].id, json.locations[i].text );
 			holidays.map.markers.push( marker );
 		}
 
@@ -202,19 +203,17 @@ holidays.map = {
 		 *
 		 * @param google.maps.LatLng coordinate
 		 * @param int id
-		 * @param float price
+		 * @param string text
 		 * @returns google.maps.Marker
 		 */
-		location: function( coordinate, id, price ) {
-			price = Math.round( price );
-
-			var colors = {
-				0: '#a9be42', // green markers: €0 - 99
-				1: '#fe7921', // orange markers: €100 - 199
-				'+': '#ea3755' // red markers: €200 - 299
-			};
-			var color = colors[Math.floor( price / 100 )];
-			color = ( typeof color != 'undefined' ? color : colors['+'] );
+		location: function( coordinate, id, text ) {
+			// prices color range
+			var price = accounting.unformat( text );
+			var colors = ['#a9be42', '#fe7921', '#ea3755'];
+			var range = holidays.priceRange[1] - holidays.priceRange[0];
+			var index = Math.floor( ( price - holidays.priceRange[0] ) / ( range / colors.length ) );
+			index = Math.max( 0, Math.min( colors.length, index ) );
+			var color = colors[index];
 
 			var svg =
 				'<svg width="46" height="54" xmlns="http://www.w3.org/2000/svg">' +
@@ -223,7 +222,7 @@ holidays.map = {
 					// bottom balloon shadow
 					'<path fill="#7f7f7f" d=" M 18.18 52.59 C 19 52.19 19.83 51.81 20.64 51.41 C 21.36 51.99 22.05 52.79 23.01 52.91 C 23.96 52.79 24.64 51.99 25.36 51.42 C 26.2 51.82 27.05 52.21 27.9 52.6 C 27.79 53.07 27.67 53.53 27.55 54 L 18.33 54 C 18.28 53.53 18.24 53.06 18.18 52.59 Z" />' +
 					// text
-					'<text x="23" y="28" font-size="13" font-family="Arial,sans-serif" font-weight="bold" text-anchor="middle" fill="#333" textContent="'+ holidays.currency + price +'">'+ holidays.currency + price +'</text>' +
+					'<text x="23" y="28" font-size="13" font-family="Arial,sans-serif" font-weight="bold" text-anchor="middle" fill="#333" textContent="'+ text +'">'+ text +'</text>' +
 				'</svg>';
 
 			var marker = new google.maps.Marker( {
@@ -235,14 +234,14 @@ holidays.map = {
 				},
 				zIndex: 1000 - price, // surface cheaper hotels
 				flat: true,
-				title: holidays.currency + price,
+				title: text,
 				id: id
 			} );
 
 			// add click listener
 			google.maps.event.addListener( marker, 'click', function( e ) {
 				var mobile = holidays.mobile ? 1 : 0;
-				holidays.infowindow.open( 'ajax/location.php?id=' + this.id + '&mobile=' + mobile + '&host=' + holidays.host );
+				holidays.infowindow.open( 'ajax/location.php?id=' + this.id + '&mobile=' + mobile + '&host=' + holidays.host + '&locale=' + holidays.translate.browserLanguage );
 			} );
 
 			return marker;

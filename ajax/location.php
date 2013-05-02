@@ -27,6 +27,11 @@ if ( isset( $_GET['id'] ) ) {
 	if ( $data !== false ) {
 		$mobile = (int) isset( $_GET['mobile'] ) && $_GET['mobile'];
 		$host = isset( $_GET['host'] ) ? $_GET['host'] : '';
+		$locale = isset( $_GET['locale'] ) ? $_GET['locale'] : 'be_NL';
+
+		// format currency
+		$formatter = new NumberFormatter( $locale, NumberFormatter::CURRENCY );
+		$data['formatted_price'] = $formatter->formatCurrency( $data['price'], $data['price_currency'] );
 
 		echo '
 			<div id="infowindowData">
@@ -40,7 +45,7 @@ if ( isset( $_GET['id'] ) ) {
 					<div id="infowindowContent">
 						<a id="markerUrl" class="clearfix" href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '" target="_blank">
 							<span class="leftSpan" data-l10n-id="order">Order</span>
-							<span class="rightSpan" data-l10n-id="pricePerNight" data-l10n-args=\'' . json_encode( array( 'price' => '€' . $data['price'] ) ) . '\'>€' . $data['price'] . '/night</span>
+							<span class="rightSpan" data-l10n-id="pricePerNight" data-l10n-args=\'' . json_encode( array( 'price' => $data['formatted_price'] ) ) . '\'>' . $data['formatted_price'] . '/night</span>
 						</a>
 						<p id="markerText" data-language="' . $data['text_language'] . '">' . $data['text'] . '</p>
 					</div>
