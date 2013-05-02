@@ -78,3 +78,25 @@
 	<h2>Contact form</h2>
 	<p>Thank you for your message!</p>
 """>
+<infowindowDisclaimer """
+	<h2>Disclaimer</h2>
+	<h3>This application is property of last-minute-vakanties.be</h3>
+	<h3>Conditions</h3>
+	<p>By accessing and using this application, you explicitly agree to the below conditions, for which a partnership is not required. Invalidity of specific clauses in these terms does not exclude the applicability of other conditions.</p>
+	<h3>Intellectual property</h3>
+	<p>The content in this application, including brands, logo's, artwork, data, product or company names, texts, imagery, etc. are protected by the intellectual property and belong to last-minute-vakanties.be or their respective owners.</p>
+	<p>Excluding last-minute-vakanties.be's prior written approval, the reuse, distribution, sale, disclosure, commercial usage, etc. of this application and its content is prohibited.</p>
+	<h3>Information</h3>
+	<p>The information in this applicagtion is of public nature. De information has not been altered to personal of specific conditions and, as a result, can not be considered personal, professional of judicial advice to the user.<p>
+	<p>Even though last-minute-vakanties.be goes great lengths to provide complete, correct, accurate and current information in the application, it can not guarantee this data. Furthermore, last-minute-vakanties.be does not guarantee smooth operation and continuous availability of the application. last-minute-vakanties.be can't be held responsible for direct or indirect damage resulting from usage of the provided information, malfunctioning or inavailability, temporary or permanent, of the application.Last-minute-vakanties.be can't be held responsible for any relationship built between the user and third parties, even if facilitated via last-minute-vakanties.be.</p>
+	<h3>Hyperlinks</h3>
+	<p>This application may contain hyperlinks to websites or pages of third parties. Linking to such websites in no way implies approval of its content. last-minute-vakanties.be explicitly declares to have no say or ownership over the content or other features of these websites, and can under no condition be held responsible for its content or features, or any other form of damage resulting from its usage.</p>
+	<h3>Crimes</h3>
+	<p>last-minute-vakanties.be takes all possible measures to arm itself and its users agains IT crimes. Regardless, last-minute-vakanties.be can not be held responsible for the manifestation of IT crimes, no matter the form.</p>
+	<h3>Applicable law and qualified courts</h3>
+	<p>Belgian law applies to this application. Only courts in the district of Kortrijk are qualified to handle disputes.</p>
+	<h3>Privacy policy</h3>
+	<p>last-minute-vakanties.be thinks your privacy is important. Although most information in this application is available without having to enter personal details, the user may be asked for personal details. This information will only be used for our customers' file. On demand and free of charge, the user can resist to the usage of his/her details for direct marketing, for which the user should contact us via the <a class="infowindow" href="contact.php">contact form</a>. Your personal details will not be shared with third parties.</p>
+	<p>The user may exercise his/her legal right regarding inspection or correction of his/her personal details, provided proof of identity (copy passport). Via a dated and signed request using the <a class="infowindow" href="contact.php">contact form</a>, you may receive a written communication of your personal details. If necessary, you may request to correct wrong, incomplete or irrelevant details.</p>
+	<p>last-minute-vakanties.be may gather anonymous, aggregated data of non-identifiable nature, such as the browser type or IP address, the operating system or domain name of the website used to reach this application, or where you're leaving this application to. This enables us to permanently optimize this application for our users.</p>
+""">
