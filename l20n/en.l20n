@@ -35,6 +35,7 @@
 <order "Order">
 <disclaimer "Disclaimer">
 <back "Back">
+<formError "Please fill out the entire form.">
 <infowindowError "
 	<h2>Error!</h2>
 	<p>We could not fetch the requested data. The most common reasons for this error are:</p>
@@ -46,7 +47,7 @@
 		<strong>We're updating our hotel database with the latest promotions.</strong><br />
 		In this case, you should soon be able to access the requested information. We advise you to retry later.
 	</p>
-	<p>If you keep encountering problens, please contact us via the <a class="infowindow" href="contact.php">contactform</a>.</p>
+	<p>If you keep encountering problems, please contact us via the <a class="infowindow" href="contact.php">contactform</a>.</p>
 	<p>Our sincere apologies!</p>
 ">
 <infowindowApps "
@@ -55,3 +56,18 @@
 	<p>Meanwhile you can browse the website that has been optimized for your mobile device, tested on each of these platforms.</p>
 	<p>Stay tuned!</p>
 ">
+<infowindowContact """
+	<h2>Contact form</h2>
+	<p>Questions? Remarks? Let us know!</p>
+	<form name="contact" action="contact.php" method="POST" class="{{formClass}}">
+		{{formErrorMessage}}
+		<input type="text" name="name" id="name" placeholder="Name" value="{{nameValue}}" class="{{nameClass}}" />
+		<input type="email" name="email" id="email" placeholder="Email address" value="{{emailValue}}" class="{{emailClass}}" />
+		<textarea name="message" id="message" placeholder="Message" class="{{messageClass}}">{{messageValue}}</textarea>
+		<input type="submit" class="button" id="submit" value="Send" />
+	</form>
+""">
+<infowindowContactSubmitted """
+	<h2>Contact form</h2>
+	<p>Thank you for your message!</p>
+""">

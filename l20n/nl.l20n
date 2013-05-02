@@ -35,6 +35,7 @@
 <order "Bestel">
 <disclaimer "Disclaimer">
 <back "Terug">
+<formError "Gelieve het formulier volledig in te vullen.">
 <infowindowError """
 	<h2>Fout!</h2>
 	<p>De gevraagde gegevens konden niet worden opgehaald. De meest courante oorzaken hiervoor, zijn:</p>
@@ -54,6 +55,21 @@
 	<p>We zijn nog druk bezig met de ontwikkeling van mobiele apps en hopen binnenkort met een app voor iOS, Android en Windows op de proppen te komen.</p>
 	<p>Ondertussen is de website wel geoptimaliseerd voor mobiel gebruik, getest op elk van deze platformen!</p>
 	<p>Stay tuned!</p>
+""">
+<infowindowContact """
+	<h2>Contactformulier</h2>
+	<p>Vragen? Opmerkingen? Laat het ons weten!</p>
+	<form name="contact" action="contact.php" method="POST" class="{{formClass}}">
+		{{formErrorMessage}}
+		<input type="text" name="name" id="name" placeholder="Naam" value="{{nameValue}}" class="{{nameClass}}" />
+		<input type="email" name="email" id="email" placeholder="E-mail adres" value="{{emailValue}}" class="{{emailClass}}" />
+		<textarea name="message" id="message" placeholder="Boodschap" class="{{messageClass}}">{{messageValue}}</textarea>
+		<input type="submit" class="button" id="submit" value="Verstuur" />
+	</form>
+""">
+<infowindowContactSubmitted """
+	<h2>Contactformulier</h2>
+	<p>Bedankt voor je reactie!</p>
 """>
 <infowindowDisclaimer """
 	<h2>Disclaimer</h2>

@@ -213,14 +213,14 @@
 			if (!_isReady) {
 				throw new ContextError("Context not ready");
 			}
-			return getFromLocale(0, id, data).value;
+			return getFromLocale.call(this, 0, id, data).value;
 		}
 
 		function getEntity(id, data) {
 			if (!_isReady) {
 				throw new ContextError("Context not ready");
 			}
-			return getFromLocale(0, id, data);
+			return getFromLocale.call(this, 0, id, data);
 		}
 
 		function localize(idsOrTuples, callback) {
@@ -236,7 +236,7 @@
 				// XXX: add stop and retranslate to the returned object
 				return {};
 			}
-			return getMany(idsOrTuples, callback);
+			return getMany.call(this, idsOrTuples, callback);
 		}
 
 		function getMany(idsOrTuples, callback) {
@@ -246,10 +246,10 @@
 			for (var i = 0, iot; iot = idsOrTuples[i]; i++) {
 				if (Array.isArray(iot)) {
 					id = iot[0];
-					vals[id] = getEntity(iot[0], iot[1]);
+					vals[id] = getEntity.call(this, iot[0], iot[1]);
 				} else {
 					id = iot;
-					vals[id] = getEntity(iot);
+					vals[id] = getEntity.call(this, iot);
 				}
 				for (var global in vals[id].globals) {
 					if (vals[id].globals.hasOwnProperty(global)) {
@@ -304,16 +304,16 @@
 			// if the entry is missing, just go to the next locale immediately
 			if (entry === undefined) {
 				_emitter.emit('error', new EntityError("Not found", id, locale.id));
-				return getFromLocale(cur + 1, id, data, sourceString);
+				return getFromLocale.call(this, cur + 1, id, data, sourceString);
 			}
 
 			// otherwise, try to get the value of the entry
 			try {
-				return entry.get(getArgs.bind(this, data));
+				return entry.get(getArgs.call(this, data));
 			} catch(e) {
 				if (e instanceof L20n.Compiler.RuntimeError) {
 					_emitter.emit('error', new EntityError(e.message, id, locale.id));
-					return getFromLocale(cur + 1, id, data, sourceString || e.source);
+					return getFromLocale.call(this, cur + 1, id, data, sourceString || e.source);
 				} else {
 					throw e;
 				}
@@ -2289,12 +2289,16 @@
 		function Identifier(node, entry) {
 			var name = node.name;
 			return function identifier(locals, ctxdata) {
-				if (!_env.hasOwnProperty(name)) {
+				if (_env.hasOwnProperty(name)) {
+					var value = _env[name]
+				} else if (ctxdata.hasOwnProperty(name)) {
+					var value = ctxdata[name];
+				} else {
 					throw new RuntimeError('Reference to an unknown entry: ' + name,
 						entry);
 				}
-				locals.__this__ = _env[name];
-				return [locals, _env[name]];
+				locals.__this__ = value;
+				return [locals, value];
 			};
 		}
 		function ThisExpression(node, entry) {

@@ -18,6 +18,8 @@ holidays.translate = {
 		 *
 		 * l20n.js originally replaces node.textContent, but we prefer
 		 * node.innerHTML ;)
+		 * After replacing l20n'ed context, remove the data-l10n-id attribute
+		 * so we can go recursive (otherwise, it could l20n the parent again)
 		 *
 		 * @param node
 		 * @param l10n
@@ -31,6 +33,7 @@ holidays.translate = {
 				var node = nodes[i];
 				if ( entity.value ) {
 					node.innerHTML = entity.value;
+					node.removeAttribute( 'data-l10n-id' );
 				}
 				for ( var key in entity.attributes ) {
 					node.setAttribute( key, entity.attributes[key] );
@@ -65,7 +68,11 @@ holidays.translate = {
 
 		if ( typeof document.l10n != 'undefined' ) {
 			var ctx = document.l10n;
-			localizeNode( element );
+
+			do {
+				var html = element.innerHTML;
+				localizeNode( element );
+			} while ( html != element.innerHTML );
 		}
 	},
 
