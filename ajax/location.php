@@ -1,6 +1,7 @@
 <?php
 
 require_once '../config.php';
+require_once '../utils/translator.php';
 
 if ( isset( $_GET['id'] ) ) {
 	$id = (int) $_GET['id'];
@@ -33,6 +34,11 @@ if ( isset( $_GET['id'] ) ) {
 		$formatter = new NumberFormatter( $locale, NumberFormatter::CURRENCY );
 		$data['formatted_price'] = $formatter->formatCurrency( $data['price'], $data['price_currency'] );
 
+		// translate text
+		$translator = new Translator( $data['text_language'], $locale );
+		$translation = $translator->translate( $data['text'] );
+		$data['text'] = $translation ?: $data['text'];
+
 		echo '
 			<div id="infowindowData">
 				<div id="infowindowMarker">
@@ -47,7 +53,7 @@ if ( isset( $_GET['id'] ) ) {
 							<span class="leftSpan" data-l10n-id="order">Order</span>
 							<span class="rightSpan" data-l10n-id="pricePerNight" data-l10n-args=\'' . json_encode( array( 'price' => $data['formatted_price'] ) ) . '\'>' . $data['formatted_price'] . '/night</span>
 						</a>
-						<p id="markerText" data-language="' . $data['text_language'] . '">' . $data['text'] . '</p>
+						<p id="markerText">' . $data['text'] . '</p>
 					</div>
 					<div id="markerImage" style="background-image: url(' . $data['image'] . ')">
 						<a href="'. $host .'ajax/redirect.php?id=' . $data['id'] . '&mobile=' . $mobile . '" target="_blank"></a>

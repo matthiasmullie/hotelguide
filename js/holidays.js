@@ -16,7 +16,7 @@ var holidays = {
 
 			holidays.history.init();
 			holidays.infowindow.init();
-			holidays.translate.init();
+			holidays.language.init();
 			holidays.map.init();
 
 			if ( !holidays.isOnline() ) {

@@ -69,7 +69,7 @@ function cluster( $bounds, $minPrice, $maxPrice, $minPts, $nbrClusters, $crossBo
 
 	$clustered = false;
 	if ( $cacheCluster ) {
-		$clusterKey = getCacheKey( $minPrice, $maxPrice, $bounds['neLat'], $bounds['neLng'], $bounds['swLat'], $bounds['swLng'], $minPts, $nbrClusters );
+		$clusterKey = getCacheKey( 'cluster', $minPrice, $maxPrice, $bounds['neLat'], $bounds['neLng'], $bounds['swLat'], $bounds['swLng'], $minPts, $nbrClusters );
 		$clustered = $cache->get( $clusterKey );
 	}
 

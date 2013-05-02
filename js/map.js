@@ -132,7 +132,7 @@ holidays.map = {
 					lat: crossBoundsLat ? 1 : 0,
 					lng: crossBoundsLng ? 1 : 0
 				},
-				locale: holidays.translate.browserLanguage,
+				locale: holidays.language.browserLanguage,
 				minPts: holidays.map.map.getZoom() > 13 ? 999999 : 15, // zoomed in much = don't cluster
 				nbrClusters: Math.round( $( '#map' ).width() * $( '#map' ).height() / 15000 ) // smaller screen = less clusters
 			},
@@ -241,7 +241,7 @@ holidays.map = {
 			// add click listener
 			google.maps.event.addListener( marker, 'click', function( e ) {
 				var mobile = holidays.mobile ? 1 : 0;
-				holidays.infowindow.open( 'ajax/location.php?id=' + this.id + '&mobile=' + mobile + '&host=' + holidays.host + '&locale=' + holidays.translate.browserLanguage );
+				holidays.infowindow.open( 'ajax/location.php?id=' + this.id + '&mobile=' + mobile + '&host=' + holidays.host + '&locale=' + holidays.language.browserLanguage );
 			} );
 
 			return marker;

@@ -1,9 +1,8 @@
-holidays.translate = {
+holidays.language = {
 	browserLanguage: navigator.language || navigator.userLanguage,
 
 	init: function() {
-		holidays.translate.l20n( document );
-		holidays.translate.bind();
+		holidays.language.l20n( document );
 	},
 
 	/**
@@ -74,68 +73,5 @@ holidays.translate = {
 				localizeNode( element );
 			} while ( html != element.innerHTML );
 		}
-	},
-
-	/**
-	 * As soon as the content of an infowindow changes, see if there is content
-	 * in a foreign language ([data-language=XY]) and translate it
-	 */
-	bind: function() {
-		$( '#infowindow' ).on( 'DOMSubtreeModified', function() {
-			$( this ).find( '[data-language]' ).each( function() {
-				var from = $( this ).data( 'language' );
-
-				/*
-				 * change language flag (to prevent follow-up requests, since
-				 * DOMSubtreeModified will be fired again when we replace the
-				 * text with the translated content.
-				 */
-				$( this ).data( 'language', holidays.translate.browserLanguage );
-
-				holidays.translate.translate( $( this ), from, holidays.translate.browserLanguage );
-			} );
-		} );
-	},
-
-	/**
-	 * Translate the text of a jQuery node.
-	 *
-	 * @param jQuery $element
-	 * @param string from
-	 * @param string to
-	 */
-	translate: function( $element, from, to ) {
-		// ISO 639-1
-		from = from.substr( 0, 2 );
-		to = to.substr( 0, 2 );
-
-		if ( !from || !to || from == to ) {
-			return;
-		}
-
-		// trim to 500 chars
-		var text = $element.text();
-		if ( text.length > 500 ) {
-			text = text.substr( 0, 500 );
-			text = text.substr( 0, text.lastIndexOf( ' ' ) ) + '…';
-		}
-
-		$.ajax( {
-			url: 'http://mymemory.translated.net/api/get',
-			data: {
-				q: text,
-				langpair: from + '|' + to,
-				of: 'json',
-				mt: 1, // machine translation
-				de: 'mymemory@last-minute-vakanties.be' // point of contact
-			},
-			type: 'GET',
-			dataType: 'json',
-			success: function( json ) {
-				if ( typeof json.responseStatus != 'undefined' && json.responseStatus == 200 ) {
-					$element.html( json.responseData.translatedText );
-				}
-			}
-		} );
 	}
 };
