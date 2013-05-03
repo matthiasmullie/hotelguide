@@ -16,7 +16,7 @@
 	content: "De hotelgids van last-minute-vakanties.be verzamelt de hotels van online aanbieders en laat je eenvoudig filteren op locatie of prijs. Vind in 1 oogopslag alle hotels in de buurt van je huidige of favoriete vakantiebestemming en vergelijk in prijs met een ander hotel een straat verderop!"
 >
 <brandKeywords
-	content: "hotelgids, last minute, vakantie, hotel, reis, kaart, boeken"
+	content: "hotelgids, last minute, vakantie, hotel, reis, kaart, boeken, goedkoop, aanbiedingen"
 >
 <locationCurrent "Huidige locatie">
 <locationPlaceholder[isWide(@screen)]

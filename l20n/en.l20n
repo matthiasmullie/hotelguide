@@ -16,7 +16,7 @@
 	content: "HotelGuide compiles all hotel deals of online travel providers and makes it easy to filter them on location or price. Find all hotels in the neighborhood of your current or your favorite travel destination and compare prices with other hotels just down the street!"
 >
 <brandKeywords
-	content: "hotelguide, last minute, holiday, hotel, travel, map, book"
+	content: "hotelguide, last minute, holiday, hotel, travel, map, book, discount, deals"
 >
 <locationCurrent "Current location">
 <locationPlaceholder[isWide(@screen)]
