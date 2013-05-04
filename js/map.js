@@ -513,6 +513,10 @@ holidays.map = {
 		// don't redraw if price range hasn't changed
 		redraw |= typeof( JSON ) == 'undefined' || JSON.stringify( holidays.map.prices ) != JSON.stringify( prices );
 
+		// check language & currency
+		redraw |= $.cookie( 'language' ) != holidays.localize.language;
+		redraw |= $.cookie( 'currency' ) != holidays.localize.currency;
+
 		return redraw;
 	},
 

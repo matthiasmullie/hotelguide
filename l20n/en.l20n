@@ -25,6 +25,13 @@
 		landscapePhone: "Destination?"
 	}
 >
+<language "Language">
+<currency "Currency">
+<languageEN "EN">
+<languageNL "NL">
+<languageFR "FR">
+<currencyEUR "€">
+<currencyUSD "$">
 <linkApps "Apps">
 <linkContact "Contact">
 <linkSettings "Settings">

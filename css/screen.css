@@ -676,6 +676,14 @@ body {
 					background-image: linear-gradient(transparent, transparent), url(../img/cog.svg);
 				}
 
+				#settings a.active,
+				#settings a:hover {
+					background-image: url(../img/cog_hover.png);
+					background-image: -moz-linear-gradient(transparent, transparent), url(../img/cog_hover.svg);
+					background-image: -webkit-linear-gradient(transparent, transparent), url(../img/cog_hover.svg);
+					background-image: linear-gradient(transparent, transparent), url(../img/cog_hover.svg);
+				}
+
 				#navigation a:link,
 				#navigation a:visited,
 				#settings a:link,
@@ -760,7 +768,7 @@ html, body {
 	#map a {
 		border: 0 !important;
 	}
-	
+
 		.priceTag {
 			font-size: 11px;
 			text-align: center;
@@ -769,7 +777,97 @@ html, body {
 			margin-left: -20px !important;
 			width: 40px;
 		}
-	
+
+/*
+	Settings pane
+*/
+
+#settingsPane {
+	position: absolute;
+	left: 50%;
+	width: 704px;
+	margin-left: -352px;
+
+	background: none repeat scroll 0 0 #333333;
+	z-index: 1;
+
+	display: none; /* only display after clicking cog */
+}
+
+#settingsPane div {
+	width: 312px;
+	float: left;
+	margin: 0 20px;
+}
+
+@media only screen and (min-width: 481px) and (max-width: 767px) {
+
+	#settingsPane {
+		width: 460px;
+		margin-left: -230px;
+	}
+
+}
+
+@media only screen and (max-width: 480px) {
+
+	#settingsPane {
+		width: 300px;
+		margin-left: -150px;
+	}
+
+	#settingsPane div {
+		width: 110px;
+	}
+
+}
+
+#settingsPane input {
+	display: none;
+}
+
+#settingsPane p,
+#settingsPane ul,
+#settingsPane li {
+	display: inline-block;
+	color: #808080;
+	font-size: 12px;
+	font-weight: 900;
+	line-height: 1.5;
+	text-shadow: 0 -1px rgba(0, 0, 0, 0.33);
+}
+
+#settingsPane li.selected {
+	color: #FFFFFF;
+}
+
+#settingsPane li {
+	border-right: 1px solid #484848;
+}
+
+#settingsPane p,
+#settingsPane li label {
+	padding: 16px 0 15px;
+}
+
+#settingsPane li label {
+	display: inline-block;
+	width: 50px;
+	text-align: center;
+	cursor: pointer;
+
+	border-right: 1px solid #000;
+}
+
+#settingsPane li:last-of-type,
+#settingsPane li:last-of-type label {
+	border-right: none;
+}
+
+#settingsPane label:hover {
+	color: #FFFFFF;
+}
+
 /*
 	Interactions
 */

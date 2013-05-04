@@ -57,6 +57,7 @@
 	<script src="js/external/jquery-1.9.1.min.js"></script>
 	<script src="js/external/jquery.browser.mobile.js"></script>
 	<script src="js/external/jquery.nouislider.min.js"></script>
+	<script src="js/external/jquery.cookie.js"></script>
 	<script src="js/external/accounting.min.js"></script>
 	<script src="js/external/webtoolkit.base64.js"></script>
 	<script src="js/external/modernizr.js"></script>
@@ -102,7 +103,7 @@
 			<div class="container">
 				<nav id="settings">
 					<ul>
-						<li><a class="submenu infowindow" href="settings.php" data-l10n-id="linkSettings">Settings</a></li>
+						<li><a href="#" data-l10n-id="linkSettings">Settings</a></li>
 					</ul>
 				</nav>
 				<div id="filter">
@@ -119,6 +120,24 @@
 		</section>
 	</div>
 	<div id="bottomWrapper">
+		<section id="settingsPane">
+			<div id="language">
+				<p><span data-l10n-id="language">Language</span>:</p>
+				<ul>
+					<li><input type="radio" name="language" id="language-en" value="en" /><label for="language-en" data-l10n-id="languageEN">EN</label></li>
+					<li><input type="radio" name="language" id="language-nl" value="nl" /><label for="language-nl" data-l10n-id="languageNL">NL</label></li>
+					<li><input type="radio" name="language" id="language-fr" value="fr" /><label for="language-fr" data-l10n-id="languageFR">FR</label></li>
+				</ul>
+			</div>
+			<div id="currency">
+				<p><span data-l10n-id="currency">Currency</span>:</p>
+				<ul>
+					<li><input type="radio" name="currency" id="currency-EUR" value="EUR" /><label for="currency-EUR" data-l10n-id="currencyEUR">€</label></li>
+					<li><input type="radio" name="currency" id="currency-USD" value="USD" /><label for="currency-USD" data-l10n-id="currencyUSD">$</label></li>
+				</ul>
+			</div>
+		</section>
+
 		<section id="map">
 			<!-- Map -->
 		</section>

@@ -1,6 +1,6 @@
 holidays.localize = {
-	language: ( navigator.language || navigator.userLanguage ).substr( 0, 2 ),
-	currency: 'EUR',
+	language: $.cookie( 'language' ) || ( navigator.language || navigator.userLanguage ).substr( 0, 2 ),
+	currency: $.cookie( 'currency' ) || 'EUR',
 	priceRange: {
 		'EUR': [50, 300],
 		'USD': [50, 400]
@@ -8,6 +8,55 @@ holidays.localize = {
 
 	init: function() {
 		holidays.localize.l20n( document );
+		holidays.localize.bind();
+
+		// set default values
+		$( 'input[name=language][value='+ holidays.localize.language +']' ).prop( 'checked', true ).trigger( 'change' );
+		$( 'input[name=currency][value='+ holidays.localize.currency +']' ).prop( 'checked', true ).trigger( 'change' );
+	},
+
+	bind: function() {
+		// click cog = open/close settings pane
+		$( '#settings a' ).on( 'click', function( e ) {
+			e.preventDefault();
+
+			var $settingsPane = $( '#settingsPane' );
+			if ( $settingsPane.is( ':visible' ) ) {
+				$settingsPane.hide();
+				$( this ).removeClass( 'active' );
+			} else {
+				$settingsPane.show();
+				$( this ).addClass( 'active' );
+			}
+		} );
+
+		// update settings when new one is selected
+		$( 'input[name=language], input[name=currency]' ).on( 'change', function() {
+			$( this )
+				.parents( 'li' ).addClass( 'selected' )
+					.siblings().removeClass( 'selected' );
+
+			// get newly selected values
+			var language = $( 'input[name=language]:checked' ).val() || holidays.localize.language;
+			var currency = $( 'input[name=currency]:checked' ).val() || holidays.localize.currency;
+
+			// verify data
+			if ( !( currency in holidays.localize.priceRange ) ) {
+				currency = holidays.localize.currency;
+			}
+
+			if ( language !== holidays.localize.language || currency !== holidays.localize.currency ) {
+				holidays.localize.language = language;
+				holidays.localize.currency = currency;
+
+				// fire new request for markers
+				holidays.map.reload();
+
+				// save to cookie
+				$.cookie( 'language', holidays.localize.language );
+				$.cookie( 'currency', holidays.localize.currency );
+			}
+		} );
 	},
 
 	/**
