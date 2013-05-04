@@ -49,11 +49,15 @@ holidays.localize = {
 				holidays.localize.language = language;
 				holidays.localize.currency = currency;
 
-				// translate interface
-				holidays.localize.l20n( document );
-
 				// fire new request for markers
 				holidays.map.reload();
+
+				// update slider ranges
+				$( '.noUiSlider' ).empty();
+				holidays.priceRangeSlider();
+
+				// translate interface
+				holidays.localize.l20n( document );
 
 				// save to cookie
 				$.cookie( 'language', holidays.localize.language );
@@ -94,8 +98,6 @@ holidays.localize = {
 					if ( $.inArray( id, translatedIds ) < 0 ) {
 						node.innerHTML = entity.value;
 						translatedIds.push( id );
-					} else {
-						console.log( id, $.inArray( id, translatedIds ) );
 					}
 				}
 				for ( var key in entity.attributes ) {

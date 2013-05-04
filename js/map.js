@@ -64,6 +64,11 @@ holidays.map = {
 	 * refresh the markers on the map.
 	 */
 	reload: function() {
+		// if map not yet loaded, abort
+		if ( holidays.map.map === null ) {
+			return;
+		}
+
 		// if there's an ongoing ajax request, abort it
 		if ( holidays.map.lastRequest ) {
 			holidays.map.lastRequest.abort();

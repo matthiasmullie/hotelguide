@@ -25,6 +25,9 @@
 		landscapePhone: "Destination?"
 	}
 >
+<priceRange
+	value: "{{curr}}: {{from}} - {{to}}"
+>
 <language "Language">
 <currency "Currency">
 <languageEN "EN">

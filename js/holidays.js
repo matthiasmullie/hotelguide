@@ -85,12 +85,28 @@ var holidays = {
 			var prices = $( '.noUiSlider' ).val();
 
 			// update display
-			$( '#price' ).val( holidays.localize.currency + ': ' + prices[0] + ' - ' + prices[1] );
+			var data = {
+				'curr': holidays.localize.currency,
+				'from': prices[0],
+				'to': prices[1]
+			};
+			$( '#price' ).data( 'l10n-args', JSON.stringify( data ) );
+			$( '#price' ).attr( 'data-l10n-args', JSON.stringify( data ) );
+
+			// save range to cookie
+			$.cookie( 'priceRange-' + holidays.localize.currency, JSON.stringify( prices ) );
+
+			// re-localize
+			holidays.localize.l20n( $( '#filter' ).get( 0 ) );
 		};
+
+		// get existing range from cookie (if any)
+		var cookieRange = $.cookie( 'priceRange-' + holidays.localize.currency );
+		cookieRange = cookieRange ? JSON.parse( cookieRange ) : null;
 
 		$( '.noUiSlider' ).noUiSlider( {
 			range: holidays.localize.priceRange[holidays.localize.currency],
-			start: holidays.localize.priceRange[holidays.localize.currency],
+			start: cookieRange || holidays.localize.priceRange[holidays.localize.currency],
 			handles: 2,
 			step: 1,
 			slide: updatePrices
