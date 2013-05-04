@@ -17,8 +17,8 @@
 	<!-- FR -->
 	<name xml:lang="fr">Guide d'Hôtels</name>
 	<description xml:lang="fr">
-		Le Guide d'Hôtels recueille les offres d'hôtels des fournisseurs en ligne et vous permet de filtrer facilement par location ou par prix.
-		Trouver tous les hôtels à proximité de votre position actualle ou votre destination de vacances à un coup d'œil et comparer les avec des hôtels moins cher à proximité!
+		Le Guide d'Hôtels recueille les offres d'hôtels de fournisseurs en ligne et vous permet de filtrer facilement par destination ou par prix.
+		Trouvez tous les hôtels près de votre position actuelle ou votre destination de vacances préférée à un coup d'œil et comparez-les avec des hôtels moins chers à proximité!
 	</description>
 
 	<author href="http://envy.us" email="hotelguide@envy.us">envy.us</author>

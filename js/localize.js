@@ -49,6 +49,9 @@ holidays.localize = {
 				holidays.localize.language = language;
 				holidays.localize.currency = currency;
 
+				// translate interface
+				holidays.localize.l20n( document );
+
 				// fire new request for markers
 				holidays.map.reload();
 
@@ -65,6 +68,8 @@ holidays.localize = {
 	 * @param HTMLElement element
 	 */
 	l20n: function( element ) {
+		var translatedIds = [];
+
 		/**
 		 * Code stolen from l20n.js
 		 * @see l20n.js
@@ -82,11 +87,16 @@ holidays.localize = {
 			var entity;
 			for ( var i = 0; i < nodes.length; i++ ) {
 				var id = nodes[i].getAttribute( 'data-l10n-id' );
+
 				var entity = l10n.entities[id];
 				var node = nodes[i];
 				if ( entity.value ) {
-					node.innerHTML = entity.value;
-					node.removeAttribute( 'data-l10n-id' );
+					if ( $.inArray( id, translatedIds ) < 0 ) {
+						node.innerHTML = entity.value;
+						translatedIds.push( id );
+					} else {
+						console.log( id, $.inArray( id, translatedIds ) );
+					}
 				}
 				for ( var key in entity.attributes ) {
 					node.setAttribute( key, entity.attributes[key] );
@@ -121,6 +131,9 @@ holidays.localize = {
 
 		if ( typeof document.l10n != 'undefined' ) {
 			var ctx = document.l10n;
+
+			// hack to translate to current language
+			ctx.registerLocales( [ holidays.localize.language ] );
 
 			do {
 				var html = element.innerHTML;

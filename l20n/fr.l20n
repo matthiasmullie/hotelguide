@@ -1,7 +1,110 @@
 /**
- * Created with JetBrains PhpStorm.
- * User: mmullie
- * Date: 04/05/13
- * Time: 14:27
- * To change this template use File | Settings | File Templates.
+ * @see http://l20n.github.io/tinker/
  */
+<isWide($n) {
+	$n.width < 480 ? "portraitPhone" :
+	$n.width < 768 ? "landscapePhone" :
+	$n.width < 980 ? "landscapeTablet" :
+	$n.width < 1200 ? "desktop" :
+	"large"
+}>
+
+<brandName "HotelGids"
+	content: "Guide d'Hôtels"
+>
+<brandDescription
+	content: "Le Guide d'Hôtels recueille les offres d'hôtels de fournisseurs en ligne et vous permet de filtrer facilement par destination ou par prix. Trouvez tous les hôtels près de votre position actuelle ou votre destination de vacances préférée à un coup d'œil et comparez-les avec des hôtels moins chers à proximité!"
+>
+<brandKeywords
+	content: "guide d'hôtels, last minute, lastminute, vacances, hôtel, hôtels, voyage, carte, commander, pas cher, réduction, offres, offres d'hôtels, citytrip, chambres, commandes"
+>
+<locationCurrent "Position actuelle">
+<locationPlaceholder[isWide(@screen)]
+	placeholder: {
+		*wide: "Quelle est votre destination préférée?",
+		landscapePhone: "Destination?"
+	}
+>
+<language "Langue">
+<currency "Monnaie">
+<languageEN "EN">
+<languageNL "NL">
+<languageFR "FR">
+<currencyEUR "€">
+<currencyUSD "$">
+<linkApps "Apps">
+<linkContact "Contact">
+<linkSettings "Réglages">
+<loadingMap "Chargement de la carte…">
+<loadingLocations "Chargement des hôtels…">
+<loadingDetails "Chargement des détails…">
+<buttonClose "×"
+	title: "Fermer"
+>
+<order "Commander">
+<pricePerNight "{{price}}/nuit">
+<disclaimer "Disclaimer">
+<back "Retour">
+<formError "S'il vous plaît remplir le formulaire complètement.">
+<infowindowError """
+	<h2>Erreur!</h2>
+	<p>Les données demandées ne peuvent pas être récupérées. Les causes les plus fréquentes de cette situation sont:</p>
+	<p>
+		<strong>Il ya un problème avec votre connexion Internet.</strong><br />
+		Pouvez-vous vérifier votre connexion Internet?
+	</p>
+	<p>
+		<strong>Nous mettons à jour notre base de données d'hôtels avec les dernières promotions.</strong><br />
+		Dans ce cas, les informations demandées seront bientôt à votre disposition, et nous vous encourageons à essayer de nouveau plus tard.
+	</p>
+	<p>Si vous continuez à rencontrer ce problème, veuillez nous contacter via notre <a class="infowindow" href="contact.php">formulaire de contact</a>.</p>
+	<p>Nous nous excusons!</p>
+""">
+<infowindowApps """
+	<h2>Apps</h2>
+	<p>Télécharger le Guide d'Hôtels:</p>
+	<a href="https://itunes.apple.com/fr/app/hotelgids/id641534155?ls=1" class="noBorder" title="Guide d'Hôtels sur iOS" style="float: left;">
+		<img src="/img/download/ios_fr.svg" width="125" height="37" alt="Guide d'Hôtels sur iOS" />
+	</a>
+
+	<p style="clear: both; padding-top: 20px;">Nous travaillons sur une application pour d'autres systèmes d'exploitation (Android, Windows).</p>
+	<p>En attendant, ce site a également été optimisé pour utilisation mobile!</p>
+	<p>Restez à l'écoute!</p>
+""">
+<infowindowContact """
+	<h2>Formulaire de contact</h2>
+	<p>Questions? Commentaires? Faites-nous savoir!</p>
+	<form name="contact" action="contact.php" method="POST" class="{{formClass}}">
+		{{formErrorMessage}}
+		<input type="text" name="name" id="name" placeholder="Nom" value="{{nameValue}}" class="{{nameClass}}" />
+		<input type="email" name="email" id="email" placeholder="Adresse e-mail" value="{{emailValue}}" class="{{emailClass}}" />
+		<textarea name="message" id="message" placeholder="Message" class="{{messageClass}}">{{messageValue}}</textarea>
+		<input type="submit" class="button" id="submit" value="Envoyer" />
+	</form>
+""">
+<infowindowContactSubmitted """
+	<h2>Formulaire de contact</h2>
+	<p>Merci pour votre commentaire!</p>
+""">
+<infowindowDisclaimer """
+	<h3>Disclaimer</h3>
+	<p>Cette application est la propriété de last-minute-vakanties.be</p>
+	<h3>Conditions</h3>
+	<p>En accédant et en utilisant l'application, vous acceptez expressément les conditions suivantes. Un partenariat entre les parties n'est pas nécessaire pour l'applicabilité de ces conditions. La nullité d'une disposition de ces conditions d'utilisation exclut l'application des autres dispositions non.</p>
+	<h3>Droits de propriété intellectuelle</h3>
+	<p>Le contenu de cette application, y compris les marques, logos, dessins, données, noms de produits ou d'entreprises, textes, images, etc sont protégés par copyright et appartiennent à last-minute-vakanties.be ou des tiers.</p>
+	<p>Hors le consentement préalable et écrit de last-minute-vakanties.be, la réutilisation, la distribution, la vente, la divulgation, l'utilisation à des fins commerciales, etc de cette applications et son contenu est interdite.</p>
+	<h3>Informations</h3>
+	<p>L'information relative à l'application est de nature générale. Les informations ne sont pas adaptées à des circonstances personnelles ou spécifiques et ne peuvent donc pas être considéré comme un conseil personnel, professionnel ou juridique à l'utilisateur.</p>
+	<p>Bien que last-minute-vakanties.be fait tous les efforts pour que les renseignements fournis dans cette application sont complètes, correctes, précises et à jour, last-minute-vakanties.be n'y vous en assure rien. En outre, last-minute-vakanties.be ne garantit pas la performance et la disponibilité continue de l'application. last-minute-vakanties.be ne peut donc pas être tenu responsable des dommages directs ou indirects résultant de l'utilisation de l'information, le mauvais fonctionnement ou l'indisponibilité, temporaire ou permanente, de l'application. En outre, last-minute-vakanties.be n'est pas responsable de la relation qui construit un visiteur avec des tiers, même si cela est facilitée par last-minute-vakanties.be.</p>
+	<h3>Hyperliens</h3>
+	<p>Cette application peut contenir des liens hypertextes vers des sites ou des pages de tiers. L'inclusion de liens vers ces sites n'implique pas l'approbation de son contenu de la part de last-minute-vakanties.be. last-minute-vakanties.be déclare expressément qu'il n'a aucun contrôle sur le contenu ou autres caractéristiques de ces sites et ne peut pas être tenu responsable du contenu ou de fonctionnalités ou de toute autre forme de dommage résultant de l'utilisation .</p>
+	<h3>Crimes</h3>
+	<p>last-minute-vakanties.be prend toutes les mesures possibles pour se protéger contre les crimes informatiques. Mais last-minute-vakanties.be n'est pas responsable si des crimes informatiques se manifestent.</p>
+	<h3>Loi applicable et juridiction</h3>
+	<p>Le droit belge est applicable à cette application. En cas de litige, seuls les tribunaux de l'arrondissement de la juridiction de Courtrai sont autorisé.</p>
+	<h3>Politique de confidentialité</h3>
+	<plast-minute-vakanties.be honneurs votre vie privée. Bien que la plupart des informations contenues dans cette application est disponible sans que des renseignements personnels doivent être fournis, il est possible que l'utilisateur est invité à fournir les données personnels. Ces informations ne seront pas utilisées que dans le cadre de notre client. L'utilisateur peut, gratuitement et sur demande, s'opposer à l'utilisation de ses données pour le marketing direct. À cette fin, il se tournera vers nous via le <a class="infowindow" href="contact.php">formulaire de contact</a>. Vos informations personnelles ne sont jamais transmises à des tiers.</p>
+	<p>L'utilisateur dispose d'un droit d'accès ou de rectification des données personnelles. Sous réserve de la preuve de votre identité (copie de la carte d'identité), vous pouvez obtenir un avis écrit gratuitement de vos données personnelles via une requête datée et signée via notre <a class="infowindow" href="contact.php">formulaire de contact</a>. Si nécessaire, vous pouvez également demander la correction ou suppresion des détails non pertinents, incorrectes ou incomplètes.</p>
+	<p>last-minute-vakanties.be peut récolter des informations anonymes ou agrégées non personnelles, telles que le type de navigateur ou l'adresse IP, le système d'exploitation que vous utilisez ou le nom de domaine du site Web d'où vous venez à notre application, ou à travers lequel vous quitter. Cela nous permet d'optimiser notre application pout l'utilisateur.</p>
+""">
