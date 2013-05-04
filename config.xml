@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="us.envy.HotelGuide" version="1.1.0" defaultlocale="en">
-	<!-- EN -->
-	<name xml:lang="en">HotelGuide</name>
-	<description xml:lang="en">
-		HotelGuide compiles all hotel deals of online travel providers and makes it easy to filter them on location or price.
-		Find all hotels in the neighborhood of your current or your favorite travel destination and compare prices with cheaper hotels just down the street!
-	</description>
-
 	<!-- NL -->
 	<name xml:lang="nl">HotelGids</name>
 	<description xml:lang="nl">
@@ -19,6 +12,13 @@
 	<description xml:lang="fr">
 		Le Guide d'Hôtels recueille les offres d'hôtels de fournisseurs en ligne et vous permet de filtrer facilement par destination ou par prix.
 		Trouvez tous les hôtels près de votre position actuelle ou votre destination de vacances préférée à un coup d'œil et comparez-les avec des hôtels moins chers à proximité!
+	</description>
+
+	<!-- EN -->
+	<name xml:lang="en">HotelGuide</name>
+	<description xml:lang="en">
+		HotelGuide compiles all hotel deals of online travel providers and makes it easy to filter them on location or price.
+		Find all hotels in the neighborhood of your current or your favorite travel destination and compare prices with cheaper hotels just down the street!
 	</description>
 
 	<author href="http://envy.us" email="hotelguide@envy.us">envy.us</author>
