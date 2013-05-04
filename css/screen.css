@@ -285,8 +285,9 @@ body {
 				box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 1);
 				background-color: #fff;
 				background-image: url(../img/locate_icon.png);
-				background-image: url(../img/locate_icon.png), -moz-linear-gradient(top, #fcfcfc 0%, #f5f5f5 100%);
-				background-image: url(../img/locate_icon.png), -webkit-linear-gradient(top, #fcfcfc 0%,#f5f5f5 100%);
+				background-image: -moz-linear-gradient(transparent, transparent), url(../img/locate_icon.svg), -moz-linear-gradient(top, #fcfcfc 0%, #f5f5f5 100%);
+				background-image: -webkit-linear-gradient(transparent, transparent), url(../img/locate_icon.svg), -webkit-linear-gradient(top, #fcfcfc 0%, #f5f5f5 100%);
+				background-image: linear-gradient(transparent, transparent), url(../img/locate_icon.svg), linear-gradient(top, #fcfcfc 0%,#f5f5f5 100%);
 				background-size: 55px auto;
 				background-position: center center;
 				background-repeat: no-repeat;
@@ -348,6 +349,9 @@ body {
 				left: 30px;
 				text-indent: -9999px;
 				background-image: url(../img/search_icon.png);
+				background-image: -moz-linear-gradient(transparent, transparent), url(../img/search_icon.svg);
+				background-image: -webkit-linear-gradient(transparent, transparent), url(../img/search_icon.svg);
+				background-image: linear-gradient(transparent, transparent), url(../img/search_icon.svg);
 				background-size: 24px auto;
 				background-position: 0 0;
 			}
@@ -467,7 +471,7 @@ body {
 
 			#filter {
 				float: none;
-				width: 416px;
+				width: 364px;
 			}
 
 		}
@@ -476,7 +480,7 @@ body {
 
 			#filter {
 				float: none;
-				width: 260px;
+				width: 208px;
 			}
 
 		}
@@ -495,18 +499,10 @@ body {
 				font-size: 10px;
 				text-shadow: rgba(0, 0, 0, 0.66) 0 -1px;
 				display: block;
-				width: 426px;
+				width: 100%;
 				margin: 0;
 				padding: 2px 0 0 0;
 				text-align: center;
-			}
-
-			@media only screen and (max-width: 480px) {
-
-				#price {
-					width: 260px;
-				}
-
 			}
 
 				/* jQuery UI slider */
@@ -611,11 +607,16 @@ body {
 										outline: none
 									}
 
-		#navigation {
+		#navigation,
+		#settings {
 			float: left;
-			width: 238px;
+			width: 186px;
 			height: 49px;
 			overflow: hidden;
+		}
+
+		#settings {
+			width: 52px;
 		}
 
 		@media only screen and (min-width: 481px) and (max-width: 767px) {
@@ -634,14 +635,22 @@ body {
 
 		}
 
-			#navigation li {
+			#navigation li,
+			#settings li {
 				float: left;
 				border-left: 1px solid #000;
 			}
 
-				#navigation a {
+			#settings li {
+				float: left;
+				border-left: none;
+				border-right: 1px solid #484848;
+			}
+
+				#navigation a,
+				#settings a {
 					float: left;
-					width: 117px;
+					width: 91px;
 					text-align: center;
 					border-left: 1px solid #484848;
 					border-bottom: none;
@@ -653,22 +662,43 @@ body {
 					text-shadow: rgba(0, 0, 0, 0.33) 0 -1px;
 				}
 
+				#settings a {
+					width: 50px;
+					border-left: none;
+					border-right: 1px solid #000;
+					text-indent: -9999px;
+					background-size: 25px auto;
+					background-repeat: no-repeat;
+					background-position: center center;
+					background-image: url(../img/cog.png);
+					background-image: -moz-linear-gradient(transparent, transparent), url(../img/cog.svg);
+					background-image: -webkit-linear-gradient(transparent, transparent), url(../img/cog.svg);
+					background-image: linear-gradient(transparent, transparent), url(../img/cog.svg);
+				}
+
 				#navigation a:link,
-				#navigation a:visited {
+				#navigation a:visited,
+				#settings a:link,
+				#settings a:visited {
 					color: #808080;
 				}
 
 				#navigation a:hover,
 				#navigation a:active,
-				#navigation a:focus {
+				#navigation a:focus,
+				#settings a:hover,
+				#settings a:active,
+				#settings a:focus {
 					color: #fff;
 				}
 
-				#navigation a:active {
+				#navigation a:active,
+				#settings a:active {
 					padding: 17px 0 14px 0;
 				}
 
-				#navigation .selected a {
+				#navigation .selected a,
+				#settings .selected a {
 					color: #fff !important;
 				}
 
