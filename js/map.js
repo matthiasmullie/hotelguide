@@ -132,9 +132,13 @@ holidays.map = {
 					lat: crossBoundsLat ? 1 : 0,
 					lng: crossBoundsLng ? 1 : 0
 				},
-				locale: holidays.language.browserLanguage,
 				minPts: holidays.map.map.getZoom() > 13 ? 999999 : 15, // zoomed in much = don't cluster
-				nbrClusters: Math.round( $( '#map' ).width() * $( '#map' ).height() / 15000 ) // smaller screen = less clusters
+				nbrClusters: Math.round( $( '#map' ).width() * $( '#map' ).height() / 15000 ), // smaller screen = less clusters
+				app: holidays.app ? 1 : 0,
+				host: holidays.host,
+				mobile: holidays.mobile ? 1 : 0,
+				language: holidays.localize.language,
+				currency: holidays.localize.currency
 			},
 			type: 'GET',
 			dataType: 'json',
@@ -209,9 +213,10 @@ holidays.map = {
 		location: function( coordinate, id, text ) {
 			// prices color range
 			var price = accounting.unformat( text );
+			var priceRange = holidays.localize.priceRange[holidays.localize.currency];
 			var colors = ['#a9be42', '#fe7921', '#ea3755'];
-			var range = holidays.priceRange[1] - holidays.priceRange[0];
-			var index = Math.floor( ( price - holidays.priceRange[0] ) / ( range / colors.length ) );
+			var range = priceRange[1] - priceRange[0];
+			var index = Math.floor( ( price - priceRange[0] ) / ( range / colors.length ) );
 			index = Math.max( 0, Math.min( colors.length, index ) );
 			var color = colors[index];
 
@@ -245,8 +250,16 @@ holidays.map = {
 					loadingMessage.hide();
 				} );
 
-				var mobile = holidays.mobile ? 1 : 0;
-				holidays.infowindow.open( 'ajax/location.php?id=' + this.id + '&mobile=' + mobile + '&host=' + holidays.host + '&locale=' + holidays.language.browserLanguage );
+				var params = {
+					id: this.id,
+					app: holidays.app ? 1 : 0,
+					host: holidays.host,
+					mobile: holidays.mobile ? 1 : 0,
+					language: holidays.localize.language,
+					currency: holidays.localize.currency
+				};
+
+				holidays.infowindow.open( 'ajax/location.php?' + $.param( params ) );
 			} );
 
 			return marker;

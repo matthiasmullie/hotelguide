@@ -88,7 +88,7 @@ holidays.infowindow = {
 		$( document ).on( 'click', 'body, #infowindowClose', holidays.infowindow.events.click );
 		$( document ).on( 'keyup', null, holidays.infowindow.events.escape );
 
-		holidays.language.l20n( infowindow.get( 0 ) );
+		holidays.localize.l20n( infowindow.get( 0 ) );
 	},
 
 	/**

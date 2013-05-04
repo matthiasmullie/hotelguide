@@ -27,10 +27,10 @@ $clustered = cluster(
 	isset( $_GET['crossBounds']['lng'] ) ? (bool) $_GET['crossBounds']['lng'] : false
 );
 
-$locale = isset( $_GET['locale'] ) ? $_GET['locale'] : 'nl-BE';
+$language = isset( $_GET['language'] ) ? $_GET['language'] : 'en';
 foreach ( $clustered['locations'] as &$data ) {
 	// format currency
-	$formatter = new NumberFormatter( $locale, NumberFormatter::CURRENCY );
+	$formatter = new NumberFormatter( $language, NumberFormatter::CURRENCY );
 	$formatter->setAttribute( NumberFormatter::FRACTION_DIGITS, 0 );
 	$data['text'] = $formatter->formatCurrency( $data['price'], $data['price_currency'] );
 
@@ -41,6 +41,12 @@ foreach ( $clustered['locations'] as &$data ) {
 	 */
 	$separator = $formatter->getSymbol( NumberFormatter::DECIMAL_SEPARATOR_SYMBOL );
 	$data['text'] = preg_replace( '/'. preg_quote( $separator ) .'[0-9]+/', '', $data['text'] );
+
+	unset( $data['price_currency'] );
+	/**
+	 * @deprecated To be removed once iOS app has been updated
+	 */
+//	unset( $data['price'] );
 }
 
 header( 'Content-type: application/json' );

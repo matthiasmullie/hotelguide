@@ -5,8 +5,6 @@ var holidays = {
 	host: ( typeof cordova == 'undefined' && document.location.host ) ? '/' : 'http://www.last-minute-vakanties.be/',
 	// on mobile, we'll serve mobile destination urls
 	mobile: ( typeof cordova != 'undefined' && document.location.host ) || jQuery.browser.mobile,
-	priceRange: [50, 300],
-	currency: '€', // @todo: remove
 
 	init: function() {
 		var init = function() {
@@ -16,7 +14,7 @@ var holidays = {
 
 			holidays.history.init();
 			holidays.infowindow.init();
-			holidays.language.init();
+			holidays.localize.init();
 			holidays.map.init();
 
 			if ( !holidays.isOnline() ) {
@@ -87,12 +85,12 @@ var holidays = {
 			var prices = $( '.noUiSlider' ).val();
 
 			// update display
-			$( '#price' ).val( holidays.currency + prices[0] + ' - ' + holidays.currency + prices[1] );
+			$( '#price' ).val( holidays.localize.currency + ': ' + prices[0] + ' - ' + prices[1] );
 		};
 
 		$( '.noUiSlider' ).noUiSlider( {
-			range: holidays.priceRange,
-			start: holidays.priceRange,
+			range: holidays.localize.priceRange[holidays.localize.currency],
+			start: holidays.localize.priceRange[holidays.localize.currency],
 			handles: 2,
 			step: 1,
 			slide: updatePrices

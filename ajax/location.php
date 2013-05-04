@@ -28,14 +28,14 @@ if ( isset( $_GET['id'] ) ) {
 	if ( $data !== false ) {
 		$mobile = (int) isset( $_GET['mobile'] ) && $_GET['mobile'];
 		$host = isset( $_GET['host'] ) ? $_GET['host'] : '';
-		$locale = isset( $_GET['locale'] ) ? $_GET['locale'] : 'nl-BE';
+		$language = isset( $_GET['language'] ) ? $_GET['language'] : 'en';
 
 		// format currency
-		$formatter = new NumberFormatter( $locale, NumberFormatter::CURRENCY );
+		$formatter = new NumberFormatter( $language, NumberFormatter::CURRENCY );
 		$data['formatted_price'] = $formatter->formatCurrency( $data['price'], $data['price_currency'] );
 
 		// translate text
-		$translator = new Translator( $data['text_language'], $locale );
+		$translator = new Translator( $data['text_language'], $language );
 		$translation = $translator->translate( $data['text'] );
 		$data['text'] = $translation ?: $data['text'];
 
