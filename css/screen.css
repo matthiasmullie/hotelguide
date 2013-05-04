@@ -817,7 +817,7 @@ html, body {
 	}
 
 	#settingsPane div {
-		width: 110px;
+		width: 260px;
 	}
 
 }
@@ -848,6 +848,10 @@ html, body {
 #settingsPane p,
 #settingsPane li label {
 	padding: 16px 0 15px;
+}
+
+#settingsPane p {
+	width: 75px;
 }
 
 #settingsPane li label {
