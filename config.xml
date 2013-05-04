@@ -3,15 +3,22 @@
 	<!-- EN -->
 	<name xml:lang="en">HotelGuide</name>
 	<description xml:lang="en">
-		HotelGuide compiles hotels from online travel provides and lets you easily filter them based on location and price.
-		Find all hotels in your current or favorite travel destination's vicinity and compare prices with other hotels just down the road.
+		HotelGuide compiles all hotel deals of online travel providers and makes it easy to filter them on location or price.
+		Find all hotels in the neighborhood of your current or your favorite travel destination and compare prices with cheaper hotels just down the street!
 	</description>
 
 	<!-- NL -->
 	<name xml:lang="nl">HotelGids</name>
 	<description xml:lang="nl">
-		De HotelGids van last-minute-vakanties.be verzamelt de hotels van online aanbieders en laat je eenvoudig filteren op locatie en prijs.
-		Vind in 1 oogopslag alle hotels in de buurt van je huidige of favoriete vakantiebestemming en vergelijk in prijs met een ander hotel een straat verderop!
+		HotelGids verzamelt de hotel deals van online aanbieders en laat je eenvoudig filteren op locatie of prijs.
+		Vind in 1 oogopslag alle hotels in de buurt van je huidige of favoriete vakantie bestemming en vergelijk in prijs met een goedkoper hotel een straat verderop!
+	</description>
+
+	<!-- FR -->
+	<name xml:lang="fr">Guide d'Hôtels</name>
+	<description xml:lang="fr">
+		Le Guide d'Hôtels recueille les offres d'hôtels des fournisseurs en ligne et vous permet de filtrer facilement par location ou par prix.
+		Trouver tous les hôtels à proximité de votre position actualle ou votre destination de vacances à un coup d'œil et comparer les avec des hôtels moins cher à proximité!
 	</description>
 
 	<author href="http://envy.us" email="hotelguide@envy.us">envy.us</author>

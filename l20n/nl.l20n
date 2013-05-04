@@ -13,7 +13,7 @@
 	content: "HotelGids"
 >
 <brandDescription
-	content: "De hotelgids van last-minute-vakanties.be verzamelt de hotels van online aanbieders en laat je eenvoudig filteren op locatie of prijs. Vind in 1 oogopslag alle hotels in de buurt van je huidige of favoriete vakantiebestemming en vergelijk in prijs met een ander hotel een straat verderop!"
+	content: "HotelGids verzamelt de hotel deals van online aanbieders en laat je eenvoudig filteren op locatie of prijs. Vind in 1 oogopslag alle hotels in de buurt van je huidige of favoriete vakantie bestemming en vergelijk in prijs met een goedkoper hotel een straat verderop!"
 >
 <brandKeywords
 	content: "hotelgids, last minute, lastminute, vakantie, hotel, hotels, reis, kaart, boeken, goedkoop, korting, aanbiedingen, hotelaanbiedigen, citytrip, kamers, boekingen"
@@ -29,7 +29,7 @@
 <linkContact "Contact">
 <linkSettings "Settings">
 <loadingMap "Kaart wordt geladen…">
-<loadingLocations "Locaties worden geladen…">
+<loadingLocations "Hotels worden geladen…">
 <loadingDetails "Details worden geladen…">
 <buttonClose "×"
 	title: "Sluit"
@@ -81,7 +81,7 @@
 """>
 <infowindowDisclaimer """
 	<h2>Disclaimer</h2>
-	<h3>Deze toepassing is eigendom van last-minute-vakanties.be</h3>
+	<p>Deze toepassing is eigendom van last-minute-vakanties.be</p>
 	<h3>Voorwaarden</h3>
 	<p>Door de toegang tot en het gebruik van de applicatie verklaart u zich uitdrukkelijk akkoord met de volgende algemene voorwaarden. Een samenwerkingsverband tussen partijen is niet vereist voor de toepasbaarheid van deze voorwaarden. De ongeldigheid van een bepaling van deze gebruiksvoorwaarden sluit de toepassing van de andere bepalingen niet uit.</p>
 	<h3>Intellectuele eigendomsrechten</h3>

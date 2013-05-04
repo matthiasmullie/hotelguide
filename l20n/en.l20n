@@ -13,7 +13,7 @@
 	content: "HotelGuide"
 >
 <brandDescription
-	content: "HotelGuide compiles all hotel deals of online travel providers and makes it easy to filter them on location or price. Find all hotels in the neighborhood of your current or your favorite travel destination and compare prices with other hotels just down the street!"
+	content: "HotelGuide compiles all hotel deals of online travel providers and makes it easy to filter them on location or price. Find all hotels in the neighborhood of your current or your favorite travel destination and compare prices with cheaper hotels just down the street!"
 >
 <brandKeywords
 	content: "hotelguide, last minute, lastminute, holiday, hotel, hotels, travel, map, book, cheap, discount, deals, hotel deals, citytrip, rooms, bookings"
@@ -29,7 +29,7 @@
 <linkContact "Contact">
 <linkSettings "Settings">
 <loadingMap "Loading map…">
-<loadingLocations "Loading locations…">
+<loadingLocations "Loading hotels…">
 <loadingDetails "Loading details…">
 <buttonClose "×"
 	title: "Close"
@@ -81,7 +81,7 @@
 """>
 <infowindowDisclaimer """
 	<h2>Disclaimer</h2>
-	<h3>This application is property of last-minute-vakanties.be</h3>
+	<p>This application is property of last-minute-vakanties.be</p>
 	<h3>Conditions</h3>
 	<p>By accessing and using this application, you explicitly agree to the below conditions, for which a partnership is not required. Invalidity of specific clauses in these terms does not exclude the applicability of other conditions.</p>
 	<h3>Intellectual property</h3>
