@@ -57,15 +57,15 @@ var holidays = {
 
 		var hide = function() {
 			$body.scrollTop( 1 );
+			$body.height( window.innerHeight );
 		};
 
 		$body.height( 9999 );
 		hide();
-		$body.height( window.innerHeight );
 
 		var difference = window.innerHeight - height;
 
-		// fix elements that were positioned absolutely against a now incorrect body height
+		// fix elements that were positioned absolutely against what is now an incorrect body height
 		$( '#bottomWrapper' ).css( 'bottom', -difference );
 		$( '#infowindow' ).css( 'bottom', -difference );
 
