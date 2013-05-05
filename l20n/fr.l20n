@@ -19,10 +19,10 @@
 	content: "guide d'hôtels, last minute, lastminute, vacances, hôtel, hôtels, voyage, carte, commander, pas cher, réduction, offres, offres d'hôtels, citytrip, chambres, commandes"
 >
 <locationCurrent "Position actuelle">
-<locationPlaceholder[isWide(@screen)]
-	placeholder: {
+<locationPlaceholder
+	placeholder[isWide(@screen)]: {
 		*wide: "Quelle est votre destination préférée?",
-		landscapePhone: "Destination?"
+		portraitPhone: "Destination?"
 	}
 >
 <priceRange

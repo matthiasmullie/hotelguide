@@ -19,10 +19,10 @@
 	content: "hotelgids, last minute, lastminute, vakantie, hotel, hotels, reis, kaart, boeken, goedkoop, korting, aanbiedingen, hotelaanbiedigen, citytrip, kamers, boekingen"
 >
 <locationCurrent "Huidige locatie">
-<locationPlaceholder[isWide(@screen)]
-	placeholder: {
+<locationPlaceholder
+	placeholder[isWide(@screen)]: {
 		*wide: "Wat is je favoriete bestemming?",
-		landscapePhone: "Bestemming?"
+		portraitPhone: "Bestemming?"
 	}
 >
 <priceRange
