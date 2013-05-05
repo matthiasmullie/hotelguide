@@ -64,7 +64,7 @@ In terminal, create the Xcode project
 
 In terminal, copy source code into Xcode project
 
-    git clone git@github.com:matthiasmullie/lastminute.git /tmp/hotelguide --depth 1 && rsync -a /tmp/hotelguide/ ~/Sites/phonegap-hotelguide/www/ && rm -rf /tmp/hotelguide/
+    git clone git@github.com:matthiasmullie/hotelguide.git /tmp/hotelguide --depth 1 && rsync -a /tmp/hotelguide/ ~/Sites/phonegap-hotelguide/www/ && rm -rf /tmp/hotelguide/
 
 Open what we just created in Xcode
 
