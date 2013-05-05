@@ -61,7 +61,7 @@ holidays.localize = {
 					var ctx = document.l10n;
 
 					// hack to translate to current language
-					ctx.registerLocales( [ holidays.localize.language ] );
+					ctx.registerLocales( holidays.localize.language );
 				}
 				holidays.localize.l20n( document );
 
