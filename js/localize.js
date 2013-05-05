@@ -53,10 +53,16 @@ holidays.localize = {
 				holidays.map.reload();
 
 				// update slider ranges
-				$( '.noUiSlider' ).empty();
+				$( '.noUiSlider' ).empty().off();
 				holidays.priceRangeSlider();
 
 				// translate interface
+				if ( typeof document.l10n != 'undefined' ) {
+					var ctx = document.l10n;
+
+					// hack to translate to current language
+					ctx.registerLocales( [ holidays.localize.language ] );
+				}
 				holidays.localize.l20n( document );
 
 				// save to cookie
@@ -133,9 +139,6 @@ holidays.localize = {
 
 		if ( typeof document.l10n != 'undefined' ) {
 			var ctx = document.l10n;
-
-			// hack to translate to current language
-			ctx.registerLocales( [ holidays.localize.language ] );
 
 			do {
 				var html = element.innerHTML;
