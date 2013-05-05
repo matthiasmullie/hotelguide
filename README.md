@@ -1,4 +1,4 @@
-# last-minute-vakanties.be / HotelGids
+# last-minute-vakanties.be / HotelGuide
 
 Source code for http://www.last-minute-vakanties.be
 
@@ -60,14 +60,14 @@ Download & unpack: http://phonegap.com/download/ (I'll assume you place it at ~/
 
 In terminal, create the Xcode project
 
-    ~/Sites/phonegap/lib/ios/bin/create ~/Sites/phonegap-hotelgids us.envy.HotelGuide HotelGids
+    ~/Sites/phonegap/lib/ios/bin/create ~/Sites/phonegap-hotelguide us.envy.HotelGuide HotelGuide
 
 In terminal, copy source code into Xcode project
 
-    git clone git@github.com:matthiasmullie/lastminute.git /tmp/hotelgids --depth 1 && rsync -a /tmp/hotelgids/ ~/Sites/phonegap-hotelgids/www/ && rm -rf /tmp/hotelgids/
+    git clone git@github.com:matthiasmullie/lastminute.git /tmp/hotelguide --depth 1 && rsync -a /tmp/hotelguide/ ~/Sites/phonegap-hotelguide/www/ && rm -rf /tmp/hotelguide/
 
 Open what we just created in Xcode
 
-    open -a Xcode ~/Sites/phonegap-hotelgids/HotelGids.xcodeproj
+    open -a Xcode ~/Sites/phonegap-hotelguide/HotelGuide.xcodeproj
 
 Top left, choose your target (device, simulator) & click "Run".

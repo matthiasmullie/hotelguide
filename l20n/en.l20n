@@ -26,7 +26,7 @@
 	}
 >
 <priceRange
-	value: "{{curr}}: {{from}} - {{to}}"
+	value: "{{$curr}}: {{$from}} - {{$to}}"
 >
 <language "Language">
 <currency "Currency">
@@ -45,7 +45,7 @@
 	title: "Close"
 >
 <order "Order">
-<pricePerNight "{{price}}/night">
+<pricePerNight "{{$price}}/night">
 <disclaimer "Disclaimer">
 <back "Back">
 <formError "Please fill out the entire form.">
@@ -77,11 +77,11 @@
 <infowindowContact """
 	<h2>Contact form</h2>
 	<p>Questions? Remarks? Let us know!</p>
-	<form name="contact" action="contact.php" method="POST" class="{{formClass}}">
-		{{formErrorMessage}}
-		<input type="text" name="name" id="name" placeholder="Name" value="{{nameValue}}" class="{{nameClass}}" />
-		<input type="email" name="email" id="email" placeholder="Email address" value="{{emailValue}}" class="{{emailClass}}" />
-		<textarea name="message" id="message" placeholder="Message" class="{{messageClass}}">{{messageValue}}</textarea>
+	<form name="contact" action="contact.php" method="POST" class="{{$formClass}}">
+		{{$formErrorMessage}}
+		<input type="text" name="name" id="name" placeholder="Name" value="{{$nameValue}}" class="{{$nameClass}}" />
+		<input type="email" name="email" id="email" placeholder="Email address" value="{{$emailValue}}" class="{{$emailClass}}" />
+		<textarea name="message" id="message" placeholder="Message" class="{{$messageClass}}">{{$messageValue}}</textarea>
 		<input type="submit" class="button" id="submit" value="Send" />
 	</form>
 """>
