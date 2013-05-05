@@ -615,13 +615,15 @@
 			if (typeof xhr.overrideMimeType != 'undefined') {
 				xhr.overrideMimeType('text/plain');
 			}
-			xhr.addEventListener('load', function() {
-				if (xhr.status == 200) {
-					deferred.fulfill(xhr.responseText);
-				} else {
-					deferred.reject();
+			xhr.onreadystatechange = function(){
+				if (xhr.readyState == 4) {
+					if (xhr.status == 200 || xhr.status == 0) {
+						deferred.fulfill(xhr.responseText);
+					} else {
+						deferred.reject();
+					}
 				}
-			});
+			}
 			xhr.addEventListener('abort', function(e) {
 				return deferred.reject(e);
 			});
@@ -638,7 +640,7 @@
 			}
 			xhr.open('GET', url, false);
 			xhr.send('');
-			if (xhr.status == 200) {
+			if (xhr.status == 200 || xhr.status == 0) {
 				return xhr.responseText;
 			} else {
 				// XXX should this fail more horribly?
@@ -3013,7 +3015,7 @@
 		var script = headNode.querySelector('script[type="application/l20n"]');
 		if (script) {
 			if (script.hasAttribute('src')) {
-				ctx.linkResource(script.getAttribute('src'));
+				ctx.linkResource(script.src);
 			} else {
 				ctx.addResource(script.textContent);
 			}
@@ -3021,7 +3023,7 @@
 		} else {
 			var link = headNode.querySelector('link[rel="localization"]');
 			if (link) {
-				loadManifest(link.getAttribute('href')).then(
+				loadManifest(link.href).then(
 					initializeDocumentContext
 				);
 			}
