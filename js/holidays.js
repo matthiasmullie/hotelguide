@@ -20,6 +20,14 @@ var holidays = {
 
 			if ( !holidays.isOnline() ) {
 				holidays.infowindow.error();
+
+				// if not inline, poll for network status and reload app once online
+				var reload = function() {
+					if ( holidays.isOnline() ) {
+						location.reload( true );
+					}
+				};
+				setInterval( reload, 1000 );
 			}
 		};
 
