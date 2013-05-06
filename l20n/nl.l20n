@@ -25,9 +25,7 @@
 		portraitPhone: "Bestemming?"
 	}
 >
-<priceRange
-	value: "{{$curr}}: {{$from}} - {{$to}}"
->
+<priceRange "{{$curr}}: {{$from}} - {{$to}}">
 <language "Taal">
 <currency "Valuta">
 <languageEN "EN">
