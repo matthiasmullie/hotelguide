@@ -11,6 +11,7 @@ var holidays = {
 			holidays.hideAddressBar();
 			holidays.priceRangeSlider();
 			holidays.css();
+			holidays.openExternal();
 
 			holidays.history.init();
 			holidays.infowindow.init();
@@ -28,6 +29,21 @@ var holidays = {
 		} else {
 			init();
 		}
+	},
+
+	/**
+	 * Open target=_blank links in external browser, not in-app
+	 */
+	openExternal: function() {
+		if ( !holidays.app ) {
+			return;
+		}
+
+		$( document ).on( 'click', '[target=_blank]', function( e ) {
+			e.preventDefault();
+
+			window.open( $( this ).attr( 'href' ), '_system' );
+		} );
 	},
 
 	/**
