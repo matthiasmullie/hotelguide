@@ -65,8 +65,16 @@
 	<h2>Apps</h2>
 	<p>Télécharger le Guide d'Hôtels:</p>
 	<a href="https://itunes.apple.com/fr/app/hotelgids/id641534155?ls=1" class="noBorder" title="Guide d'Hôtels sur iOS" style="float: left;">
-		<img src="/img/download/ios_fr.svg" width="125" height="37" alt="Guide d'Hôtels sur iOS" />
+		<img src="/img/download/ios/fr.png" width="135" height="40" alt="Guide d'Hôtels sur iOS" />
 	</a>
+<!--
+	<a href="#" class="noBorder" title="Guide d'Hôtels sur Android" style="float: right;">
+		<img src="/img/download/android/fr.png" width="115" height="40" alt="Guide d'Hôtels sur Android" />
+	</a>
+	<a href="#" class="noBorder" title="Guide d'Hôtels sur Windows Phone" style="float: left;">
+		<img src="/img/download/winphone/*.png" width="125" height="40" alt="Guide d'Hôtels sur Windows Phone" />
+	</a>
+-->
 
 	<p style="clear: both; padding-top: 20px;">Nous travaillons sur une application pour d'autres systèmes d'exploitation (Android, Windows).</p>
 	<p>En attendant, ce site a également été optimisé pour utilisation mobile!</p>

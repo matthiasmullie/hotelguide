@@ -47,27 +47,34 @@ Source code for http://www.last-minute-vakanties.be
 
 ## Phonegap
 
-This source should be build.phonegap.com-compatible. The folder can pretty much just be copy-pasted into a Phonegap project.
-There's quite a few files that are useless to Phonegap, but I'd rather keep the codebase together.
+To build the apps, we'll be using the build.phonegap.com service.
+The instructions below are irrelevant to the build, but may be useful for local testing.
+There's quite a few seb-specific source files that are useless to Phonegap, but I'd rather keep the codebase together.
 Javascript will detect if the code is running in an app and - if so - fire all requests to the production server.
 
 ### Instructions
 
+Download & unpack: http://phonegap.com/download/ (I'll assume you place it at ~/Sites/phonegap)
+
+#### iOS
+
 Download & install Xcode from Apple store
 Open Xcode > Preferences > Downloads > Components. Installer Command Line Tools & simulators.
 
-Download & unpack: http://phonegap.com/download/ (I'll assume you place it at ~/Sites/phonegap)
-
 In terminal, create the Xcode project
 
-    ~/Sites/phonegap/lib/ios/bin/create ~/Sites/phonegap-hotelguide us.envy.HotelGuide HotelGuide
+    ~/Sites/phonegap/lib/ios/bin/create ~/Sites/hotelguide-ios us.envy.HotelGuide HotelGuide
 
 In terminal, copy source code into Xcode project
 
-    git clone git@github.com:matthiasmullie/hotelguide.git /tmp/hotelguide --depth 1 && rsync -a /tmp/hotelguide/ ~/Sites/phonegap-hotelguide/www/ && rm -rf /tmp/hotelguide/
+    git clone git@github.com:matthiasmullie/hotelguide.git /tmp/hotelguide --depth 1 && rsync -a /tmp/hotelguide/ ~/Sites/hotelguide-ios/www/ && rm -rf /tmp/hotelguide/
 
 Open what we just created in Xcode
 
-    open -a Xcode ~/Sites/phonegap-hotelguide/HotelGuide.xcodeproj
+    open -a Xcode ~/Sites/hotelguide-ios/HotelGuide.xcodeproj
 
 Top left, choose your target (device, simulator) & click "Run".
+
+#### Android
+
+See http://docs.phonegap.com/en/2.6.0/guide_getting-started_android_index.md.html and figure it out :)
