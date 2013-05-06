@@ -60,10 +60,9 @@ holidays.localize = {
 				if ( typeof document.l10n != 'undefined' ) {
 					var ctx = document.l10n;
 
-					// hack to translate to current language
+					// hack to translate to selected language
 					ctx.registerLocales( holidays.localize.language );
 				}
-				holidays.localize.l20n( document );
 
 				// save to cookie
 				$.cookie( 'language', holidays.localize.language );

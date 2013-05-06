@@ -3060,9 +3060,25 @@
 				var manifest = JSON.parse(text);
 				var langList = L20n.Intl.prioritizeLocales(manifest.languages);
 				ctx.registerLocales.apply(this, langList);
-				ctx.linkResource(function(lang) {
-					return manifest.resources[0].replace("{{lang}}", lang);
-				});
+
+				var resource = function(manifestUrl, lang) {
+					var url = manifest.resources[0].replace("{{lang}}", lang);
+					if (url[0] == '/') {
+						return url;
+					}
+					var dirname = manifestUrl.split('/').slice(0, -1).join('/');
+					if (dirname) {
+						// strip the trailing slash if present
+						if (dirname[dirname.length - 1] == '/') {
+							dirname = dirname.slice(0, dirname.length - 1);
+						}
+						return dirname + '/' + url;
+					} else {
+						return './' + url;
+					}
+				};
+				ctx.linkResource(resource.bind(this, url));
+
 				deferred.fulfill();
 			}
 		);

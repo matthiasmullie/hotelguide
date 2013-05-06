@@ -5,6 +5,6 @@
 		"fr"
 	],
 	"resources": [
-		"l20n/{{lang}}.l20n"
+		"{{lang}}.l20n"
 	]
 }
