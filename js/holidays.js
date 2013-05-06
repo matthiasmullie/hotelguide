@@ -8,34 +8,48 @@ var holidays = {
 
 	init: function() {
 		var init = function() {
-			holidays.hideAddressBar();
-			holidays.priceRangeSlider();
-			holidays.css();
-			holidays.openExternal();
-
 			holidays.history.init();
 			holidays.infowindow.init();
 			holidays.localize.init();
 			holidays.map.init();
 
-			if ( !holidays.isOnline() ) {
-				holidays.infowindow.error();
-
-				// if not inline, poll for network status and reload app once online
-				var reload = function() {
-					if ( holidays.isOnline() ) {
-						location.reload( true );
-					}
-				};
-				setInterval( reload, 1000 );
-			}
+			holidays.hideAddressBar();
+			holidays.priceRangeSlider();
+			holidays.css();
+			holidays.openExternal();
+			holidays.ensureOnline();
 		};
 
 		// if in-app, wait for phonegap to complete
 		if ( holidays.app && typeof cordova != 'undefined' ) {
 			document.addEventListener( 'deviceready', init, false );
+			document.addEventListener( 'resume', holidays.ensureOnline, false );
 		} else {
 			init();
+		}
+	},
+
+	/**
+	 * If app is loaded when offline, we'll want to reload once it gets online.
+	 */
+	ensureOnline: function() {
+		if ( !holidays.isOnline() ) {
+			holidays.infowindow.error();
+
+			var reload = function() {
+				if ( holidays.isOnline() ) {
+					if ( holidays.app ) {
+						/*
+						 * This is the only way I could find to reload the page.
+						 * document.location seems non-existent.
+						 */
+						window.open( 'index.html' );
+					} else {
+						location.reload();
+					}
+				}
+			};
+			setInterval( reload, 1000 );
 		}
 	},
 
