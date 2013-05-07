@@ -1,10 +1,10 @@
 <?php
 
 // db connection
-$host = '<host>';
-$db = '<db>';
-$user = '<user>';
-$pass = '<pass>';
+$dbhost = '<host>';
+$dbname = '<db>';
+$dbuser = '<user>';
+$dbpass = '<pass>';
 
 $cache = array(
 	'class' => 'FileCache',

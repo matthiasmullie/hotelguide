@@ -2,26 +2,27 @@
 
 require_once '../config.php';
 
-if ( isset( $_GET['id'] ) ) {
-	$id = (int) $_GET['id'];
-	$mobile = (int) isset( $_GET['mobile'] ) && $_GET['mobile'];
+$feedId = isset( $_GET['feedId'] ) ? $_GET['feedId'] : false;
+$productId = isset( $_GET['productId'] ) ? $_GET['productId'] : false;
+$mobile = (int) isset( $_GET['mobile'] ) && $_GET['mobile'];
 
-	$db = new PDO( "mysql:host=$host;dbname=$db", $user, $pass, array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "UTF8"' ) );
+if ( $feedId != false && $productId !== false ) {
+	$db = new PDO( "mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass, array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "UTF8"' ) );
 	$prepareData = $db->prepare('
 		SELECT *
 		FROM locations AS l
-		WHERE l.id = :id
+		WHERE l.feed_id = :feed_id AND l.product_id = :product_id
 	');
-	$prepareData->execute( array( ':id' => $id ) );
+	$prepareData->execute( array( ':feed_id' => $feedId, ':product_id' => $productId ) );
 	$data = $prepareData->fetch();
 
 	if ( $data !== false && $data['url'] ) {
 		// track click
-		$prepareTrack = $db->prepare( 'INSERT INTO track (action, feed_id, location_id, data, time) VALUES (:action, :feed_id, :location_id, :data, :time)' );
+		$prepareTrack = $db->prepare( 'INSERT INTO track (action, feed_id, product_id, data, time) VALUES (:action, :feed_id, :product_id, :data, :time)' );
 		$prepareTrack->execute( array(
 			':action' => 'clickthrough',
 			':feed_id' => $data['feed_id'],
-			':location_id' => $data['id'],
+			':product_id' => $data['product_id'],
 			':data' => serialize( $_SERVER ),
 			':time' => date( 'Y-m-d H:i:s' ),
 		) );

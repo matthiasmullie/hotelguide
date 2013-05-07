@@ -33,17 +33,16 @@ Source code for http://www.last-minute-vakanties.be
           PRIMARY KEY (`id`),
           UNIQUE KEY `coordinates` (`lat`,`lng`),
           INDEX `price` (`price`)
-        ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+        ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 
         CREATE TABLE IF NOT EXISTS `track` (
-          `id` int(11) NOT NULL AUTO_INCREMENT,
           `action` varchar(255) DEFAULT NULL,
           `feed_id` int(11) NOT NULL,
-          `location_id` int(11) NOT NULL,
+          `product_id` int(11) NOT NULL,
           `data` text COLLATE utf8_unicode_ci NOT NULL,
           `time` DATETIME NULL,
           PRIMARY KEY (`id`)
-        ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+        ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ## Phonegap
 

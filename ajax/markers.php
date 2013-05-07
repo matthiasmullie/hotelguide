@@ -9,7 +9,7 @@ require_once '../utils/cache/cache.php';
 ini_set( 'memory_limit', '1G' );
 
 // init db & cache objects
-$db = new PDO( "mysql:host=$host;dbname=$db", $user, $pass, array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "UTF8"' ) );
+$db = new PDO( "mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass, array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "UTF8"' ) );
 $cache = Cache::load( $cache );
 
 $clustered = cluster(
@@ -89,7 +89,20 @@ function cluster( $bounds, $minPrice, $maxPrice, $minPts, $nbrClusters, $crossBo
 		$clusterer->setNumberOfClusters( $nbrClusters );
 
 		foreach ( $markers as $marker ) {
-			$clusterer->addLocation( $marker['lat'], $marker['lng'], array( 'id' => $marker['id'], 'price' => $marker['price'], 'price_currency' => $marker['price_currency'] ) );
+			$clusterer->addLocation(
+				$marker['lat'],
+				$marker['lng'],
+				array(
+					/**
+					 * @deprecated 'id' to be removed once iOS app has been updated
+					 */
+					'id' => $marker['id'],
+					'feed_id' => $marker['feed_id'],
+					'product_id' => $marker['product_id'],
+					'price' => $marker['price'],
+					'price_currency' => $marker['price_currency']
+				)
+			);
 		}
 
 		$clustered = array(
@@ -132,7 +145,7 @@ function getMarkers( $bounds, $minPrice, $maxPrice, $crossBoundsLat = false, $cr
 	$where[] = $crossBoundsLng ? 'l.lng > :swlng OR l.lng < :nelng' : 'l.lng > :swlng AND l.lng < :nelng';
 
 	$prepareMarkers = $db->prepare('
-		SELECT l.id, l.lat, l.lng, l.price, l.price_currency
+		SELECT l.id, l.feed_id, l.product_id, l.lat, l.lng, l.price, l.price_currency
 		FROM locations AS l
 		WHERE ('.implode( ') AND (', $where ).')
 	');

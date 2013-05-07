@@ -185,7 +185,7 @@ holidays.map = {
 		for ( var i = 0; i < json.locations.length; i++ ) {
 			var coordinate = new google.maps.LatLng( json.locations[i].lat, json.locations[i].lng );
 
-			var marker = holidays.map.marker.location( coordinate,  json.locations[i].id, json.locations[i].text );
+			var marker = holidays.map.marker.location( coordinate, json.locations[i].feed_id, json.locations[i].product_id, json.locations[i].text );
 			holidays.map.markers.push( marker );
 		}
 
@@ -215,7 +215,7 @@ holidays.map = {
 		 * @param string text
 		 * @returns google.maps.Marker
 		 */
-		location: function( coordinate, id, text ) {
+		location: function( coordinate, feedId, productId, text ) {
 			// prices color range
 			var price = parseInt( text.replace( /[^0-9]/, '' ) ); // hacky...
 			var priceRange = holidays.localize.priceRange[holidays.localize.currency];
@@ -245,7 +245,8 @@ holidays.map = {
 				zIndex: 1000 - price, // surface cheaper hotels
 				flat: true,
 				title: text,
-				id: id
+				feedId: feedId,
+				productId: productId
 			} );
 
 			// add click listener
@@ -256,7 +257,8 @@ holidays.map = {
 				} );
 
 				var params = {
-					id: this.id,
+					feedId: this.feedId,
+					productId: this.productId,
 					app: holidays.app ? 1 : 0,
 					host: holidays.host,
 					mobile: holidays.mobile ? 1 : 0,
@@ -264,7 +266,7 @@ holidays.map = {
 					currency: holidays.localize.currency
 				};
 
-				holidays.infowindow.open( 'ajax/location.php?' + $.param( params ) );
+				holidays.infowindow.open( 'ajax/details.php?' + $.param( params ) );
 			} );
 
 			return marker;
