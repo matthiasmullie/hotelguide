@@ -25,7 +25,7 @@ Source code for http://www.last-minute-vakanties.be
           `stars` float NOT NULL,
           PRIMARY KEY (`id`),
           UNIQUE KEY (`feed_id`,`product_id`),
-          UNIQUE KEY (`coordinate`),
+          UNIQUE KEY (`lat`,`lng`),
           SPATIAL KEY (`coordinate`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
