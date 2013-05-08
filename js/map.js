@@ -217,7 +217,7 @@ holidays.map = {
 		 */
 		location: function( coordinate, feedId, productId, text ) {
 			// prices color range
-			var price = parseInt( text.replace( /[^0-9]/, '' ) ); // hacky...
+			var price = parseInt( text.replace( /[^0-9]/g, '' ) ); // hacky...
 			var priceRange = holidays.localize.priceRange[holidays.localize.currency];
 			var colors = ['#a9be42', '#fe7921', '#ea3755'];
 			var range = priceRange[1] - priceRange[0];
