@@ -176,6 +176,9 @@ class Model {
 
 			if ( $statementLocation->execute( $location ) ) {
 				$location[':id'] = $db->lastInsertId();
+				if ( !$location[':id'] ) {
+					continue;
+				}
 
 				foreach ( $currencies as $currency ) {
 					$currency[':id'] = $location[':id'];
