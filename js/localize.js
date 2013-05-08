@@ -49,12 +49,12 @@ holidays.localize = {
 				holidays.localize.language = language;
 				holidays.localize.currency = currency;
 
-				// fire new request for markers
-				holidays.map.reload();
-
 				// update slider ranges
 				$( '.noUiSlider' ).empty().off();
 				holidays.priceRangeSlider();
+
+				// fire new request for markers
+				holidays.map.reload();
 
 				// translate interface
 				if ( typeof document.l10n != 'undefined' ) {

@@ -1,6 +1,6 @@
 <?php
 
-require_once 'cache.php';
+require_once __DIR__.'/cache.php';
 
 class FileCache extends Cache {
 	protected $path = null;
@@ -58,6 +58,21 @@ class FileCache extends Cache {
 	public function delete( $key ) {
 		$file = $this->getFile( $key );
 		return !file_exists( $file ) || unlink( $file );
+	}
+
+	public function flush() {
+		if ( !file_exists( $this->path ) || !is_dir( $this->path ) ) {
+			throw new Exception( "Invalid cache path '$this->path'.");
+		}
+
+		$success = true;
+
+		$dir = opendir( $this->path );
+		while ( false !== ( $filename = readdir( $dir ) ) ) {
+			$success &= @unlink( $dir .'/'. $filename );
+		}
+
+		return $success;
 	}
 
 	protected function getFile( $key ) {

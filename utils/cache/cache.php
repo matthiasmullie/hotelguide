@@ -15,9 +15,10 @@ abstract class Cache {
 	}
 
 	abstract public function get( $key );
-	abstract public function add( $key, $value, $expire );
-	abstract public function set( $key, $value, $expire );
+	abstract public function add( $key, $value, $expire = 0 );
+	abstract public function set( $key, $value, $expire = 0 );
 	abstract public function delete( $key );
+	abstract public function flush();
 
 	public function getKey( $arguments ) {
 		return implode( ':', func_get_args() );

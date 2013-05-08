@@ -1,6 +1,6 @@
 <?php
 
-require_once 'cache.php';
+require_once __DIR__.'/cache.php';
 
 class MemcachedCache extends Cache {
 	protected $client = null;
@@ -35,5 +35,9 @@ class MemcachedCache extends Cache {
 
 	public function delete( $key ) {
 		return $this->client->delete( $key );
+	}
+
+	public function flush() {
+		return $this->client->flush();
 	}
 }

@@ -1,75 +1,49 @@
 <?php
 
-// Hello! This ugly piece of code will parse the relevant data of worldticketcenter.nl's product feed to our database
+// @todo: not parsing feed for now; links don't resolve
+exit;
 
-require_once __DIR__.'/../config.php';
-require_once __DIR__.'/../utils/cache/cache.php';
+require_once __DIR__.'/../utils/model.php';
 
-set_time_limit( 0 );
-ini_set( 'memory_limit', '1G' );
-
-$db = new PDO( "mysql:host=$host;dbname=$db", $user, $pass, array( PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "UTF8"' ) );
+// Hello! This ugly piece of code will parse the relevant data of expedia.com's product feed to our database
 
 // feed data
 $feedUrl = 'http://pf.tradetracker.net/?aid=51300&encoding=utf-8&type=xml-v2-simple&fid=251048&categoryType=2&additionalType=2';
 $feedId = 2; // id in db - quick and dirty in code, let's just assume this won't change in db ;)
 
-$prepareLocation = $db->prepare( 'INSERT INTO locations (feed_id, product_id, lat, lng, title, text, text_language, image, url, stars, price, price_currency) VALUES (:feed_id, :product_id, :lat, :lng, :title, :text, :text_language, :image, :url, :stars, :price, :price_currency)' );
-
-// empty existing data
-$emptyLocation = $db->prepare( 'DELETE FROM locations WHERE feed_id = :feed_id' );
-$emptyLocation->execute( array( ':feed_id' => $feedId ) );
-
-
-// @todo: not parsing feed for now; links to not resolve
-exit;
-
-
-// parse xml
+// load xml
 $xml = new SimpleXMLElement( $feedUrl, 0, true );
-foreach ( $xml->xpath( '/products/product' ) as $node ) {
-	// build data to insert in db
+
+// parse data
+$callback = function( SimpleXMLElement $node ) {
 	$location = array();
-	$location[':feed_id'] = $feedId;
 	$location[':product_id'] = (string) $node->ID;
 	$location[':lat'] = (float) $node->properties->latitude->value;
 	$location[':lng'] = (float) $node->properties->longitude->value;
-	$location[':title'] = (string) $node->name;
-	$location[':text'] = (string) $node->description;
-	$location[':text_language'] = 'nl';
 	$location[':image'] = (string) $node->images->image;
-	$location[':url'] = (string) $node->URL;
 	$location[':stars'] = (float) $node->properties->stars->value;
-	$location[':price'] = (float) $node->price->amount;
-	$location[':price_currency'] = (string) $node->price->currency;
 
-	// validate data
-	if (
-		!$location[':product_id'] ||
-		!$location[':feed_id'] ||
-		!$location[':lat'] ||
-		!$location[':lng'] ||
-		!$location[':title'] ||
-		!$location[':url'] ||
-		!$location[':price']
-	) {
-		continue;
-	}
+	$currencies = array();
+	$currencies[] =
+		array(
+			':currency' => (string) $node->price->currency,
+			':price' => (float) $node->price->amount
+		);
 
-	// insert into db
-	$prepareLocation->execute( $location );
-}
+	$languages = array();
+	$languages[] =
+		array(
+			':language' => 'nl',
+			':title' => (string) $node->name,
+			':text' => (string) $node->description,
+			':url' => (string) $node->URL,
+			':url_mobile' => null,
+		);
 
-// purge caches
-$cache = Cache::load( $cache );
-$keysKey = $cache->getKey( 'keys' );
-$keys = $cache->get( $keysKey );
-if ( $keys !== false ) {
-	foreach ( $keys as $key ) {
-		$cache->delete( $key );
-	}
-}
-$cache->delete( $keysKey );
+	return array( $location, $currencies, $languages );
+};
+
+Model::updateFeed( $feedId, $xml->xpath( '/products/product' ), $callback );
 
 /*
 XML excerpt:

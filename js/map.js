@@ -92,13 +92,13 @@ holidays.map = {
 		holidays.map.allowHistory = true;
 
 		// check if the request crosses lat/lng bounds & round the bounds
-		var crossBoundsLat = bounds.getNorthEast().lat() < bounds.getSouthWest().lat();
-		var crossBoundsLng = bounds.getNorthEast().lng() < bounds.getSouthWest().lng();
+		var spanBoundsLat = bounds.getNorthEast().lat() < bounds.getSouthWest().lat();
+		var spanBoundsLng = bounds.getNorthEast().lng() < bounds.getSouthWest().lng();
 
-		bounds = holidays.map.roundBounds( bounds, crossBoundsLat, crossBoundsLng );
+		bounds = holidays.map.roundBounds( bounds, spanBoundsLat, spanBoundsLng );
 		var prices = $( '.noUiSlider' ).val();
 
-		holidays.map.fetchData( bounds, prices, crossBoundsLat, crossBoundsLng );
+		holidays.map.fetchData( bounds, prices, spanBoundsLat, spanBoundsLng );
 	},
 
 	/**
@@ -106,12 +106,12 @@ holidays.map = {
 	 *
 	 * @param array bounds
 	 * @param array prices
-	 * @param bool crossBoundsLat
-	 * @param bool crossBoundsLng
+	 * @param bool spanBoundsLat
+	 * @param bool spanBoundsLng
 	 */
-	fetchData: function( bounds, prices, crossBoundsLat, crossBoundsLng ) {
+	fetchData: function( bounds, prices, spanBoundsLat, spanBoundsLng ) {
 		// check if enough has changed to fire a new ajax request (e.g. not if viewport still fits in same previous bounds)
-		if ( !holidays.map.isOutdated( bounds, prices, crossBoundsLat, crossBoundsLng ) ) {
+		if ( !holidays.map.isOutdated( bounds, prices, spanBoundsLat, spanBoundsLng ) ) {
 			return;
 		}
 
@@ -133,9 +133,9 @@ holidays.map = {
 					neLng: bounds.neLng,
 					swLng: bounds.swLng
 				},
-				crossBounds: {
-					lat: crossBoundsLat ? 1 : 0,
-					lng: crossBoundsLng ? 1 : 0
+				spanBounds: {
+					lat: spanBoundsLat ? 1 : 0,
+					lng: spanBoundsLng ? 1 : 0
 				},
 				minPts: holidays.map.map.getZoom() > 13 ? 999999 : 15, // zoomed in much = don't cluster
 				nbrClusters: Math.round( $( '#map' ).width() * $( '#map' ).height() / 15000 ), // smaller screen = less clusters
@@ -147,7 +147,7 @@ holidays.map = {
 			},
 			type: 'GET',
 			dataType: 'json',
-			timeout: 15000,
+			timeout: 30000,
 			success: function( json ) {
 				holidays.map.drawMarkers( json );
 
@@ -493,11 +493,11 @@ holidays.map = {
 	 *
 	 * @param array bounds
 	 * @param array prices
-	 * @param bool crossBoundsLat
-	 * @param bool crossBoundsLng
+	 * @param bool spanBoundsLat
+	 * @param bool spanBoundsLng
 	 * @return bool
 	 */
-	isOutdated: function( bounds, prices, crossBoundsLat, crossBoundsLng ) {
+	isOutdated: function( bounds, prices, spanBoundsLat, spanBoundsLng ) {
 		var redraw = true;
 
 		// don't redraw if bounds have not changed
@@ -507,15 +507,15 @@ holidays.map = {
 		redraw &=
 			holidays.map.numClusters != 0 ||
 			// most common
-			( !crossBoundsLat && bounds.neLat > holidays.map.bounds.neLat ) ||
-			( !crossBoundsLng && bounds.neLng > holidays.map.bounds.neLng ) ||
-			( !crossBoundsLat && bounds.swLat < holidays.map.bounds.swLat ) ||
-			( !crossBoundsLng && bounds.swLat < holidays.map.bounds.swLat ) ||
+			( !spanBoundsLat && bounds.neLat > holidays.map.bounds.neLat ) ||
+			( !spanBoundsLng && bounds.neLng > holidays.map.bounds.neLng ) ||
+			( !spanBoundsLat && bounds.swLat < holidays.map.bounds.swLat ) ||
+			( !spanBoundsLng && bounds.swLat < holidays.map.bounds.swLat ) ||
 			// north-south or east-west overlap, without center displaying
-			( crossBoundsLat && bounds.neLat < holidays.map.bounds.neLat ) ||
-			( crossBoundsLng && bounds.neLng < holidays.map.bounds.neLng ) ||
-			( crossBoundsLat && bounds.swLat > holidays.map.bounds.swLat ) ||
-			( crossBoundsLng && bounds.swLat > holidays.map.bounds.swLat );
+			( spanBoundsLat && bounds.neLat < holidays.map.bounds.neLat ) ||
+			( spanBoundsLng && bounds.neLng < holidays.map.bounds.neLng ) ||
+			( spanBoundsLat && bounds.swLat > holidays.map.bounds.swLat ) ||
+			( spanBoundsLng && bounds.swLat > holidays.map.bounds.swLat );
 
 		// don't redraw if price range hasn't changed
 		redraw |= typeof( JSON ) == 'undefined' || JSON.stringify( holidays.map.prices ) != JSON.stringify( prices );
@@ -541,26 +541,31 @@ holidays.map = {
 	 * Always round to the nearest power of 2.
 	 *
 	 * @param google.maps.LatLngBounds bounds
-	 * @param bool crossBoundsLat
-	 * @param bool crossBoundsLng
+	 * @param bool spanBoundsLat
+	 * @param bool spanBoundsLng
 	 * @return object
 	 */
-	roundBounds: function( bounds, crossBoundsLat, crossBoundsLng ) {
+	roundBounds: function( bounds, spanBoundsLat, spanBoundsLng ) {
 		var totalLat = bounds.getNorthEast().lat() - bounds.getSouthWest().lat();
 		var totalLng = bounds.getNorthEast().lng() - bounds.getSouthWest().lng();
 
-		totalLat += crossBoundsLat ? 180 : 0;
-		totalLng += crossBoundsLng ? 360 : 0;
+		totalLat += spanBoundsLat ? 180 : 0;
+		totalLng += spanBoundsLng ? 360 : 0;
 
 		var multiplierLat = Math.pow( 2, Math.ceil( Math.log( Math.abs( totalLat / 2 ) ) / Math.log( 2 ) ) );
 		var multiplierLng = Math.pow( 2, Math.ceil( Math.log( Math.abs( totalLng / 2 ) ) / Math.log( 2 ) ) );
 
-		// round coordinates (we don't want calls for every minor change)
-		return {
-			neLat: Math.max( -90, Math.min( 90, Math.ceil( bounds.getNorthEast().lat() / multiplierLat ) * multiplierLat ) ),
-			swLat: Math.max( -90, Math.min( 90, Math.floor( bounds.getSouthWest().lat() / multiplierLat ) * multiplierLat ) ),
-			neLng: Math.max( -180, Math.min( 180, Math.ceil( bounds.getNorthEast().lng() / multiplierLng ) * multiplierLng ) ),
-			swLng: Math.max( -180, Math.min( 180, Math.floor( bounds.getSouthWest().lng() / multiplierLng ) * multiplierLng ) )
+		var round = {
+			neLat: { coordinate: bounds.getNorthEast().lat(), multiplier: multiplierLat, func: Math.ceil, bounds: [-90, 90] },
+			swLat: { coordinate: bounds.getSouthWest().lat(), multiplier: multiplierLat, func: Math.floor, bounds: [-90, 90] },
+			neLng: { coordinate: bounds.getNorthEast().lng(), multiplier: multiplierLng, func: Math.ceil, bounds: [-180, 180] },
+			swLng: { coordinate: bounds.getSouthWest().lng(), multiplier: multiplierLng, func: Math.floor, bounds: [-180, 180] }
 		};
+
+		for ( var i in round ) {
+			round[i] = Math.max( round[i].bounds[0], Math.min( round[i].bounds[1], round[i].func( round[i].coordinate / round[i].multiplier ) * round[i].multiplier ) );
+		}
+
+		return round;
 	}
 };

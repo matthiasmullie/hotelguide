@@ -1,18 +1,12 @@
 <?php
 
-require_once 'cache/cache.php';
-include '../config.php';
+require_once __DIR__.'/model.php';
 
 class Translator {
 	/**
 	 * @var string
 	 */
 	protected $from, $to;
-
-	/**
-	 * #var Cache
-	 */
-	protected $cache;
 
 	/**
 	 * @param string[optional] $from
@@ -25,9 +19,6 @@ class Translator {
 		if ( $to ) {
 			$this->setTo( $to );
 		}
-
-		include '../config.php'; // here's where $cache comes from
-		$this->cache = Cache::load( $cache );
 	}
 
 	/**
@@ -75,8 +66,8 @@ class Translator {
 		}
 
 		// check if already-translated result is in cache
-		$key = $this->cache->getKey( 'translate', md5( $text ), $this->from, $this->to );
-		$cache = $this->cache->get( $key );
+		$key = Model::getCache()->getKey( 'translate', md5( $text ), $this->from, $this->to );
+		$cache = Model::getCache()->get( $key );
 		if ( $cache !== false ) {
 			return $cache;
 		}
@@ -108,7 +99,7 @@ class Translator {
 		$translation = $response->responseData->translatedText;
 
 		// cache data
-		$this->cache->set( $key, $translation, strtotime( '1 month' ) );
+		Model::getCache()->set( $key, $translation, strtotime( '1 month' ) );
 
 		return $translation;
 	}

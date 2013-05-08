@@ -16,32 +16,42 @@ Source code for http://www.last-minute-vakanties.be
 
         CREATE TABLE IF NOT EXISTS `locations` (
           `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-          `feed_id` int(11) unsigned NOT NULL,
+          `feed_id` int(2) unsigned NOT NULL,
           `product_id` varchar(255) NOT NULL,
           `lat` float NOT NULL,
           `lng` float NOT NULL,
-          `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-          `text` text COLLATE utf8_unicode_ci NOT NULL,
-          `text_language` char(2) COLLATE utf8_unicode_ci NOT NULL,
-          `image` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-          `url` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-          `url_mobile` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-          `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+          `coordinate` point NOT NULL,
+          `image` varchar(255) NOT NULL,
           `stars` float NOT NULL,
-          `price` float NOT NULL,
-          `price_currency` char(3) NOT NULL,
           PRIMARY KEY (`id`),
-          UNIQUE KEY `coordinates` (`lat`,`lng`),
-          INDEX `price` (`price`)
-        ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+          UNIQUE KEY (`feed_id`,`product_id`),
+          SPATIAL KEY `coordinate` (`coordinate`)
+        ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+        CREATE TABLE IF NOT EXISTS `currency` (
+          `id` int(11) unsigned NOT NULL,
+          `currency` char(3) NOT NULL,
+          `price` float NOT NULL,
+          PRIMARY KEY (`id`,`currency`),
+          INDEX `price` (`currency`,`price`)
+        ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+        CREATE TABLE IF NOT EXISTS `language` (
+          `id` int(11) unsigned NOT NULL,
+          `language` char(2) NOT NULL,
+          `title` varchar(255) NOT NULL,
+          `text` text DEFAULT NULL,
+          `url` varchar(255) NOT NULL,
+          `url_mobile` varchar(255) DEFAULT NULL,
+          PRIMARY KEY (`id`,`language`)
+        ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
         CREATE TABLE IF NOT EXISTS `track` (
-          `action` varchar(255) DEFAULT NULL,
-          `feed_id` int(11) NOT NULL,
+          `feed_id` int(2) NOT NULL,
           `product_id` int(11) NOT NULL,
-          `data` text COLLATE utf8_unicode_ci NOT NULL,
-          `time` DATETIME NULL,
-          PRIMARY KEY (`id`)
+          `action` varchar(255) DEFAULT NULL,
+          `data` text NOT NULL,
+          `time` DATETIME NULL
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ## Phonegap

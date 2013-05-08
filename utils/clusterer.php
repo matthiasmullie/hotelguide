@@ -15,25 +15,25 @@ class Clusterer {
 	private $coefficientLat = 0;
 	private $coefficientLng = 0;
 
-	private $crossBoundsLat = false;
-	private $crossBoundsLng = false;
+	private $spanBoundsLat = false;
+	private $spanBoundsLng = false;
 
 	/**
 	 * @param string|float $seLat
 	 * @param string|float $seLng
 	 * @param string|float $nwLat
 	 * @param string|float $nwLng
-	 * @param bool $crossBoundsLat
-	 * @param bool $crossBoundsLng
+	 * @param bool $spanBoundsLat
+	 * @param bool $spanBoundsLng
 	 */
-	public function __construct( $neLat, $neLng, $swLat, $swLng, $crossBoundsLat = false, $crossBoundsLng = false ) {
+	public function __construct( $neLat, $neLng, $swLat, $swLng, $spanBoundsLat = false, $spanBoundsLng = false ) {
 		$this->neLat = $neLat;
 		$this->neLng = $neLng;
 		$this->swLat = $swLat;
 		$this->swLng = $swLng;
 
-		$this->crossBoundsLat = $crossBoundsLat;
-		$this->crossBoundsLng = $crossBoundsLng;
+		$this->spanBoundsLat = $spanBoundsLat;
+		$this->spanBoundsLng = $spanBoundsLng;
 
 		/*
 		 * North and east coordinates can actually be lower than south & west.
@@ -44,7 +44,7 @@ class Clusterer {
 		 * (= negative) coordinates by 360, and consider those to now be east
 		 * (and east as west). Now, coordinates will go from 360 to 361.
 		 */
-		if ( $this->crossBoundsLat ) {
+		if ( $this->spanBoundsLat ) {
 			// workaround for crossover bounds being rounded too aggressively
 			if ( $this->swLat == 0 ) {
 				$this->swLat += 180;
@@ -54,7 +54,7 @@ class Clusterer {
 			$this->swLat = $this->neLat;
 			$this->neLat = $neLat;
 		}
-		if ( $this->crossBoundsLng ) {
+		if ( $this->spanBoundsLng ) {
 			// workaround for crossover bounds being rounded too aggressively
 			if ( $this->swLng == 0 ) {
 				$this->swLng += 360;
@@ -234,10 +234,10 @@ class Clusterer {
 	 * @return array [lat, lng]
 	 */
 	function fixCoords( $lat, $lng ) {
-		if ( $this->crossBoundsLat && $lat < $this->swLat ) {
+		if ( $this->spanBoundsLat && $lat < $this->swLat ) {
 			$lat += 180;
 		}
-		if ( $this->crossBoundsLng && $lng < $this->swLng ) {
+		if ( $this->spanBoundsLng && $lng < $this->swLng ) {
 			$lng += 360;
 		}
 
@@ -253,10 +253,10 @@ class Clusterer {
 	 * @return array [lat, lng]
 	 */
 	function unfixCoords( $lat, $lng ) {
-		if ( $this->crossBoundsLat && $lat > 180 ) {
+		if ( $this->spanBoundsLat && $lat > 180 ) {
 			$lat -= 180;
 		}
-		if ( $this->crossBoundsLng && $lng > 360 ) {
+		if ( $this->spanBoundsLng && $lng > 360 ) {
 			$lng -= 360;
 		}
 
