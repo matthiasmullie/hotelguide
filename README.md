@@ -25,7 +25,8 @@ Source code for http://www.last-minute-vakanties.be
           `stars` float NOT NULL,
           PRIMARY KEY (`id`),
           UNIQUE KEY (`feed_id`,`product_id`),
-          SPATIAL KEY `coordinate` (`coordinate`)
+          UNIQUE KEY (`coordinate`),
+          SPATIAL KEY (`coordinate`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
         CREATE TABLE IF NOT EXISTS `currency` (
@@ -33,7 +34,7 @@ Source code for http://www.last-minute-vakanties.be
           `currency` char(3) NOT NULL,
           `price` float NOT NULL,
           PRIMARY KEY (`id`,`currency`),
-          INDEX `price` (`currency`,`price`)
+          INDEX (`currency`,`price`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
         CREATE TABLE IF NOT EXISTS `language` (

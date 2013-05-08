@@ -78,13 +78,6 @@ class Model {
 		$where[] = 'curr.price >= :min AND curr.price <= :max AND curr.currency = :currency';
 		$where[] = $location;
 
-		/*
-		 * Commented is an alternative way to fetch the data, using floats
-		 * instead of Spatial points. To be determined which is fastest.
-		 */
-//		$where[] = $spanBoundsLat ? 'loc.lat NOT BETWEEN :swlat AND :nelat' : 'loc.lat BETWEEN :swlat AND :nelat'; // alternative
-//		$where[] = $spanBoundsLng ? 'loc.lng NOT BETWEEN :swlng AND :nelng' : 'loc.lng BETWEEN :swlng AND :nelng'; // alternative
-
 		$sql = '
 			SELECT *
 			FROM locations AS loc
@@ -96,10 +89,6 @@ class Model {
 				':min' => $minPrice,
 				':max' => $maxPrice,
 				':currency' => $currency,
-//				':nelat' => $bounds['neLat'], // alternative
-//				':nelng' => $bounds['neLng'], // alternative
-//				':swlat' => $bounds['swLat'], // alternative
-//				':swlng' => $bounds['swLng'], // alternative
 				':nelat' => ( $spanBoundsLat ? $bounds['swLat'] : $bounds['neLat'] ),
 				':nelng' => ( $spanBoundsLat ? $bounds['swLng'] : $bounds['neLng'] ),
 				':swlat' => ( $spanBoundsLng ? $bounds['neLat'] : $bounds['swLat'] ),

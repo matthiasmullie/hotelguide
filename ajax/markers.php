@@ -85,7 +85,6 @@ foreach ( $clustered['locations'] as &$data ) {
 		'product_id' => $data['product_id'],
 		'lat' => $data['lat'],
 		'lng' => $data['lng'],
-		'feed_id' => $data['feed_id'],
 		'text' => $data['text'],
 	);
 }
