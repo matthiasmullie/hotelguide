@@ -21,11 +21,13 @@ Source code for http://www.last-minute-vakanties.be
           `lat` float NOT NULL,
           `lng` float NOT NULL,
           `coordinate` point NOT NULL,
+          `zorder` int(11) unsigned NOT NULL,
           `image` varchar(255) NOT NULL,
           `stars` float NOT NULL,
           PRIMARY KEY (`id`),
           UNIQUE KEY (`feed_id`,`product_id`),
           UNIQUE KEY (`lat`,`lng`),
+          INDEX (`zorder`),
           SPATIAL KEY (`coordinate`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

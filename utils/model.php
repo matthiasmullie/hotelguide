@@ -64,6 +64,16 @@ class Model {
 		// there may be a lot of data
 		ini_set( 'memory_limit', '1G' );
 
+		$where = array();
+
+		// price bounds
+		$where[] = 'curr.price >= :min AND curr.price <= :max AND curr.currency = :currency';
+
+		// rough, z-order based, position
+		$ne = self::zorder( $bounds['neLat'], $bounds['neLng'] );
+		$sw = self::zorder( $bounds['swLat'], $bounds['swLng'] );
+		$where[] = ( $spanBoundsLat || $spanBoundsLng ) ? 'loc.zorder >= :sw OR loc.zorder < :ne' : 'loc.zorder >= :sw AND loc.zorder < :ne';
+
 		/*
 		 * Bounds will usually be part of the map where the left side of the viewport
 		 * is more western and right side is more eastern. It could happen though that
@@ -72,11 +82,7 @@ class Model {
 		 * neLat will actually be lower than swLat.
 		 */
 		$location = 'MBRWithin(loc.coordinate, GeomFromText(CONCAT("Polygon((", :nelat, " ", :nelng, ",", :nelat, " ", :swlng, ",", :swlat, " ", :swlng, ",", :swlat, " ", :nelng, ",", :nelat, " ", :nelng, "))")))';
-		$location = ( $spanBoundsLat || $spanBoundsLng ) ? "!$location" : $location;
-
-		$where = array();
-		$where[] = 'curr.price >= :min AND curr.price <= :max AND curr.currency = :currency';
-		$where[] = $location;
+		$where[] = ( $spanBoundsLat || $spanBoundsLng ) ? "!$location" : $location;
 
 		$sql = '
 			SELECT *
@@ -89,6 +95,8 @@ class Model {
 				':min' => $minPrice,
 				':max' => $maxPrice,
 				':currency' => $currency,
+				':ne' => $ne,
+				':sw' => $sw,
 				':nelat' => ( $spanBoundsLat ? $bounds['swLat'] : $bounds['neLat'] ),
 				':nelng' => ( $spanBoundsLat ? $bounds['swLng'] : $bounds['neLng'] ),
 				':swlat' => ( $spanBoundsLng ? $bounds['neLat'] : $bounds['swLat'] ),
@@ -139,8 +147,8 @@ class Model {
 
 		$db = self::getDB();
 		$statementLocation = $db->prepare( '
-			INSERT IGNORE INTO locations (feed_id, product_id, lat, lng, coordinate, image, stars)
-			VALUES (:feed_id, :product_id, :lat, :lng, GeomFromText(CONCAT("Point(", :lat, " ", :lng, ")")), :image, :stars)
+			INSERT IGNORE INTO locations (feed_id, product_id, lat, lng, coordinate, zorder, image, stars)
+			VALUES (:feed_id, :product_id, :lat, :lng, GeomFromText(CONCAT("Point(", :lat, " ", :lng, ")")), :zorder, :image, :stars)
 		' );
 		$statementCurrency = $db->prepare( '
 			INSERT IGNORE INTO currency (id, currency, price)
@@ -168,6 +176,9 @@ class Model {
 
 			// add feed id
 			$location[':feed_id'] = $feedId;
+
+			// calculate zorder value
+			$location[':zorder'] = (int) self::zorder( $location[':lat'], $location[':lng'] );
 
 			// validate data
 			if ( !$location[':product_id'] || !$location[':feed_id'] || !$location[':lat'] || !$location[':lng'] || empty( $currencies ) || empty( $languages ) ) {
@@ -218,5 +229,50 @@ class Model {
 			':data' => serialize( $_SERVER ),
 			':time' => date( 'Y-m-d H:i:s' ),
 		) );
+	}
+
+	/**
+	 * Calculate z-order value for the given coordinate, to improve search.
+	 *
+	 * @param float $lat
+	 * @param float $lng
+	 * @return int
+	 */
+	protected static function zorder( $lat, $lng ) {
+		// lat range -90 to 90 -> 0 to 180 & similar for lng
+		$lat += 90;
+		$lng += 180;
+
+		/*
+		 * Convert coordinates into an 31-bit integer (warning: rounding errors):
+		 * * coordinate 0 (originally -90 or -180) will be int(0)
+		 * * coordinate 180 or 360 (originally 90 or 180) will be int(2^16)
+		 *
+		 * We're rounding to 16-bit because we'll interleave both values later,
+		 * resulting in 32-bit.
+		 *
+		 * FYI: 2^16 = 65536
+		 */
+		$lat = (int) ( $lat * 65535 / 360 );
+		$lng = (int) ( $lng * 65535 / 360 );
+
+		$zorder = 0;
+		$bit = 1;
+		$position = 0;
+
+		// interleave lat & lng bits to form zorder value
+		while ( $bit <= $lat || $bit <= $lng ) {
+			if ( $bit & $lat ) {
+				$zorder = $zorder | 1 << ( 2 * $position + 1 );
+			}
+			if ( $bit & $lng ) {
+				$zorder = $zorder | 1 << ( 2 * $position );
+			}
+
+			$position += 1;
+			$bit = 1 << $position;
+		}
+
+		return $zorder;
 	}
 }
