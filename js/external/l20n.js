@@ -3107,13 +3107,11 @@
 		} else {
 			document.addEventListener('readystatechange', onDocumentBodyReady);
 		}
-		if (typeof HTMLDocument != 'undefined') {
-			HTMLDocument.prototype.__defineGetter__('l10n', function() {
+		Object.defineProperty(Document.prototype, 'l10n', {
+			get: function() {
 				return ctx;
-			});
-		} else {
-			document.l10n = ctx;
-		}
+			}
+		});
 	}
 
 	function retranslate(node, l10n) {
