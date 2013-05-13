@@ -69,7 +69,7 @@ class FileCache extends Cache {
 
 		$dir = opendir( $this->path );
 		while ( false !== ( $filename = readdir( $dir ) ) ) {
-			$success &= @unlink( $dir .'/'. $filename );
+			$success &= @unlink( $this->path .'/'. $filename );
 		}
 
 		return $success;
