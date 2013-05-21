@@ -44,7 +44,7 @@ $callback = function( SimpleXMLElement $node ) {
 	$currencies[] =
 		array(
 			':currency' => 'USD',
-			':price' => (float) $node->price->amount * 1.31
+			':price' => (float) $node->price->amount * 1.30
 		);
 
 	$languages = array();

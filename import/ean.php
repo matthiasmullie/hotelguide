@@ -127,6 +127,12 @@ while ( !feof( $file ) && $column = fgetcsv( $file, null, '|' ) ) {
 		':currency' => 'USD',
 		':price' => $column['LowRate'],
 	) );
+	// @todo: temporary workaround for EUR; will change later with real data (awaiting response)
+	$statementCurrency->execute( array(
+		':id' => $column['HotelID'],
+		':currency' => 'EUR',
+		':price' => $column['LowRate'] / 1.30,
+	) );
 }
 
 // parse additional languages (files in utf-16)
