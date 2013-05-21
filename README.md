@@ -24,6 +24,8 @@ Source code for http://www.last-minute-vakanties.be
           `zorder` int(11) unsigned NOT NULL,
           `image` varchar(255) NOT NULL,
           `stars` float NOT NULL,
+          `url` varchar(255) NOT NULL,
+          `url_mobile` varchar(255) DEFAULT NULL,
           PRIMARY KEY (`id`),
           UNIQUE KEY (`feed_id`,`product_id`),
           UNIQUE KEY (`lat`,`lng`),
@@ -44,8 +46,6 @@ Source code for http://www.last-minute-vakanties.be
           `language` char(2) NOT NULL,
           `title` varchar(255) NOT NULL,
           `text` text DEFAULT NULL,
-          `url` varchar(255) NOT NULL,
-          `url_mobile` varchar(255) DEFAULT NULL,
           PRIMARY KEY (`id`,`language`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

@@ -19,6 +19,8 @@ $callback = function( SimpleXMLElement $node ) {
 	$location[':lng'] = (float) $node->properties->longitude->value;
 	$location[':image'] = (string) $node->images->image;
 	$location[':stars'] = round( (float) $node->properties->stars->value / 2 );
+	$location[':url'] = (string) $node->URL;
+	$location[':url_mobile'] = null;
 
 	$currencies = array();
 	$currencies[] =
@@ -39,8 +41,6 @@ $callback = function( SimpleXMLElement $node ) {
 			':language' => 'nl',
 			':title' => (string) $node->name,
 			':text' => (string) $node->description,
-			':url' => (string) $node->URL,
-			':url_mobile' => null,
 		);
 
 	return array( $location, $currencies, $languages );

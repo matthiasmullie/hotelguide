@@ -20,6 +20,17 @@ $callback = function( SimpleXMLElement $node ) {
 	$location[':image'] = (string) $node->images->image;
 	$location[':stars'] = (float) $node->properties->stars->value;
 
+	/*
+	 * Urls:
+	 * * TT url normal: http://tc.tradetracker.net/?c=2620&m=278357&a=51300&u=http%3A%2F%2Fnl.hotels.com%2Fho115783%2Fthe-fairmont-san-francisco-san-francisco-verenigde-staten%2F%3Fwapb1%3Dhotelcontentfeed
+	 * * Url normal: http://nl.hotels.com/ho115783/the-fairmont-san-francisco-san-francisco-verenigde-staten/
+	 * * Url mobile: http://nl.hotels.com/mobile/hotelDetails.html?hotelId=115783
+	 * * TT url mobile: http://tc.tradetracker.net/?c=2620&m=278357&a=51300&u=http%3A%2F%2Fnl.hotels.com%2Fmobile%2FhotelDetails.html%3FhotelId%3D115783%26wapb1%3Dhotelcontentfeed
+	 */
+	$location[':url'] = (string) $node->URL;
+	$mobileUrl = 'http://nl.hotels.com/mobile/hotelDetails.html?hotelId=' . $location[':product_id'] . '&wapb1=hotelcontentfeed';
+	$location[':url_mobile'] = 'http://tc.tradetracker.net/?c=2620&m=278357&a=51300&u=' . urlencode( $mobileUrl );
+
 	$currencies = array();
 	$currencies[] =
 		array(
@@ -39,21 +50,7 @@ $callback = function( SimpleXMLElement $node ) {
 			':language' => 'en',
 			':title' => (string) $node->name,
 			':text' => (string) $node->description,
-			':url' => (string) $node->URL,
-			':url_mobile' => null, // will be filled in later
 		);
-
-	/*
-	 * Urls:
-	 * * TT url normal: http://tc.tradetracker.net/?c=2620&m=278357&a=51300&u=http%3A%2F%2Fnl.hotels.com%2Fho115783%2Fthe-fairmont-san-francisco-san-francisco-verenigde-staten%2F%3Fwapb1%3Dhotelcontentfeed
-	 * * Url normal: http://nl.hotels.com/ho115783/the-fairmont-san-francisco-san-francisco-verenigde-staten/
-	 * * Url mobile: http://nl.hotels.com/mobile/hotelDetails.html?hotelId=115783
-	 * * TT url mobile: http://tc.tradetracker.net/?c=2620&m=278357&a=51300&u=http%3A%2F%2Fnl.hotels.com%2Fmobile%2FhotelDetails.html%3FhotelId%3D115783%26wapb1%3Dhotelcontentfeed
-	 */
-	foreach ( $languages as &$language ) {
-		$mobileUrl = 'http://nl.hotels.com/mobile/hotelDetails.html?hotelId=' . $location[':product_id'] . '&wapb1=hotelcontentfeed';
-		$language[':url_mobile'] = 'http://tc.tradetracker.net/?c=2620&m=278357&a=51300&u=' . urlencode( $mobileUrl );
-	}
 
 	return array( $location, $currencies, $languages );
 };

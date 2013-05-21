@@ -186,6 +186,8 @@ $callback = function( $entry ) use ( $db ) {
 	$location[':lng'] = (float) $entry['lng'];
 	$location[':image'] = (string) $entry['image'];
 	$location[':stars'] = (float) $entry['stars'];
+	$location[':url'] = 'http://www.travelnow.com/templates/426957/hotels/'. $location[':product_id'] .'/overview?currency=<currency>&lang=<language>'; // @todo: real url
+	$location[':url_mobile'] = null;
 
 	$statement = $db->prepare( 'SELECT * FROM currency WHERE id = :id' );
 	$statement->execute( array( ':id' => $location[':product_id'] ) );
@@ -207,18 +209,7 @@ $callback = function( $entry ) use ( $db ) {
 				':language' => $language['language'],
 				':title' => (string) $language['title'],
 				':text' => (string) $language['text'],
-				':url' =>  null, // will be filled in later
-				':url_mobile' => null, // will be filled in later
 			);
-	}
-
-	/*
-	 * Urls:
-	 * @todo: real url
-	 * http://www.travelnow.com/templates/426957/hotels/<id>/overview?currency=<currency>&lang=<language>
-	 */
-	foreach ( $languages as &$language ) {
-		$language[':url'] = 'http://www.travelnow.com/templates/426957/hotels/'. $location[':product_id'] .'/overview?lang='. $language;
 	}
 
 	return array( $location, $currencies, $languages );

@@ -20,6 +20,19 @@ $callback = function( SimpleXMLElement $node ) {
 	$location[':image'] = str_replace( '_t.jpg', '_b.jpg', (string) $node->images->image ); // _b is better size ;)
 	$location[':stars'] = (float) $node->properties->stars->value;
 
+	/*
+	 * Urls:
+	 * * TT url normal: http://tc.tradetracker.net/?c=5592&m=273779&a=51300&u=http%3A%2F%2Fwww.expedia.nl%2Fpubspec%2Fscripts%2Feap.asp%3FGOTO%3DHOTDETAILS%26HotID%3D864%26eapid%3D1843-11
+	 * * Url normal: http://www.expedia.nl/San-Francisco-Hotels-The-Huntington-Hotel.h864.Hotelinfo?eapid=1843-11&affcid=nl.network.tradetracker.51300&rm1=a2&
+	 * * Url mobile: http://www.expedia.nl/MobileHotel/ModifySearch?hotelId=864&checkInDate=2013-04-21&checkOutDate=2013-04-25&room1=2&sourcePage=offers
+	 * * TT url mobile: http://tc.tradetracker.net/?c=5592&m=273779&a=51300&u=http%3A%2F%2Fwww.expedia.nl%2FMobileHotel%2FModifySearch%3FhotelId%3D864%26checkInDate%3D2013-04-19%26checkOutDate%3D2013-04-20%26room1%3D2%26sourcePage%3Doffers
+	 */
+	$location[':url'] = (string) $node->URL;
+	if ( preg_match( '/HotID%3D([0-9]+)/', $location[':url'], $match ) ) {
+		$mobileUrl = 'http://www.expedia.nl/MobileHotel/ModifySearch?hotelId='. $match[1] .'&checkInDate='. date( 'Y-m-d' ) .'&checkOutDate='. date( 'Y-m-d', strtotime( 'tomorrow' ) ) .'&room1=2&sourcePage=offers&eapid=1843-11';
+		$location[':url_mobile'] = 'http://tc.tradetracker.net/?c=5592&m=273779&a=51300&u=' . urlencode( $mobileUrl );
+	}
+
 	$currencies = array();
 	$currencies[] =
 		array(
@@ -30,7 +43,7 @@ $callback = function( SimpleXMLElement $node ) {
 	$currencies[] =
 		array(
 			':currency' => 'USD',
-			':price' => (float) $node->properties->totalPrice->value * 1.31
+			':price' => (float) $node->properties->totalPrice->value * 1.30
 		);
 
 	$languages = array();
@@ -42,20 +55,6 @@ $callback = function( SimpleXMLElement $node ) {
 			':url' => (string) $node->URL,
 			':url_mobile' => null, // will be filled in later
 		);
-
-	/*
-	 * Urls:
-	 * * TT url normal: http://tc.tradetracker.net/?c=5592&m=273779&a=51300&u=http%3A%2F%2Fwww.expedia.nl%2Fpubspec%2Fscripts%2Feap.asp%3FGOTO%3DHOTDETAILS%26HotID%3D864%26eapid%3D1843-11
-	 * * Url normal: http://www.expedia.nl/San-Francisco-Hotels-The-Huntington-Hotel.h864.Hotelinfo?eapid=1843-11&affcid=nl.network.tradetracker.51300&rm1=a2&
-	 * * Url mobile: http://www.expedia.nl/MobileHotel/ModifySearch?hotelId=864&checkInDate=2013-04-21&checkOutDate=2013-04-25&room1=2&sourcePage=offers
-	 * * TT url mobile: http://tc.tradetracker.net/?c=5592&m=273779&a=51300&u=http%3A%2F%2Fwww.expedia.nl%2FMobileHotel%2FModifySearch%3FhotelId%3D864%26checkInDate%3D2013-04-19%26checkOutDate%3D2013-04-20%26room1%3D2%26sourcePage%3Doffers
-	 */
-	foreach ( $languages as &$language ) {
-		if ( preg_match( '/HotID%3D([0-9]+)/', $language[':url'], $match ) ) {
-			$mobileUrl = 'http://www.expedia.nl/MobileHotel/ModifySearch?hotelId='. $match[1] .'&checkInDate='. date( 'Y-m-d' ) .'&checkOutDate='. date( 'Y-m-d', strtotime( 'tomorrow' ) ) .'&room1=2&sourcePage=offers&eapid=1843-11';
-			$language[':url_mobile'] = 'http://tc.tradetracker.net/?c=5592&m=273779&a=51300&u=' . urlencode( $mobileUrl );
-		}
-	}
 
 	return array( $location, $currencies, $languages );
 };

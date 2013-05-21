@@ -147,16 +147,16 @@ class Model {
 
 		$db = self::getDB();
 		$statementLocation = $db->prepare( '
-			INSERT IGNORE INTO locations (feed_id, product_id, lat, lng, coordinate, zorder, image, stars)
-			VALUES (:feed_id, :product_id, :lat, :lng, GeomFromText(CONCAT("Point(", :lat, " ", :lng, ")")), :zorder, :image, :stars)
+			INSERT IGNORE INTO locations (feed_id, product_id, lat, lng, coordinate, zorder, image, stars, url, url_mobile)
+			VALUES (:feed_id, :product_id, :lat, :lng, GeomFromText(CONCAT("Point(", :lat, " ", :lng, ")")), :zorder, :image, :stars, :url, :url_mobile)
 		' );
 		$statementCurrency = $db->prepare( '
 			INSERT IGNORE INTO currency (id, currency, price)
 			VALUES (:id, :currency, :price)
 		' );
 		$statementLanguage = $db->prepare( '
-			INSERT IGNORE INTO language (id, language, title, text, url, url_mobile)
-			VALUES (:id, :language, :title, :text, :url, :url_mobile)
+			INSERT IGNORE INTO language (id, language, title, text)
+			VALUES (:id, :language, :title, :text)
 		' );
 
 		$db->beginTransaction();

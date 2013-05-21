@@ -16,6 +16,11 @@ if ( $feedId != false && $productId !== false ) {
 	if ( $data !== false ) {
 		// redirect to location url
 		$url = ( $mobile && $data['url_mobile'] ) ? $data['url_mobile'] : $data['url'];
+
+		// replace language & currency placeholders
+		$url = str_replace( '<language>', $language, $url );
+		$url = str_replace( '<currency>', $currency, $url );
+
 		header( 'Location:'. $url );
 		exit;
 	}
