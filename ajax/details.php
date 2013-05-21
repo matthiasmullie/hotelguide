@@ -17,7 +17,7 @@ if ( $feedId != false && $productId !== false ) {
 
 	if ( $data !== false ) {
 		// format currency
-		$formatter = new NumberFormatter( $language, NumberFormatter::CURRENCY );
+		$formatter = new NumberFormatter( null, NumberFormatter::CURRENCY );
 		$data['formatted_price'] = $formatter->formatCurrency( $data['price'], $data['currency'] );
 
 		/*

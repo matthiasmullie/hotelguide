@@ -67,7 +67,7 @@ if ( $cacheCluster ) {
 
 foreach ( $clustered['locations'] as &$data ) {
 	// format currency
-	$formatter = new NumberFormatter( $language, NumberFormatter::CURRENCY );
+	$formatter = new NumberFormatter( null, NumberFormatter::CURRENCY );
 	$formatter->setAttribute( NumberFormatter::FRACTION_DIGITS, 0 );
 	$data['text'] = $formatter->formatCurrency( $data['price'], $data['currency'] );
 
