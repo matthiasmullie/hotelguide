@@ -1,5 +1,8 @@
 <?php
 
+// @todo: not parsing feed for now; only ean.php
+exit;
+
 require_once __DIR__.'/../utils/model.php';
 
 // Hello! This ugly piece of code will parse the relevant data of hotel.com's product feed to our database
