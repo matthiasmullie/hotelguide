@@ -186,7 +186,7 @@ $callback = function( $entry ) use ( $db ) {
 	$location[':lng'] = (float) $entry['lng'];
 	$location[':image'] = (string) $entry['image'];
 	$location[':stars'] = (float) $entry['stars'];
-	$location[':url'] = 'http://www.travelnow.com/templates/426957/hotels/'. $location[':product_id'] .'/overview?currency=<currency>&lang=<language>'; // @todo: real url
+	$location[':url'] = 'http://www.travelnow.com/templates/426957/hotels/'. $location[':product_id'] .'/overview?currency=<currency>&lang=<language>';
 	$location[':url_mobile'] = null;
 
 	$statement = $db->prepare( 'SELECT * FROM currency WHERE id = :id' );
