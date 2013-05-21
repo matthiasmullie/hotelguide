@@ -43,7 +43,7 @@
 	title: "Fermer"
 >
 <order "Commander">
-<pricePerNight "{{$$price}}/nuit">
+<pricePerNight "{{$price}}/nuit">
 <disclaimer "Disclaimer">
 <back "Retour">
 <formError "S'il vous plaît remplir le formulaire complètement.">
