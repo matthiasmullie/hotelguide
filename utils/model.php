@@ -43,7 +43,7 @@ class Model {
 	 * @param array $params
 	 * @return PDOStatement
 	 */
-	protected static function query( $sql, array $params = null ) {
+	public static function query( $sql, array $params = null ) {
 		$statement = self::getDB()->prepare( $sql );
 		$statement->execute( (array) $params );
 		return $statement;
@@ -138,10 +138,10 @@ class Model {
 	 * Update entries for a certain feed.
 	 *
 	 * @param int $feedId
-	 * @param SimpleXMLElement $nodes
+	 * @param Iterator $entries
 	 * @param callable $callback
 	 */
-	public static function updateFeed( $feedId, $nodes, /* callable */ $callback ) {
+	public static function updateFeed( $feedId, $entries, /* callable */ $callback ) {
 		// this might take awhile
 		set_time_limit( 0 );
 
@@ -170,9 +170,9 @@ class Model {
 			WHERE loc.feed_id = :feed_id';
 		self::query( $sql, array( 'feed_id' => $feedId ) );
 
-		foreach ( $nodes as $node ) {
-			// let callback parse this node
-			list( $location, $currencies, $languages ) = $callback( $node );
+		foreach ( $entries as $entry ) {
+			// let callback parse this entry
+			list( $location, $currencies, $languages ) = $callback( $entry );
 
 			// add feed id
 			$location[':feed_id'] = $feedId;
