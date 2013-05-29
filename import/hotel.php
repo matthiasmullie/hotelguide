@@ -1,9 +1,7 @@
 <?php
 
-// @todo: not parsing feed for now; only ean.php
-exit;
-
 require_once __DIR__.'/../utils/model.php';
+require_once __DIR__.'/../utils/ean.php';
 
 // Hello! This ugly piece of code will parse the relevant data of hotel.com's product feed to our database
 
@@ -11,11 +9,14 @@ require_once __DIR__.'/../utils/model.php';
 $feedUrl = 'http://pf.tradetracker.net/?aid=51300&encoding=utf-8&type=xml-v2-simple&fid=278357&categoryType=2&additionalType=2';
 $feedId = 4; // id in db - quick and dirty in code, let's just assume this won't change in db ;)
 
+// init EAN db
+$ean = new Ean();
+
 // load xml
 $xml = new SimpleXMLElement( $feedUrl, 0, true );
 
 // parse data
-$callback = function( SimpleXMLElement $node ) {
+$callback = function( SimpleXMLElement $node ) use ( $ean ) {
 	$location = array();
 	$location[':product_id'] = (string) $node->ID;
 	$location[':lat'] = (float) $node->properties->latitude->value;
@@ -35,25 +36,42 @@ $callback = function( SimpleXMLElement $node ) {
 	$location[':url_mobile'] = 'http://tc.tradetracker.net/?c=2620&m=278357&a=51300&u=' . urlencode( $mobileUrl );
 
 	$currencies = array();
-	$currencies[] =
+	// currency in feed
+	$currencies[(string) $node->price->currency] =
 		array(
 			':currency' => (string) $node->price->currency,
 			':price' => (float) $node->price->amount,
 		);
-	// @todo: temporary workaround for USD; will change later with real data
-	$currencies[] =
-		array(
-			':currency' => 'USD',
-			':price' => (float) $node->price->amount * 1.30
-		);
+	// currencies in EAN db
+	$statement = $ean->getDB()->prepare( 'SELECT * FROM currency WHERE id = :id AND currency = :currency' );
+	$statement->execute( array( ':id' => $location[':product_id'], ':currency' => 'USD' ) );
+	while ( $currency = $statement->fetch() ) {
+		$currencies[(string) $currency['currency']] =
+			array(
+				':currency' => (string) $currency['currency'],
+				':price' => (float) $currency['price'],
+			);
+	}
 
 	$languages = array();
-	$languages[] =
+	// language in feed
+	$languages['en'] =
 		array(
 			':language' => 'en',
 			':title' => (string) $node->name,
 			':text' => (string) $node->description,
 		);
+	// languages in EAN db
+	$statement = $ean->getDB()->prepare( 'SELECT * FROM language WHERE id = :id' );
+	$statement->execute( array( ':id' => $location[':product_id'] ) );
+	while ( $language = $statement->fetch() ) {
+		$languages[$language['language']] =
+			array(
+				':language' => $language['language'],
+				':title' => (string) $language['title'],
+				':text' => (string) $language['text'],
+			);
+	}
 
 	return array( $location, $currencies, $languages );
 };

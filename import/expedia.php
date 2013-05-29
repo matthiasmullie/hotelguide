@@ -1,9 +1,7 @@
 <?php
 
-// @todo: not parsing feed for now; only ean.php
-exit;
-
 require_once __DIR__.'/../utils/model.php';
+require_once __DIR__.'/../utils/ean.php';
 
 // Hello! This ugly piece of code will parse the relevant data of expedia.com's product feed to our database
 
@@ -11,11 +9,14 @@ require_once __DIR__.'/../utils/model.php';
 $feedUrl = 'http://pf.tradetracker.net/?aid=51300&encoding=utf-8&type=xml-v2-simple&fid=273779&categoryType=2&additionalType=2';
 $feedId = 1; // id in db - quick and dirty in code, let's just assume this won't change in db ;)
 
+// init EAN db
+$ean = new Ean();
+
 // load xml
 $xml = new SimpleXMLElement( $feedUrl, 0, true );
 
 // parse data
-$callback = function( SimpleXMLElement $node ) {
+$callback = function( SimpleXMLElement $node ) use ( $ean ) {
 	$location = array();
 	$location[':product_id'] = (string) $node->ID;
 	$location[':lat'] = (float) $node->properties->latitude->value;
@@ -32,32 +33,49 @@ $callback = function( SimpleXMLElement $node ) {
 	 */
 	$location[':url'] = (string) $node->URL;
 	if ( preg_match( '/HotID%3D([0-9]+)/', $location[':url'], $match ) ) {
-		$mobileUrl = 'http://www.expedia.nl/MobileHotel/ModifySearch?hotelId='. $match[1] .'&checkInDate='. date( 'Y-m-d' ) .'&checkOutDate='. date( 'Y-m-d', strtotime( 'tomorrow' ) ) .'&room1=2&sourcePage=offers&eapid=1843-11';
+		$hotelId = $match[1];
+
+		$mobileUrl = 'http://www.expedia.nl/MobileHotel/ModifySearch?hotelId='. $hotelId .'&checkInDate='. date( 'Y-m-d' ) .'&checkOutDate='. date( 'Y-m-d', strtotime( 'tomorrow' ) ) .'&room1=2&sourcePage=offers&eapid=1843-11';
 		$location[':url_mobile'] = 'http://tc.tradetracker.net/?c=5592&m=273779&a=51300&u=' . urlencode( $mobileUrl );
 	}
 
 	$currencies = array();
-	$currencies[] =
+	// currency in feed
+	$currencies[(string) $node->price->currency] =
 		array(
 			':currency' => (string) $node->price->currency,
 			':price' => (float) $node->properties->totalPrice->value, // (float) $node->price->amount
 		);
-	// @todo: temporary workaround for USD; will change later with real data
-	$currencies[] =
-		array(
-			':currency' => 'USD',
-			':price' => (float) $node->properties->totalPrice->value * 1.30
-		);
+	// currencies in EAN db
+	$statement = $ean->getDB()->prepare( 'SELECT * FROM currency WHERE id = :id AND currency = :currency' );
+	$statement->execute( array( ':id' => $hotelId, ':currency' => 'USD' ) );
+	while ( $currency = $statement->fetch() ) {
+		$currencies[(string) $currency['currency']] =
+			array(
+				':currency' => (string) $currency['currency'],
+				':price' => (float) $currency['price'],
+			);
+	}
 
 	$languages = array();
-	$languages[] =
+	// language in feed
+	$languages['en'] =
 		array(
-			':language' => 'nl',
+			':language' => 'en',
 			':title' => (string) $node->name,
 			':text' => (string) $node->description,
-			':url' => (string) $node->URL,
-			':url_mobile' => null, // will be filled in later
 		);
+	// languages in EAN db
+	$statement = $ean->getDB()->prepare( 'SELECT * FROM language WHERE id = :id' );
+	$statement->execute( array( ':id' => $hotelId ) );
+	while ( $language = $statement->fetch() ) {
+		$languages[$language['language']] =
+			array(
+				':language' => $language['language'],
+				':title' => (string) $language['title'],
+				':text' => (string) $language['text'],
+			);
+	}
 
 	return array( $location, $currencies, $languages );
 };
