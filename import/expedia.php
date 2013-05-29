@@ -37,6 +37,8 @@ $callback = function( SimpleXMLElement $node ) use ( $ean ) {
 
 		$mobileUrl = 'http://www.expedia.nl/MobileHotel/ModifySearch?hotelId='. $hotelId .'&checkInDate='. date( 'Y-m-d' ) .'&checkOutDate='. date( 'Y-m-d', strtotime( 'tomorrow' ) ) .'&room1=2&sourcePage=offers&eapid=1843-11';
 		$location[':url_mobile'] = 'http://tc.tradetracker.net/?c=5592&m=273779&a=51300&u=' . urlencode( $mobileUrl );
+	} else {
+		return;
 	}
 
 	$currencies = array();

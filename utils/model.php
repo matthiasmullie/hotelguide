@@ -174,16 +174,16 @@ class Model {
 			// let callback parse this entry
 			list( $location, $currencies, $languages ) = $callback( $entry );
 
+			// validate data
+			if ( empty( $location ) || empty( $currencies ) || empty( $languages ) ) {
+				continue;
+			}
+
 			// add feed id
 			$location[':feed_id'] = $feedId;
 
 			// calculate zorder value
 			$location[':zorder'] = (int) self::zorder( $location[':lat'], $location[':lng'] );
-
-			// validate data
-			if ( !$location[':product_id'] || !$location[':feed_id'] || !$location[':lat'] || !$location[':lng'] || empty( $currencies ) || empty( $languages ) ) {
-				continue;
-			}
 
 			if ( $statementLocation->execute( $location ) ) {
 				$location[':id'] = $db->lastInsertId();
