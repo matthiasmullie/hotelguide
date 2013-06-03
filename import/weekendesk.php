@@ -1,8 +1,5 @@
 <?php
 
-// @todo: not parsing feed for now; only ean.php
-exit;
-
 require_once __DIR__.'/../utils/model.php';
 
 // Hello! This ugly piece of code will parse the relevant data of expedia.com's product feed to our database
@@ -31,12 +28,7 @@ $callback = function( SimpleXMLElement $node ) {
 			':currency' => (string) $node->price->currency,
 			':price' => (float) $node->price->amount
 		);
-	// @todo: temporary workaround for USD; will change later with real data
-	$currencies[] =
-		array(
-			':currency' => 'USD',
-			':price' => (float) $node->price->amount * 1.30
-		);
+	// NOTE: sadly, no USD
 
 	$languages = array();
 	$languages[] =
