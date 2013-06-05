@@ -67,10 +67,10 @@
 	<a href="https://itunes.apple.com/us/app/hotelgids/id641534155?ls=1" class="noBorder" title="HotelGuide on iOS" style="float: left;">
 		<img src="/img/download/ios/en.png" width="135" height="40" alt="HotelGuide on iOS" />
 	</a>
-<!--
-	<a href="#" class="noBorder" title="HotelGuide on Android" style="float: right;">
+	<a href="https://play.google.com/store/apps/details?id=us.envy.HotelGuide" class="noBorder" title="HotelGuide on Android" style="float: right;">
 		<img src="/img/download/android/en.png" width="115" height="40" alt="HotelGuide on Android" />
 	</a>
+<!--
 	<a href="#" class="noBorder" title="HotelGuide on Windows Phone" style="float: left;">
 		<img src="/img/download/winphone/*.png" width="125" height="40" alt="HotelGuide on Windows Phone" />
 	</a>
