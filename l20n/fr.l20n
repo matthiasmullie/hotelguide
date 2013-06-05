@@ -75,10 +75,6 @@
 		<img src="/img/download/winphone/*.png" width="125" height="40" alt="Guide d'Hôtels sur Windows Phone" />
 	</a>
 -->
-
-	<p style="clear: both; padding-top: 20px;">Nous travaillons sur une application pour d'autres systèmes d'exploitation (Android, Windows).</p>
-	<p>En attendant, ce site a également été optimisé pour utilisation mobile!</p>
-	<p>Restez à l'écoute!</p>
 """>
 <infowindowContact """
 	<h2>Formulaire de contact</h2>
