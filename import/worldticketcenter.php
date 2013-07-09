@@ -3,6 +3,9 @@
 // @todo: not parsing feed for now; links don't resolve
 exit;
 
+set_time_limit( 0 );
+ini_set( 'memory_limit', '512M' );
+
 require_once __DIR__.'/../utils/model.php';
 
 // Hello! This ugly piece of code will parse the relevant data of expedia.com's product feed to our database

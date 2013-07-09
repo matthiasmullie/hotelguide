@@ -1,8 +1,11 @@
 <?php
 
+set_time_limit( 0 );
+ini_set( 'memory_limit', '512M' );
+
 require_once __DIR__.'/../utils/model.php';
 
-// Hello! This ugly piece of code will parse the relevant data of expedia.com's product feed to our database
+// Hello! This ugly piece of code will parse the relevant data of weekendesk.be's product feed to our database
 
 // feed data
 $feedUrl = 'http://pf.tradetracker.net/?aid=51193&encoding=utf-8&type=xml-v2-simple&fid=388219&categoryType=2&additionalType=2';

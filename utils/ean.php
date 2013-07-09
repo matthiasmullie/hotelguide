@@ -23,6 +23,9 @@ class Ean {
 	);
 
 	public function __construct() {
+		// this might take awhile
+		set_time_limit( 0 );
+
 		$this->dirpath = __DIR__.'/../cache/import/ean';
 
 		// EAN files are refreshed every day. If the db file is > 24h old, let it rebuild
