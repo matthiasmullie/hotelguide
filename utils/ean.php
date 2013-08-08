@@ -24,7 +24,7 @@ class Ean {
 
 	public function __construct() {
 		// this might take awhile
-		set_time_limit( 0 );
+		set_time_limit( 7200 );
 
 		$this->dirpath = __DIR__.'/../cache/import/ean';
 

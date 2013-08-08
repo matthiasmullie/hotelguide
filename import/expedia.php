@@ -1,6 +1,6 @@
 <?php
 
-set_time_limit( 0 );
+set_time_limit( 7200 );
 ini_set( 'memory_limit', '512M' );
 
 require_once __DIR__.'/../utils/model.php';
